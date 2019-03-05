@@ -9,34 +9,15 @@ type User struct {
 	Username    string `json:"username"`
 	Email       string `json:"email"`
 	Password    string `json:"-"`
-	languageID  int    `json:"languageId"`
-	pronounceON bool   `json:"pronounceOn"`
+	langID      int    `json:"langID, int"`
+	pronounceON int    `json:"pronounceOn, int"`
 }
 
 func (users userStorage) getUserByID(userID int) (User, bool, error) {
-	var id, languageID int
-	var username, email, password string
-	var pronounceOn bool
-
-	find := false
-
 	for _, i := range users.data {
 		if i.ID == userID {
-			find = true
-			break
+			return i, true, nil
 		}
-	}
-
-	if find {
-		result := User{
-			ID:          id,
-			Username:    username,
-			Email:       email,
-			Password:    password,
-			languageID:  languageID,
-			pronounceON: pronounceOn,
-		}
-		return result, find, nil
 	}
 	return User{}, false, nil
 }

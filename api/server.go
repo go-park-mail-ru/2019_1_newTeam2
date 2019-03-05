@@ -22,19 +22,20 @@ type Server struct {
 	users userStorage
 }
 
-func (server Server) init() {
+func initServer() *Server {
 	data := make([]User, 10)
 	for i := 0; i < 10; i++ {
 		data[i].ID = i + 1
-		data[i].Username = "test_user_" + string(i+1)
+		data[i].Username = "test_user_1"
 		data[i].Email = "kek@lol.kl"
 		data[i].Password = "pass"
-		data[i].languageID = 0
-		data[i].pronounceON = true
+		data[i].langID = 0
+		data[i].pronounceON = 1
 	}
+	return &Server{userStorage{data}}
 }
 
-func (server Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (server *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ServeHTTP")
 	var head string
 	head, r.URL.Path = typeRequest(r.URL.Path)
@@ -62,7 +63,7 @@ func (server Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (server Server) userAPI(w http.ResponseWriter, r *http.Request) {
+func (server *Server) userAPI(w http.ResponseWriter, r *http.Request) {
 	head, _ := typeRequest(r.URL.Path)
 	fmt.Println("userAPI: ", head)
 
