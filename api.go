@@ -4,17 +4,19 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+
+	. "./responses"
 )
 
-func (server *Server) getUser(w http.ResponseWriter, r *http.Request) {
+func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	var head string
-	head, r.URL.Path = typeRequest(r.URL.Path)
+	head, r.URL.Path = TypeRequest(r.URL.Path)
 	userID, err := strconv.Atoi(head)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	result, find, err := server.users.getUserByID(userID)
+	result, find, err := server.Users.GetUserByID(userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -23,7 +25,7 @@ func (server *Server) getUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	response(w, http.StatusOK, result)
+	Response(w, http.StatusOK, result)
 }
 
 // var loginFormTmpl = []byte(`
@@ -38,6 +40,7 @@ func (server *Server) getUser(w http.ResponseWriter, r *http.Request) {
 // </html>
 // `)
 
-func (server *Server) createUser(w http.ResponseWriter, r *http.Request) {
+func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "you enter: ", r.FormValue("login"), r.FormValue("password"))
+
 }

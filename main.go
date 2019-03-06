@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	server := initServer()
+	server := InitServer()
 	fmt.Println("starting server at :8090")
 	http.ListenAndServe(":8090", server)
 }

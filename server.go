@@ -5,9 +5,11 @@ import (
 	"net/http"
 	"path"
 	"strings"
+
+	. "./storage"
 )
 
-func typeRequest(sPath string) (string, string) {
+func TypeRequest(sPath string) (string, string) {
 	sPath = path.Clean("/" + sPath)
 	slash := strings.Index(sPath[1:], "/")
 	if slash < 0 {
@@ -18,62 +20,49 @@ func typeRequest(sPath string) (string, string) {
 }
 
 type Server struct {
-	// users storage.userStorage
-	users userStorage
+	Users UserStorage
+	// users userStorage
 }
 
-func initServer() *Server {
+func InitServer() *Server {
 	data := make([]User, 10)
 	for i := 0; i < 10; i++ {
 		data[i].ID = i + 1
 		data[i].Username = "test_user_1"
 		data[i].Email = "kek@lol.kl"
 		data[i].Password = "pass"
-		data[i].langID = 0
-		data[i].pronounceON = 1
+		data[i].LangID = 0
+		data[i].PronounceON = 1
 	}
-	return &Server{userStorage{data}}
+	return &Server{UserStorage{data}}
 }
 
 func (server *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ServeHTTP")
 	var head string
-	head, r.URL.Path = typeRequest(r.URL.Path)
-
-	// w.Write(loginFormTmpl)
-
-	// switch r.Method {
-	// case http.MethodGet:
-	// 	fmt.Println("get")
-	// 	server.getUser(w, r)
-	// case http.MethodPost:
-	// 	fmt.Println("post")
-	// 	server.createUser(w, r)
-	// default:
-	// 	w.WriteHeader(http.StatusMethodNotAllowed)
-	// }
+	head, r.URL.Path = TypeRequest(r.URL.Path)
 
 	switch head {
 	case "user":
 		fmt.Println("user---> ", head)
-		server.userAPI(w, r)
+		server.UserAPI(w, r)
 	default:
 		fmt.Println("default")
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
 
-func (server *Server) userAPI(w http.ResponseWriter, r *http.Request) {
-	head, _ := typeRequest(r.URL.Path)
+func (server *Server) UserAPI(w http.ResponseWriter, r *http.Request) {
+	head, _ := TypeRequest(r.URL.Path)
 	fmt.Println("userAPI: ", head)
 
 	switch r.Method {
 	case http.MethodGet:
 		fmt.Println("get")
-		server.getUser(w, r)
+		server.GetUser(w, r)
 	case http.MethodPost:
 		fmt.Println("post")
-		server.createUser(w, r)
+		server.CreateUser(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}

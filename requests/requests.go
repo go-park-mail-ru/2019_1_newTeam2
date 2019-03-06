@@ -1,4 +1,4 @@
-package main
+package requests
 
 type userAuthorization struct {
 	username string `json:"username"`
