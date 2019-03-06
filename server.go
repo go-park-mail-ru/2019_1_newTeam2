@@ -9,13 +9,13 @@ import (
 	. "./storage"
 )
 
-func TypeRequest(sPath string) (string, string) {
-	slash := strings.Index(sPath[1:], "/")
-	if slash < 0 {
-		return sPath[1:], "/"
+func TypeRequest(url string) (string, string) {
+	separatorPosition := strings.Index(url[1:], "/")
+	if separatorPosition < 0 {
+		return url[1:], "/"
 	}
-	slash++
-	return sPath[1:slash], sPath[slash:]
+	separatorPosition++
+	return url[1:separatorPosition], url[separatorPosition:]
 }
 
 type Server struct {
