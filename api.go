@@ -16,6 +16,7 @@ func (server *Server) UsersAPI(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("UsersAPI: ", head)
 	if head == "" {
 		if r.Method == http.MethodGet {
+			fmt.Println("get all users")
 			server.GetUsers(w, r)
 		}
 	}
@@ -55,10 +56,9 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	Response(w, http.StatusOK, result)
+	UserResponse(w, http.StatusOK, result)
 }
 
-// curl -d '{"id":1, "username":"tsaanstu", "email":"m@mail.ru", "password":"password", "langID":1, "pronounceOn":1}' -H "Content-Type: application/json" -X POST http://localhost:8090/users/
 func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user User
 	jsonStr, err := ioutil.ReadAll(r.Body)
@@ -75,7 +75,12 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
-
+	result, err := server.Users.GerAllUser()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	UserTableResponse(w, http.StatusOK, result)
 }
 
 func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {

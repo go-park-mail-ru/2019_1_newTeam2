@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	. "./storage"
@@ -24,7 +25,7 @@ type Server struct {
 func InitServer() *Server {
 	data := make(map[int]User)
 	for i := 0; i < 10; i++ {
-		data[i] = User{i, "test_user", "kek@lol.kl", "pass", 0, 1}
+		data[i] = User{i, "test_user_" + strconv.Itoa(i), "kek@lol.kl", "pass", 0, 1, 0}
 	}
 	return &Server{UserStorage{data}}
 }
