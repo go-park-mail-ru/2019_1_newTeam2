@@ -8,6 +8,7 @@ import (
 )
 
 func Response(w http.ResponseWriter, status int, result User) {
+	result.Password = ""
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(status)
 	response, _ := json.Marshal(result)
