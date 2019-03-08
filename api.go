@@ -93,7 +93,6 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	var user User
 	jsonStr, err := ioutil.ReadAll(r.Body)
-	fmt.Println("11111111111111111111")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -103,7 +102,6 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fmt.Println("222222222222222222222")
 	_, find, err := server.Users.GetUserByID(user.ID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -113,9 +111,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	fmt.Println("33333333333333333333")
 	server.Users.UpdateUserById(userID, user.Username, user.Email, user.Password, user.LangID, user.PronounceON)
-	fmt.Println("44444444444444444444")
 }
 
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
