@@ -1,7 +1,6 @@
 package main
 
 import (
-	"net/http"
 	"strconv"
 	"strings"
 
@@ -38,35 +37,10 @@ func InitServer() *Server {
 	router.HandleFunc("/signup/", server.SignUpAPI).Methods("POST")
 	router.HandleFunc("/users/{[0-9]+}", server.UpdateUser).Methods("PUT")
 	router.HandleFunc("/users/{[0-9]+}", server.DeleteUser).Methods("DELETE")
-	// router.HandleFunc("/signup/", server.SignupAPI).Methods("POST")
 	router.HandleFunc("/login/", server.LoginAPI).Methods("POST")
 
 	server.Router = router
 	server.Users = UserStorage{data, LastId}
-	// server.LastId = LastId
 
 	return server
-}
-
-func (server *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// fmt.Println("ServeHTTP")
-	// var head, url string
-	// head, url = TypeRequest(r.URL.Path)
-
-	// router := mux.NewRouter()
-
-	// switch head {
-	// case "users":
-	// 	r.URL.Path = url
-	// 	fmt.Println("users---> ", head)
-	// 	server.UsersAPI(w, r)
-	// case "login":
-	// 	fallthrough
-	// case "signup":
-	// 	fmt.Println("auth module---> ", head)
-	// 	server.AuthAPI(w, r)
-	// default:
-	// 	fmt.Println("default")
-	// 	w.WriteHeader(http.StatusMethodNotAllowed)
-	// }
 }

@@ -67,31 +67,6 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// func (server *Server) UsersAPI(w http.ResponseWriter, r *http.Request) {
-// 	head, _ := TypeRequest(r.URL.Path)
-// 	fmt.Println("UsersAPI: ", head)
-// 	if head == "" {
-// 		if r.Method == http.MethodGet {
-// 			fmt.Println("get all users")
-// 			server.GetUsers(w, r)
-// 		}
-// 	}
-// 	switch r.Method {
-// 	case http.MethodGet:
-// 		fmt.Println("get")
-// 		server.GetUser(w, r)
-// 	case http.MethodPost:
-// 		fmt.Println("post")
-// 		server.CreateUser(w, r)
-// 	case http.MethodPut:
-// 		fmt.Println("put")
-// 		server.UpdateUser(w, r)
-// 	case http.MethodDelete:
-// 		fmt.Println("delete")
-// 		server.DeleteUser(w, r)
-// 	}
-// }
-
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	var head string
 	head, r.URL.Path = TypeRequest(r.URL.Path)
@@ -171,8 +146,6 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	_, r.URL.Path = TypeRequest(r.URL.Path)
 	userID, err := strconv.Atoi(r.URL.Path[1:])
-
-	fmt.Println(r.URL.Path, userID)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
