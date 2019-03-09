@@ -7,42 +7,96 @@ import (
 	"net/http"
 	"strconv"
 
+	. "./requests"
 	. "./responses"
 	. "./storage"
 )
 
-func (server *Server) UsersAPI(w http.ResponseWriter, r *http.Request) {
-	head, _ := TypeRequest(r.URL.Path)
-	fmt.Println("UsersAPI: ", head)
-	if head == "" {
-		if r.Method == http.MethodGet {
-			fmt.Println("get all users")
-			server.GetUsers(w, r)
+func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("LoginAPI")
+	if r.Method == http.MethodPost {
+		var user UserAuth
+		jsonStr, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		err = json.Unmarshal(jsonStr, &user)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if token, err := server.Users.Login(user.Username, user.Password); err != nil {
+			fmt.Println(err)
+		} else {
+			cookie := &http.Cookie{
+				Name:  "session_id",
+				Value: token,
+			}
+			http.SetCookie(w, cookie)
+			w.Write([]byte(token))
 		}
 	}
-	switch r.Method {
-	case http.MethodGet:
-		fmt.Println("get")
-		server.GetUser(w, r)
-	case http.MethodPost:
-		fmt.Println("post")
+}
+
+func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("SignUpAPI")
+	if r.Method == http.MethodPost {
 		server.CreateUser(w, r)
-	case http.MethodPut:
-		fmt.Println("put")
-		server.UpdateUser(w, r)
-	case http.MethodDelete:
-		fmt.Println("delete")
-		server.DeleteUser(w, r)
-	default:
-		fmt.Println("default")
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		var user User
+		jsonStr, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		err = json.Unmarshal(jsonStr, &user)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if token, err := server.Users.Login(user.Username, user.Password); err != nil {
+			fmt.Println(err)
+		} else {
+			cookie := &http.Cookie{
+				Name:  "session_id",
+				Value: token,
+			}
+			http.SetCookie(w, cookie)
+			w.Write([]byte(token))
+		}
 	}
 }
+
+// func (server *Server) UsersAPI(w http.ResponseWriter, r *http.Request) {
+// 	head, _ := TypeRequest(r.URL.Path)
+// 	fmt.Println("UsersAPI: ", head)
+// 	if head == "" {
+// 		if r.Method == http.MethodGet {
+// 			fmt.Println("get all users")
+// 			server.GetUsers(w, r)
+// 		}
+// 	}
+// 	switch r.Method {
+// 	case http.MethodGet:
+// 		fmt.Println("get")
+// 		server.GetUser(w, r)
+// 	case http.MethodPost:
+// 		fmt.Println("post")
+// 		server.CreateUser(w, r)
+// 	case http.MethodPut:
+// 		fmt.Println("put")
+// 		server.UpdateUser(w, r)
+// 	case http.MethodDelete:
+// 		fmt.Println("delete")
+// 		server.DeleteUser(w, r)
+// 	}
+// }
 
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	var head string
 	head, r.URL.Path = TypeRequest(r.URL.Path)
-	userID, err := strconv.Atoi(head)
+	userID, err := strconv.Atoi(r.URL.Path[1:])
+	fmt.Println(head, r.URL.Path, userID)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -72,10 +126,11 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	server.Users.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON)
+	server.Users.LastId++
 }
 
 func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
-	result, err := server.Users.GerAllUser()
+	result, err := server.Users.GetAllUser()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -84,9 +139,8 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	var head string
-	head, r.URL.Path = TypeRequest(r.URL.Path)
-	userID, err := strconv.Atoi(head)
+	_, r.URL.Path = TypeRequest(r.URL.Path)
+	userID, err := strconv.Atoi(r.URL.Path[1:])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -115,9 +169,11 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	var head string
-	head, r.URL.Path = TypeRequest(r.URL.Path)
-	userID, err := strconv.Atoi(head)
+	_, r.URL.Path = TypeRequest(r.URL.Path)
+	userID, err := strconv.Atoi(r.URL.Path[1:])
+
+	fmt.Println(r.URL.Path, userID)
+
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
