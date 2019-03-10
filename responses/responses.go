@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 
-	. "../requests"
-	. "../storage"
+	"github.com/user/2019_1_newTeam2/requests"
+	"github.com/user/2019_1_newTeam2/storage"
 )
 
-func UserResponse(w http.ResponseWriter, status int, result User) {
+func UserResponse(w http.ResponseWriter, status int, result storage.User) {
 	result.Password = ""
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(status)
@@ -16,10 +16,10 @@ func UserResponse(w http.ResponseWriter, status int, result User) {
 	w.Write(response)
 }
 
-func UserTableResponse(w http.ResponseWriter, status int, result []User) {
-	table := make([]UserTableElem, 0)
+func UserTableResponse(w http.ResponseWriter, status int, result []storage.User) {
+	table := make([]requests.UserTableElem, 0)
 	for _, i := range result {
-		table = append(table, UserTableElem{i.Username, i.Score})
+		table = append(table, requests.UserTableElem{i.Username, i.Score})
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(status)

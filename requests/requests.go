@@ -6,6 +6,10 @@ type UserTableElem struct {
 }
 
 type UserAuth struct {
-	Username string `json:"username"`
+	Username string `json:"login"`
 	Password string `json:"password"`
+}
+
+type Error struct {
+	ThisIsERROR string `json:"error"`
 }

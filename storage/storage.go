@@ -1,6 +1,12 @@
 package storage
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+	"strconv"
+
+	"github.com/dgrijalva/jwt-go"
+)
 
 type UserStorage struct {
 	Data   map[int]User
@@ -9,17 +15,41 @@ type UserStorage struct {
 
 type User struct {
 	ID          int    `json:"id,omitempty"`
-	Username    string `json:"username"`
+	Username    string `json:"login"`
 	Email       string `json:"email"`
 	Password    string `json:"password,omitempty"`
 	LangID      int    `json:"langID, int"`
 	PronounceON int    `json:"pronounceOn, int"`
 	Score       int    `json:"score, int"`
+	AvatarPath  string `json:"path"`
 }
 
-func (users UserStorage) Login(username string, password string) (string, error) {
-	fmt.Println(username, password)
-	return "lolkek4eburek", nil
+func (users UserStorage) IsLogin(w http.ResponseWriter, r *http.Request, username string, password string) bool {
+
+	return false
+}
+
+func (users UserStorage) Login(username string, password string) (string, string, error) {
+	SECRET := []byte("kekusmaxima")
+	fmt.Println("DAta is ", username, password)
+	for _, i := range users.Data {
+		if i.Username == username {
+			// h := sha256.New()
+			// h.Write([]byte(password))
+			// if string(h.Sum(nil)) == i.Password {
+			if password == i.Password {
+				token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+					"username": username,
+					"password": password,
+				})
+				str, _ := token.SignedString(SECRET)
+				return str, strconv.Itoa(i.ID), nil
+			} else {
+				return "", "", fmt.Errorf("Error bad password")
+			}
+		}
+	}
+	return "", "", fmt.Errorf("Error not user")
 }
 
 func (users UserStorage) GetUserByID(userID int) (User, bool, error) {
@@ -36,7 +66,7 @@ func (users UserStorage) UserRegistration(username string, email string,
 	id := users.LastId
 	fmt.Println(users.LastId)
 
-	users.Data[id] = User{id, username, email, password, langid, pronounceOn, 0}
+	users.Data[id] = User{id, username, email, password, langid, pronounceOn, 0, "uploads/avatars/1.jpg"}
 	return true, nil
 }
 
@@ -47,7 +77,7 @@ func (users UserStorage) DeleteUserById(userID int) (bool, error) {
 
 func (users UserStorage) UpdateUserById(userID int, username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
-	users.Data[userID] = User{userID, username, email, password, langid, pronounceOn, users.Data[userID].Score}
+	users.Data[userID] = User{userID, username, email, password, langid, pronounceOn, users.Data[userID].Score, "uploads/avatars/1.jpg"}
 	return true, nil
 }
 
@@ -57,4 +87,16 @@ func (users UserStorage) GetAllUser() ([]User, error) {
 		allUsers = append(allUsers, i)
 	}
 	return allUsers, nil
+}
+
+func (users UserStorage) AddImage(path string, userID int) error {
+	_, ok := users.Data[userID]
+	if !ok {
+		return fmt.Errorf("no such user")
+	}
+	user := users.Data[userID]
+	user.AvatarPath = path
+	fmt.Println(path)
+	users.Data[userID] = user
+	return nil
 }

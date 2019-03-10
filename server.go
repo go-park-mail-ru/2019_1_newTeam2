@@ -1,11 +1,12 @@
 package main
 
 import (
+	"net/http"
 	"strconv"
 	"strings"
 
-	. "./storage"
 	"github.com/gorilla/mux"
+	"github.com/user/2019_1_newTeam2/storage"
 )
 
 func TypeRequest(url string) (string, string) {
@@ -18,29 +19,33 @@ func TypeRequest(url string) (string, string) {
 }
 
 type Server struct {
-	Users  UserStorage
+	Users  storage.UserStorage
 	Router *mux.Router
 }
 
 func InitServer() *Server {
-	data := make(map[int]User)
+	data := make(map[int]storage.User)
 	LastId := 10
 	for i := 0; i < LastId; i++ {
-		data[i] = User{i, "test_user_" + strconv.Itoa(i), "kek@lol.kl", "pass", 0, 1, 0}
+
+		data[i] = storage.User{i, "test_user_" + strconv.Itoa(i), "kek@lol.kl", "pass", 0, 1, 0, "files/avatars/1.jpg"}
 	}
 	router := mux.NewRouter()
 
 	server := new(Server)
 
-	router.HandleFunc("/users/", server.GetUsers).Methods("GET")
-	router.HandleFunc("/users/{[0-9]+}", server.GetUser).Methods("GET") //  id:[0-9]+
-	router.HandleFunc("/signup/", server.SignUpAPI).Methods("POST")
-	router.HandleFunc("/users/{[0-9]+}", server.UpdateUser).Methods("PUT")
-	router.HandleFunc("/users/{[0-9]+}", server.DeleteUser).Methods("DELETE")
-	router.HandleFunc("/login/", server.LoginAPI).Methods("POST")
+	router.HandleFunc("/users/", server.GetUsers).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/users/{[0-9]+}", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/signup/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc("/users/{[0-9]+}", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
+	router.HandleFunc("/users/{[0-9]+}", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
+	router.HandleFunc("/login/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc("/upload/{[0-9]+}", server.UploadAvatar).Methods(http.MethodPost)
+
+	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir("./upload/"))))
 
 	server.Router = router
-	server.Users = UserStorage{data, LastId}
+	server.Users = storage.UserStorage{data, LastId}
 
 	return server
 }
