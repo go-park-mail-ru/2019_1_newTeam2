@@ -36,5 +36,5 @@ func main() {
 	// Use default options
 	// handler := cors.AllowAll().Handler(server.Router)
 	handler := c.Handler(server.Router)
-	http.ListenAndServe(":8090", handler)
+	http.ListenAndServe(":0", handler)
 }
