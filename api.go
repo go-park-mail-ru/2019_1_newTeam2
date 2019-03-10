@@ -38,7 +38,7 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 		test, _ := r.Cookie("session_id")
 		fmt.Println("cookie:", test) //  TODO (tsaanstu): kekekekekekekekekekekekekek
 
-		if token, err := server.Users.Login(user.Username, user.Password); err != nil {
+		if token, userId, err := server.Users.Login(user.Username, user.Password); err != nil {
 			fmt.Println(err)
 			w.WriteHeader(http.StatusUnauthorized)
 		} else {
@@ -46,8 +46,13 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 				Name:  "session_id",
 				Value: token,
 			}
+			id_cookie := &http.Cookie{
+				Name:  "user_id",
+				Value: userId,
+			}
 			http.SetCookie(w, cookie)
-			// w.Write([]byte(token))
+			http.SetCookie(w, id_cookie)
+			w.Write([]byte(token))
 			w.WriteHeader(http.StatusOK)
 		}
 		// fmt.Println("qwerty")
@@ -65,14 +70,19 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		if token, err := server.Users.Login(user.Username, user.Password); err != nil {
+		if token, userId, err := server.Users.Login(user.Username, user.Password); err != nil {
 			fmt.Println(err)
 		} else {
 			cookie := &http.Cookie{
 				Name:  "session_id",
 				Value: token,
 			}
+			id_cookie := &http.Cookie{
+				Name:  "user_id",
+				Value: userId,
+			}
 			http.SetCookie(w, cookie)
+			http.SetCookie(w, id_cookie)
 			w.Write([]byte(token))
 		}
 	}

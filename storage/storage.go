@@ -3,6 +3,7 @@ package storage
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -28,7 +29,7 @@ func (users UserStorage) IsLogin(w http.ResponseWriter, r *http.Request, usernam
 	return false
 }
 
-func (users UserStorage) Login(username string, password string) (string, error) {
+func (users UserStorage) Login(username string, password string) (string, string, error) {
 	SECRET := []byte("kekusmaxima")
 	fmt.Println("DAta is ", username, password)
 	for _, i := range users.Data {
@@ -42,13 +43,13 @@ func (users UserStorage) Login(username string, password string) (string, error)
 					"password": password,
 				})
 				str, _ := token.SignedString(SECRET)
-				return str, nil
+				return str, strconv.Itoa(i.ID), nil
 			} else {
-				return "", fmt.Errorf("Error bad password")
+				return "", "", fmt.Errorf("Error bad password")
 			}
 		}
 	}
-	return "", fmt.Errorf("Error not user")
+	return "", "", fmt.Errorf("Error not user")
 }
 
 func (users UserStorage) GetUserByID(userID int) (User, bool, error) {
