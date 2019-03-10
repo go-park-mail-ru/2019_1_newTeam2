@@ -26,7 +26,7 @@ func main() {
 
 	c := cors.New(cors.Options{
 		AllowedHeaders:     []string{"Access-Control-Allow-Origin", "Charset", "Content-Type"},
-		AllowedOrigins:     []string{"http://localhost:3000"},
+		AllowedOrigins:     []string{"http://localhost:3000", "https://thawing-gorge-14317.herokuapp.com/"},
 		AllowCredentials:   true,
 		AllowedMethods:     []string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE"},
 		OptionsPassthrough: true,
