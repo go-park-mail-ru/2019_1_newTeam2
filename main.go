@@ -11,6 +11,11 @@ func main() {
 	fmt.Println("starting server at :8090")
 
 	server := InitServer()
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8090"
+	}
 	// headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	// originsOk := handlers.AllowedOrigins([]string{"http://localhost:3000/"}) //os.Getenv("ORIGIN_ALLOWED")})
 	// methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
@@ -36,5 +41,5 @@ func main() {
 	// Use default options
 	// handler := cors.AllowAll().Handler(server.Router)
 	handler := c.Handler(server.Router)
-	http.ListenAndServe(":0", handler)
+	http.ListenAndServe(":" + port, handler)
 }
