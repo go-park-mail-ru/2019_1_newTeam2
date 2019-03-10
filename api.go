@@ -7,15 +7,15 @@ import (
 	"net/http"
 	"strconv"
 
-	. "./requests"
-	. "./responses"
-	. "./storage"
+	"github.com/user/2019_1_newTeam2/requests"
+	"github.com/user/2019_1_newTeam2/responses"
+	"github.com/user/2019_1_newTeam2/storage"
 )
 
 func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("LoginAPI")
 	if r.Method == http.MethodPost {
-		var user UserAuth
+		var user requests.UserAuth
 		jsonStr, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -55,7 +55,7 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("SignUpAPI")
 	if r.Method == http.MethodPost {
 		jsonStr := server.CreateUser(w, r)
-		var user User
+		var user storage.User
 		fmt.Println("json: ", jsonStr)
 		err := json.Unmarshal(jsonStr, &user)
 		if err != nil {
@@ -93,11 +93,11 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	UserResponse(w, http.StatusOK, result)
+	responses.UserResponse(w, http.StatusOK, result)
 }
 
 func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte {
-	var user User
+	var user storage.User
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -119,7 +119,7 @@ func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	UserTableResponse(w, http.StatusOK, result)
+	responses.UserTableResponse(w, http.StatusOK, result)
 }
 
 func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
@@ -129,7 +129,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var user User
+	var user storage.User
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

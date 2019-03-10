@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	. "./storage"
+	"github.com/user/2019_1_newTeam2/storage"
 	"github.com/gorilla/mux"
 )
 
@@ -19,16 +19,16 @@ func TypeRequest(url string) (string, string) {
 }
 
 type Server struct {
-	Users  UserStorage
+	Users  storage.UserStorage
 	Router *mux.Router
 }
 
 func InitServer() *Server {
-	data := make(map[int]User)
+	data := make(map[int]storage.User)
 	LastId := 10
 	for i := 0; i < LastId; i++ {
 
-		data[i] = User{i, "test_user_" + strconv.Itoa(i), "kek@lol.kl", "pass", 0, 1, 0}
+		data[i] = storage.User{i, "test_user_" + strconv.Itoa(i), "kek@lol.kl", "pass", 0, 1, 0}
 	}
 	router := mux.NewRouter()
 
@@ -42,7 +42,7 @@ func InitServer() *Server {
 	router.HandleFunc("/login/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
 
 	server.Router = router
-	server.Users = UserStorage{data, LastId}
+	server.Users = storage.UserStorage{data, LastId}
 
 	return server
 }
