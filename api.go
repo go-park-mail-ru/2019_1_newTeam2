@@ -26,6 +26,15 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+
+		// fmt.Println(w.Cookie["session_id"])
+		// fmt.Println(server.GetMyCoookieMan(w, r))
+
+		// server.Users.IsLogin(w, r, user.Username, user.Password)
+
+		test, _ := r.Cookie("session_id")
+		fmt.Println("cookie:", test) //  TODO (tsaanstu): kekekekekekekekekekekekekek
+
 		if token, err := server.Users.Login(user.Username, user.Password); err != nil {
 			fmt.Println(err)
 		} else {
@@ -34,22 +43,21 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 				Value: token,
 			}
 			http.SetCookie(w, cookie)
-			w.Write([]byte(token))
+			// w.Write([]byte(token))
+			w.WriteHeader(http.StatusOK)
 		}
+		// fmt.Println("qwerty")
+
 	}
 }
 
 func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("SignUpAPI")
 	if r.Method == http.MethodPost {
-		server.CreateUser(w, r)
+		jsonStr := server.CreateUser(w, r)
 		var user User
-		jsonStr, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		err = json.Unmarshal(jsonStr, &user)
+		fmt.Println("json: ", jsonStr)
+		err := json.Unmarshal(jsonStr, &user)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
@@ -88,20 +96,21 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	UserResponse(w, http.StatusOK, result)
 }
 
-func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte {
 	var user User
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		return
+		return jsonStr
 	}
 	err = json.Unmarshal(jsonStr, &user)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		return
+		return jsonStr
 	}
 	server.Users.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON)
 	server.Users.LastId++
+	return jsonStr
 }
 
 func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
