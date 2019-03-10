@@ -20,6 +20,7 @@ type User struct {
 	LangID      int    `json:"langID, int"`
 	PronounceON int    `json:"pronounceOn, int"`
 	Score       int    `json:"score, int"`
+	AvatarPath  string `json:"path"`
 }
 
 func (users UserStorage) IsLogin(w http.ResponseWriter, r *http.Request, username string, password string) bool {
@@ -64,7 +65,7 @@ func (users UserStorage) UserRegistration(username string, email string,
 	id := users.LastId
 	fmt.Println(users.LastId)
 
-	users.Data[id] = User{id, username, email, password, langid, pronounceOn, 0}
+	users.Data[id] = User{id, username, email, password, langid, pronounceOn, 0, "uploads/avatars/1.jpg"}
 	return true, nil
 }
 
@@ -75,7 +76,7 @@ func (users UserStorage) DeleteUserById(userID int) (bool, error) {
 
 func (users UserStorage) UpdateUserById(userID int, username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
-	users.Data[userID] = User{userID, username, email, password, langid, pronounceOn, users.Data[userID].Score}
+	users.Data[userID] = User{userID, username, email, password, langid, pronounceOn, users.Data[userID].Score, "uploads/avatars/1.jpg"}
 	return true, nil
 }
 
@@ -85,4 +86,16 @@ func (users UserStorage) GetAllUser() ([]User, error) {
 		allUsers = append(allUsers, i)
 	}
 	return allUsers, nil
+}
+
+func (users UserStorage) AddImage(path string, userID int) error {
+	_, ok := users.Data[userID]
+	if !ok {
+		return fmt.Errorf("no such user")
+	}
+	user := users.Data[userID]
+	user.AvatarPath = path
+	fmt.Println(path)
+	users.Data[userID] = user
+	return nil
 }

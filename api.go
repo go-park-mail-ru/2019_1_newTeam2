@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
+	"regexp"
 	"strconv"
 
+	"github.com/user/2019_1_newTeam2/newfs1"
 	"github.com/user/2019_1_newTeam2/requests"
 	"github.com/user/2019_1_newTeam2/responses"
 	"github.com/user/2019_1_newTeam2/storage"
@@ -94,6 +97,36 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	responses.UserResponse(w, http.StatusOK, result)
+}
+
+func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
+	function := func(header multipart.FileHeader) error {
+		re := regexp.MustCompile(`image/.*`)
+		if !re.MatchString(header.Header.Get("Content-Type")) {
+			fmt.Println(header.Header.Get("Content-Type"))
+			return fmt.Errorf("not an image")
+		}
+		return nil
+	}
+	_, r.URL.Path = TypeRequest(r.URL.Path)
+	userID, err := strconv.Atoi(r.URL.Path[1:])
+	if err != nil {
+		fmt.Println(err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	pathToAvatar, err := newfs1.UploadFile(w, r, function, "avatars/")
+	if err != nil {
+		fmt.Println(err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	err = server.Users.AddImage(pathToAvatar, userID)
+	if err != nil {
+		fmt.Println(err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 }
 
 func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte {
