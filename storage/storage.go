@@ -14,7 +14,7 @@ type UserStorage struct {
 
 type User struct {
 	ID          int    `json:"id,omitempty"`
-	Username    string `json:"username"`
+	Username    string `json:"login"`
 	Email       string `json:"email"`
 	Password    string `json:"password,omitempty"`
 	LangID      int    `json:"langID, int"`
@@ -29,7 +29,7 @@ func (users UserStorage) IsLogin(w http.ResponseWriter, r *http.Request, usernam
 
 func (users UserStorage) Login(username string, password string) (string, error) {
 	SECRET := []byte("kekusmaxima")
-	fmt.Println(username, password)
+	fmt.Println("DAta is ", username, password)
 	for _, i := range users.Data {
 		if i.Username == username {
 			// h := sha256.New()
@@ -40,14 +40,14 @@ func (users UserStorage) Login(username string, password string) (string, error)
 					"username": username,
 					"password": password,
 				})
-				str, err := token.SignedString(SECRET)
-				return str, err
+				str, _ := token.SignedString(SECRET)
+				return str, nil
 			} else {
-				return "", fmt.Errorf("Error")
+				return "", fmt.Errorf("Error bad password")
 			}
 		}
 	}
-	return "", fmt.Errorf("Error")
+	return "", fmt.Errorf("Error not user")
 }
 
 func (users UserStorage) GetUserByID(userID int) (User, bool, error) {

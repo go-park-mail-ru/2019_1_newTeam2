@@ -37,6 +37,7 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 
 		if token, err := server.Users.Login(user.Username, user.Password); err != nil {
 			fmt.Println(err)
+			w.WriteHeader(http.StatusUnauthorized)
 		} else {
 			cookie := &http.Cookie{
 				Name:  "session_id",
@@ -47,7 +48,6 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 		}
 		// fmt.Println("qwerty")
-
 	}
 }
 
