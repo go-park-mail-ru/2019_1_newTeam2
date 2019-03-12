@@ -1,32 +1,21 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
 	"os"
-
-	"github.com/rs/cors"
+	"github.com/user/2019_1_newTeam2/server"
 )
 
 func main() {
-	fmt.Println("starting server at :8090")
-
-	server := InitServer()
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8090"
+	pathToConfig := ""
+	if len(os.Args) != 2 {
+		pathToConfig = "./config/config.json"
+	} else {
+		pathToConfig = os.Args[1]
 	}
 
-	c := cors.New(cors.Options{
-		AllowedHeaders:     []string{"Access-Control-Allow-Origin", "Charset", "Content-Type"},
-		AllowedOrigins:     []string{"http://localhost:3000", "https://thawing-gorge-14317.herokuapp.com/", "http://localhost:8090"},
-		AllowCredentials:   true,
-		AllowedMethods:     []string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE"},
-		OptionsPassthrough: true,
-		Debug:              true,
-	})
-
-	handler := c.Handler(server.Router)
-	http.ListenAndServe(":"+port, handler)
+	serv, err := server.NewServer(pathToConfig)
+	if err != nil {
+		panic(err.Error())
+	}
+	serv.Run()
 }
