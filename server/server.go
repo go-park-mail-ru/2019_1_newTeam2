@@ -40,14 +40,14 @@ func NewServer(pathToConfig string) (*Server, error) {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/users/me/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)       // +
-	router.HandleFunc("/users/me/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)    // +
-	router.HandleFunc("/users/me/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions) // +
-	router.HandleFunc("/login/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)   // +
-	router.HandleFunc("/signup/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions) // +
+	router.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPatch, http.MethodOptions)
+	router.HandleFunc("/users/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
+	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/session/", server.Logout).Methods(http.MethodPatch, http.MethodOptions)
+	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc("/upload/{[0-9]+}", server.UploadAvatar).Methods(http.MethodPost, http.MethodOptions)
-	router.HandleFunc("/auth/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)   // +
-	router.HandleFunc("/auth/", server.Logout).Methods(http.MethodDelete, http.MethodOptions) // -
 
 	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.serverConfig.UploadPath))))
 
