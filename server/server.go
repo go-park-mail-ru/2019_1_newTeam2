@@ -8,14 +8,14 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
-	"github.com/user/2019_1_newTeam2/database"
 	"github.com/user/2019_1_newTeam2/config"
+	"github.com/user/2019_1_newTeam2/database"
 	"github.com/user/2019_1_newTeam2/filesystem"
 )
 
 type Server struct {
-	router *mux.Router
-	db *database.Database
+	router       *mux.Router
+	db           *database.Database
 	serverConfig *config.Config
 }
 
@@ -38,6 +38,18 @@ func NewServer(pathToConfig string) (*Server, error) {
 		return nil, err
 	}
 	router := mux.NewRouter()
+	// router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
+	// router.HandleFunc("/users/me/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
+	// router.HandleFunc("/users/me/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
+	// router.HandleFunc("/users/me/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
+	// router.HandleFunc("/users/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
+	// router.HandleFunc("/session/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
+	// router.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
+	// router.HandleFunc("/session/", server.Logout).Methods(http.MethodDelete, http.MethodOptions)
+	// router.HandleFunc("/upload/{[0-9]+}", server.UploadAvatar).Methods(http.MethodPost, http.MethodOptions)
+
+	// router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.serverConfig.UploadPath))))
+
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/users/me/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)       // +
 	router.HandleFunc("/users/me/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)    // +
@@ -60,7 +72,7 @@ func (server *Server) Run() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8090"
-	}	// change for getting from config
+	} // change for getting from config
 
 	c := cors.New(cors.Options{
 		AllowedHeaders:     []string{"Access-Control-Allow-Origin", "Charset", "Content-Type"},

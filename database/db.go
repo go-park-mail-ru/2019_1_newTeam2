@@ -3,14 +3,15 @@ package database
 import (
 	"crypto/sha256"
 	"strconv"
+
 	"github.com/user/2019_1_newTeam2/models"
 )
 
 type Database struct {
 	// should be sqlx.db etc
 	// now some map, where we can get users from
-	Data   map[int]models.User
-	LastId int
+	UserData   map[int]models.User
+	LastUserId int
 }
 
 func NewDataBase() (*Database, error) {
@@ -19,13 +20,13 @@ func NewDataBase() (*Database, error) {
 	// some code(real code working with db)
 
 	data := make(map[int]models.User)
-	LastId := 10
+	db.LastUserId = 50
 	h := sha256.New()
 	h.Write([]byte("pass"))
 
-	for i := 0; i < LastId; i++ {
-		data[i] = models.User{i, "test_user_" + strconv.Itoa(i), "kek@lol.kl", string(h.Sum(nil)), 0, 1, 0, "files/avatars/1.jpg"}
+	for i := 0; i < db.LastUserId; i++ {
+		data[i] = models.User{i, "test_user_" + strconv.Itoa(i), "kek@lol.kl", string(h.Sum(nil)), 0, 1, 0, "files/avatars/" + strconv.Itoa(i) + ".jpg"}
 	}
-	db.Data = data
+	db.UserData = data
 	return db, nil
 }

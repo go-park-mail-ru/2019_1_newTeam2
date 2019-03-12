@@ -3,7 +3,6 @@ package database
 import (
 	"crypto/sha256"
 	"fmt"
-	"net/http"
 	"strconv"
 
 	"github.com/dgrijalva/jwt-go"
@@ -11,15 +10,8 @@ import (
 	"github.com/user/2019_1_newTeam2/models"
 )
 
-func (db *Database) IsLogin(w http.ResponseWriter, r *http.Request, username string, password string) bool {
-
-	return false
-}
-
 func (db *Database) Login(username string, password string, secret []byte) (string, string, error) {
-	// SECRET := []byte("kekusmaxima")		// move to config, pass as argument
-	fmt.Println("Data is ", username, password)
-	for _, i := range db.Data {
+	for _, i := range db.UserData {
 		if i.Username == username {
 			h := sha256.New()
 			h.Write([]byte(password))
@@ -27,22 +19,20 @@ func (db *Database) Login(username string, password string, secret []byte) (stri
 				token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 					"username": username,
 					"password": password,
-					"id":       i.ID,
+					"id":       int64(i.ID),
 				})
 				str, _ := token.SignedString(secret)
 				return str, strconv.Itoa(i.ID), nil
 			} else {
-				fmt.Println("Error bad password")
 				return "", "", fmt.Errorf("Error bad password")
 			}
 		}
 	}
-	fmt.Println("Error not user")
 	return "", "", fmt.Errorf("Error not user")
 }
 
 func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
-	for _, i := range db.Data {
+	for _, i := range db.UserData {
 		if i.ID == userID {
 			return i, true, nil
 		}
@@ -52,31 +42,27 @@ func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
 
 func (db *Database) UserRegistration(username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
-
-	for _, i := range db.Data {
+	for _, i := range db.UserData {
 		if i.Username == username {
 			return false, fmt.Errorf("already reg")
 		}
 	}
-
-	id := db.LastId
-	fmt.Println(db.LastId)
-
+	id := db.LastUserId
+	fmt.Println(db.LastUserId)
 	h := sha256.New()
 	h.Write([]byte(password))
-
-	db.Data[id] = models.User{id, username, email, string(h.Sum(nil)), langid, pronounceOn, 0, "uploads/avatars/1.jpg"}
+	db.UserData[id] = models.User{id, username, email, string(h.Sum(nil)), langid, pronounceOn, 0, "uploads/avatars/1.jpg"}
 	return true, nil
 }
 
 func (db *Database) DeleteUserById(userID int) (bool, error) {
-	delete(db.Data, userID)
+	delete(db.UserData, userID)
 	return true, nil
 }
 
 func (db *Database) UpdateUserById(userID int, username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
-	db.Data[userID] = models.User{userID, username, email, password, langid, pronounceOn, db.Data[userID].Score, "uploads/avatars/1.jpg"}
+	db.UserData[userID] = models.User{userID, username, email, password, langid, pronounceOn, db.UserData[userID].Score, "uploads/avatars/1.jpg"}
 	return true, nil
 }
 
@@ -90,7 +76,7 @@ func (db *Database) GetUsers(page int, rowsNum int) ([]models.UserTableElem, err
 		return nil, fmt.Errorf("No such users")
 	}
 	j := 0
-	for _, i := range db.Data {
+	for _, i := range db.UserData {
 		j++
 		usersPage = append(usersPage, models.UserTableElem{i.Username, i.Score})
 		if j == rowsNum {
@@ -101,13 +87,13 @@ func (db *Database) GetUsers(page int, rowsNum int) ([]models.UserTableElem, err
 }
 
 func (db *Database) AddImage(path string, userID int) error {
-	_, ok := db.Data[userID]
+	_, ok := db.UserData[userID]
 	if !ok {
 		return fmt.Errorf("no such user")
 	}
-	user := db.Data[userID]
+	user := db.UserData[userID]
 	user.AvatarPath = path
 	fmt.Println(path)
-	db.Data[userID] = user
+	db.UserData[userID] = user
 	return nil
 }
