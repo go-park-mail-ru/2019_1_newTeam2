@@ -1,8 +1,9 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/micro/go-config"
+	"os"
 )
 
 type Config struct {
@@ -15,13 +16,17 @@ type Config struct {
 
 func NewConfig(pathToConfig string) (*Config, error) {
 	conf := new(Config)
-	err := config.LoadFile(pathToConfig)
+	configFile, err := os.Open(pathToConfig)
 	if err != nil {
-		return nil, fmt.Errorf("error loading config")
+		return nil, err
 	}
-	err = config.Scan(&conf)
+
+	defer configFile.Close()
+
+	jsonParser := json.NewDecoder(configFile)
+	err = jsonParser.Decode(&conf)
 	if err != nil {
-		return nil, fmt.Errorf("error scanning config")
+		return nil, err
 	}
 	fmt.Println(conf)
 	return conf, nil
