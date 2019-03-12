@@ -17,7 +17,7 @@ import (
 
 func (server *Server) CheckLogin(w http.ResponseWriter, r *http.Request) (bool, int) {
 	fmt.Println("checklogin")
-	SECRET := []byte(server.serverConfig.Secret)
+	SECRET := []byte(server.ServerConfig.Secret)
 	myCookie, err := r.Cookie("session_id")
 
 	if err != nil {
@@ -93,7 +93,7 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if token, _, err := server.db.Login(user.Username, user.Password, []byte(server.serverConfig.Secret)); err != nil {
+	if token, _, err := server.DB.Login(user.Username, user.Password, []byte(server.ServerConfig.Secret)); err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 	} else {
 		cookie := &http.Cookie{
@@ -127,7 +127,7 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		if token, _, err := server.db.Login(user.Username, user.Password, []byte(server.serverConfig.Secret)); err != nil {
+		if token, _, err := server.DB.Login(user.Username, user.Password, []byte(server.ServerConfig.Secret)); err != nil {
 			fmt.Println(err.Error())
 		} else {
 			cookie := &http.Cookie{
@@ -150,7 +150,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if value, user_id := server.CheckLogin(w, r); value {
-		result, find, err := server.db.GetUserByID(user_id)
+		result, find, err := server.DB.GetUserByID(user_id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -181,13 +181,13 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	pathToAvatar, err := filesystem.UploadFile(w, r, function,
-		server.serverConfig.UploadPath, server.serverConfig.AvatarsPath)
+		server.ServerConfig.UploadPath, server.ServerConfig.AvatarsPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	err = server.db.AddImage(pathToAvatar, userID)
+	err = server.DB.AddImage(pathToAvatar, userID)
 	if err != nil {
 		fmt.Println(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -207,12 +207,12 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte 
 		w.WriteHeader(http.StatusBadRequest)
 		return jsonStr
 	}
-	if br, err_r := server.db.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON); br != true {
+	if br, err_r := server.DB.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON); br != true {
 		fmt.Println(err_r.Error())
 		w.WriteHeader(http.StatusConflict)
 		return jsonStr
 	}
-	server.db.LastUserId++
+	server.DB.IncUserLastID()
 	return jsonStr
 }
 
@@ -236,7 +236,7 @@ func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 	}
-	result, err := server.db.GetUsers(page, rowsNum)
+	result, err := server.DB.GetUsers(page, rowsNum)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -257,7 +257,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		_, find, err := server.db.GetUserByID(user_id)
+		_, find, err := server.DB.GetUserByID(user_id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -266,14 +266,14 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
-		server.db.UpdateUserById(user_id, user.Username, user.Email, user.Password, user.LangID, user.PronounceON)
+		server.DB.UpdateUserById(user_id, user.Username, user.Email, user.Password, user.LangID, user.PronounceON)
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 }
 
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	if value, user_id := server.CheckLogin(w, r); value {
-		_, find, err := server.db.GetUserByID(user_id)
+		_, find, err := server.DB.GetUserByID(user_id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -283,7 +283,7 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		isDelete, _ := server.db.DeleteUserById(user_id)
+		isDelete, _ := server.DB.DeleteUserById(user_id)
 		if !isDelete {
 			w.WriteHeader(http.StatusNotFound)
 			return

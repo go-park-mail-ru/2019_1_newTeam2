@@ -10,6 +10,10 @@ import (
 	"github.com/user/2019_1_newTeam2/models"
 )
 
+func (db *Database) IncUserLastID() {
+	db.LastUserId++
+}
+
 func (db *Database) Login(username string, password string, secret []byte) (string, string, error) {
 	for _, i := range db.UserData {
 		if i.Username == username {
