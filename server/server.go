@@ -14,9 +14,9 @@ import (
 )
 
 type Server struct {
-	router       *mux.Router
-	db           *database.Database
-	serverConfig *config.Config
+	Router       *mux.Router
+	DB           database.DBInterface
+	ServerConfig *config.Config
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
@@ -26,14 +26,14 @@ func NewServer(pathToConfig string) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	server.serverConfig = newConfig
+	server.ServerConfig = newConfig
 	newDB, err := database.NewDataBase()
 	if err != nil {
 		return nil, err
 	}
-	server.db = newDB
+	server.DB = newDB
 
-	err = filesystem.CreateDir(filepath.Join(server.serverConfig.UploadPath, server.serverConfig.AvatarsPath))
+	err = filesystem.CreateDir(filepath.Join(server.ServerConfig.UploadPath, server.ServerConfig.AvatarsPath))
 	if err != nil {
 		return nil, err
 	}
@@ -49,9 +49,9 @@ func NewServer(pathToConfig string) (*Server, error) {
 	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc("/upload/{[0-9]+}", server.UploadAvatar).Methods(http.MethodPost, http.MethodOptions)
 
-	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.serverConfig.UploadPath))))
+	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath))))
 
-	server.router = router
+	server.Router = router
 
 	return server, nil
 }
@@ -59,7 +59,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 func (server *Server) Run() {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = server.serverConfig.Port
+		port = server.ServerConfig.Port
 	} // change for getting from config
 
 	c := cors.New(cors.Options{
@@ -71,6 +71,6 @@ func (server *Server) Run() {
 		Debug:              true,
 	})
 
-	handler := c.Handler(server.router)
+	handler := c.Handler(server.Router)
 	http.ListenAndServe(":"+port, handler)
 }
