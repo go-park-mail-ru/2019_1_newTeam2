@@ -8,7 +8,7 @@ import (
 func main() {
 	pathToConfig := ""
 	if len(os.Args) != 2 {
-		pathToConfig = "./config/config.json"
+		panic("Usage: ./main <path_to_config>")
 	} else {
 		pathToConfig = os.Args[1]
 	}

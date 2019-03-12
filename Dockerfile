@@ -1,6 +1,4 @@
-FROM golang:latest
-
-run mkdir /app
+FROM golang:1.11.4
 
 ADD . /home/app/
 
