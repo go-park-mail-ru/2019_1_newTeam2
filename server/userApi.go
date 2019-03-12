@@ -48,19 +48,17 @@ func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	if r.Method == http.MethodDelete {
-		cookie := &http.Cookie{
-			Name:  "session_id",
-			Value: "logout",
-		}
-		cookie.Path = "/"
-		cookie.Expires = time.Now().Add(1 * time.Microsecond)
-		cookie.HttpOnly = false
-		cookie.Secure = false
-		http.SetCookie(w, cookie)
-		w.WriteHeader(http.StatusOK)
-		fmt.Println("successful logout")
+	cookie := &http.Cookie{
+		Name:  "session_id",
+		Value: "logout",
 	}
+	cookie.Path = "/"
+	cookie.Expires = time.Now().Add(1 * time.Microsecond)
+	cookie.HttpOnly = false
+	cookie.Secure = false
+	http.SetCookie(w, cookie)
+	w.WriteHeader(http.StatusOK)
+	fmt.Println("successful logout")
 }
 
 func (server *Server) IsLogin(w http.ResponseWriter, r *http.Request) {
@@ -84,33 +82,31 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	if r.Method == http.MethodPost {
-		var user models.UserAuth
-		jsonStr, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
+	var user models.UserAuth
+	jsonStr, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	err = json.Unmarshal(jsonStr, &user)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if token, _, err := server.db.Login(user.Username, user.Password, []byte(server.serverConfig.Secret)); err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+	} else {
+		cookie := &http.Cookie{
+			Name:  "session_id",
+			Value: token,
 		}
-		err = json.Unmarshal(jsonStr, &user)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		if token, _, err := server.db.Login(user.Username, user.Password, []byte(server.serverConfig.Secret)); err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-		} else {
-			cookie := &http.Cookie{
-				Name:  "session_id",
-				Value: token,
-			}
-			cookie.Path = "/"
-			cookie.Expires = time.Now().Add(5 * time.Hour)
-			cookie.HttpOnly = false
-			cookie.Secure = false
-			http.SetCookie(w, cookie)
-			w.Write([]byte(token))
-			w.WriteHeader(http.StatusOK)
-		}
+		cookie.Path = "/"
+		cookie.Expires = time.Now().Add(5 * time.Hour)
+		cookie.HttpOnly = false
+		cookie.Secure = false
+		http.SetCookie(w, cookie)
+		w.Write([]byte(token))
+		w.WriteHeader(http.StatusOK)
 	}
 }
 
