@@ -277,6 +277,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		server.DB.UpdateUserById(user_id, user.Username, user.Email, user.Password, user.LangID, user.PronounceON)
+		w.WriteHeader(http.StatusOK)
 	}
 	w.WriteHeader(http.StatusUnauthorized)
 }
