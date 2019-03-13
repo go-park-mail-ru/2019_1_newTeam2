@@ -18,7 +18,7 @@ type Server struct {
 	Router       *mux.Router
 	DB           database.DBInterface
 	ServerConfig *config.Config
-	Logger logger.LoggerInterface
+	Logger       logger.LoggerInterface
 	CookieField  string
 }
 
@@ -29,7 +29,6 @@ func NewServer(pathToConfig string) (*Server, error) {
 	logger.SetOutput(os.Stderr)
 	server.Logger = logger
 
-	server.Logger.Log("test")
 	newConfig, err := config.NewConfig(pathToConfig)
 	if err != nil {
 		return nil, err

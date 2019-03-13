@@ -153,11 +153,11 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 		}
 		return nil
 	}
-	_, r.URL.Path = TypeRequest(r.URL.Path)
-	userID, err := strconv.Atoi(r.URL.Path[1:])
-	if err != nil {
-		server.Logger.Log(err.Error())
-		w.WriteHeader(http.StatusBadRequest)
+
+	errBool, userID := server.CheckLogin(w, r)
+	if !errBool {
+		server.Logger.Log("Unauthorized")
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 	pathToAvatar, err := filesystem.UploadFile(w, r, function,
