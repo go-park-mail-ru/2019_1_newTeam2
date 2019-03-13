@@ -41,7 +41,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPatch, http.MethodOptions)
+	router.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
 	router.HandleFunc("/users/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
 	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
@@ -64,9 +64,9 @@ func (server *Server) Run() {
 
 	c := cors.New(cors.Options{
 		AllowedHeaders:     []string{"Access-Control-Allow-Origin", "Charset", "Content-Type"},
-		AllowedOrigins:     []string{"http://localhost:3000", "https://thawing-gorge-14317.herokuapp.com", "http://localhost:8090", "https://warm-shelf-71623.herokuapp.com"},
+		AllowedOrigins:     []string{"http://localhost:3000", "https://newteam2back.herokuapp.com", "https://newwordtrainer.herokuapp.com"},
 		AllowCredentials:   true,
-		AllowedMethods:     []string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE"},
+		AllowedMethods:     []string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"},
 		OptionsPassthrough: true,
 		Debug:              true,
 	})
