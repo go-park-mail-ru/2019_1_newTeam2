@@ -17,10 +17,13 @@ type TestDatabase struct {
 }
 
 func TestServer() *Server {
-	pathToConfig := "../config/config.json"
 	server := new(Server)
-	newConfig, _ := config.NewConfig(pathToConfig)
-	server.ServerConfig = newConfig
+	server.ServerConfig = &config.Config{
+		Secret:      "kekusmaxima",
+		Port:        "8090",
+		AvatarsPath: "/avatars/",
+		UploadPath:  "./upload/",
+	}
 	newDB, _ := InitTestDataBase()
 	server.DB = newDB
 	server.Router = mux.NewRouter()
@@ -48,7 +51,6 @@ func (db *TestDatabase) Login(username string, password string, secret []byte) (
 			if string(h.Sum(nil)) == i.Password {
 				token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 					"username": username,
-					"password": password,
 					"id":       int64(i.ID),
 				})
 				str, _ := token.SignedString(secret)
