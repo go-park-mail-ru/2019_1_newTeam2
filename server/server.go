@@ -60,7 +60,7 @@ func (server *Server) Run() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = server.ServerConfig.Port
-	} // change for getting from config
+	}
 
 	c := cors.New(cors.Options{
 		AllowedHeaders:     []string{"Access-Control-Allow-Origin", "Charset", "Content-Type"},

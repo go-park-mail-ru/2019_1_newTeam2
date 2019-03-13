@@ -157,7 +157,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 					Score: 9,
 				},
 			},
-			response: "200 OK"
+			response: "200 OK",
 			row: 1,
 			page: 5,
 		},
