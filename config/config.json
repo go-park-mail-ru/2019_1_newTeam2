@@ -1,0 +1,6 @@
+{
+    "port": "8090",
+    "secret": "kekusmaxima",
+    "avatarsPath": "/avatars/",
+    "uploadPath": "./upload/"
+}
