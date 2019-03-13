@@ -11,18 +11,25 @@ import (
 	"github.com/user/2019_1_newTeam2/config"
 	"github.com/user/2019_1_newTeam2/database"
 	"github.com/user/2019_1_newTeam2/filesystem"
+	"github.com/user/2019_1_newTeam2/logger"
 )
 
 type Server struct {
 	Router       *mux.Router
 	DB           database.DBInterface
 	ServerConfig *config.Config
+	Logger logger.LoggerInterface
 	CookieField  string
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
 	server := new(Server)
 
+	logger := new(logger.GoLogger)
+	logger.SetOutput(os.Stderr)
+	server.Logger = logger
+
+	server.Logger.Log("test")
 	newConfig, err := config.NewConfig(pathToConfig)
 	if err != nil {
 		return nil, err

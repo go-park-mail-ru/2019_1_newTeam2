@@ -3,8 +3,10 @@ package database
 import (
 	"crypto/sha256"
 	"strconv"
+	"os"
 
 	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/logger"
 )
 
 type Database struct {
@@ -12,11 +14,15 @@ type Database struct {
 	// now some map, where we can get users from
 	UserData   map[int]models.User
 	LastUserId int
+	Logger logger.LoggerInterface
 }
 
 func NewDataBase() (*Database, error) {
 	// error is possible error from database
 	db := new(Database)
+	logger := new(logger.GoLogger)
+	logger.SetOutput(os.Stderr)
+	db.Logger = logger
 	// some code(real code working with db)
 
 	data := make(map[int]models.User)

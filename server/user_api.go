@@ -29,7 +29,7 @@ func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
 	cookie.Secure = false
 	http.SetCookie(w, cookie)
 	w.WriteHeader(http.StatusOK)
-	fmt.Println("successful logout")
+	server.Logger.Log("successful logout")
 }
 
 func (server *Server) IsLogin(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +48,7 @@ func (server *Server) IsLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("LoginAPI")
+	server.Logger.Log("LoginAPI")
 	if r.Method == http.MethodOptions {
 		textError := models.Error{""}
 		WriteToResponse(w, http.StatusOK, textError)
@@ -87,7 +87,7 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("SignUpAPI")
+	server.Logger.Log("SignUpAPI")
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
 		return
@@ -103,7 +103,7 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if token, _, err := server.DB.Login(user.Username, user.Password, []byte(server.ServerConfig.Secret)); err != nil {
-		fmt.Println(err.Error())
+		server.Logger.Log(err.Error())
 	} else {
 		cookie := &http.Cookie{
 			Name:  server.CookieField,
@@ -148,7 +148,7 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 	function := func(header multipart.FileHeader) error {
 		re := regexp.MustCompile(`image/.*`)
 		if !re.MatchString(header.Header.Get("Content-Type")) {
-			fmt.Println(header.Header.Get("Content-Type"))
+			server.Logger.Log(header.Header.Get("Content-Type"))
 			return fmt.Errorf("not an image")
 		}
 		return nil
@@ -156,20 +156,20 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 	_, r.URL.Path = TypeRequest(r.URL.Path)
 	userID, err := strconv.Atoi(r.URL.Path[1:])
 	if err != nil {
-		fmt.Println(err.Error())
+		server.Logger.Log(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	pathToAvatar, err := filesystem.UploadFile(w, r, function,
 		server.ServerConfig.UploadPath, server.ServerConfig.AvatarsPath)
 	if err != nil {
-		fmt.Println(err.Error())
+		server.Logger.Log(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	err = server.DB.AddImage(pathToAvatar, userID)
 	if err != nil {
-		fmt.Println(err.Error())
+		server.Logger.Log(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

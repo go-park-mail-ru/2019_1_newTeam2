@@ -15,6 +15,8 @@ import (
 	"github.com/user/2019_1_newTeam2/mock_database"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/server"
+	"github.com/user/2019_1_newTeam2/config"
+	"github.com/user/2019_1_newTeam2/logger"
 )
 
 func TestUserHandlerSuite(t *testing.T) {
@@ -42,6 +44,10 @@ func (suite *UserHandlerTestSuite) SetupTest() {
 	server.ServerConfig = config
 	server.DB = suite.dataBase
 	suite.underTest = server
+
+	logger := new(GoLogger)
+	logger.SetOutput(os.Stderr)
+	server.Logger = logger
 }
 
 func PlaceTokenToRequest(token string, r *http.Request) {
