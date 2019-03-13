@@ -64,7 +64,7 @@ func (server *Server) Run() {
 
 	c := cors.New(cors.Options{
 		AllowedHeaders:     []string{"Access-Control-Allow-Origin", "Charset", "Content-Type"},
-		AllowedOrigins:     []string{"https://newwordtrainer.herokuapp.com/"},
+		AllowedOrigins:     []string{"https://newteam2back.herokuapp.com", "https://newwordtrainer.herokuapp.com/"},
 		AllowCredentials:   true,
 		AllowedMethods:     []string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"},
 		OptionsPassthrough: true,
