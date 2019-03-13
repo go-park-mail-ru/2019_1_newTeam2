@@ -2,14 +2,13 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 )
 
 type Config struct {
-	Secret string	`json:"secret"`
-	Port string	`json:"port"`
-	UploadPath string `json:"uploadPath"`
+	Secret      string `json:"secret"`
+	Port        string `json:"port"`
+	UploadPath  string `json:"uploadPath"`
 	AvatarsPath string `json:"avatarsPath"`
 	// anything u want
 }
@@ -28,6 +27,6 @@ func NewConfig(pathToConfig string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(conf)
+	// fmt.Println(conf)
 	return conf, nil
 }

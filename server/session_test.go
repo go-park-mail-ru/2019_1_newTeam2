@@ -115,7 +115,7 @@ func TestPositiveCheck(t *testing.T) {
 	}
 	regRequest.Header.Set("Content-Type", "application/json")
 
-	regRequest.AddCookie(&http.Cookie{Name: "session_id", Value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RfdXNlcl8xIiwicGFzc3dvcmQiOiJwYXNzIiwiaWQiOiIxIn0.Pbxpesqv_dPYidTNHxB17f5boVg7kWUrQhXH-G8iCTw"})
+	regRequest.AddCookie(&http.Cookie{Name: "session_id", Value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGFzc3dvcmQiOiJwYXNzIiwidXNlcm5hbWUiOiJ0ZXN0X3VzZXJfMSJ9.Zi01imDsLhyt6NU03BgACX7v2fyiccQsUd1Nv1UB3cU"})
 
 	TestResponseRecorder := httptest.NewRecorder()
 	server.Router = mux.NewRouter()
