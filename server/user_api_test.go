@@ -9,7 +9,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
-	// "github.com/gorilla/mux"
+	"github.com/gorilla/mux"
 
 	"github.com/user/2019_1_newTeam2/mock_database"
 	"github.com/user/2019_1_newTeam2/models"
@@ -44,20 +44,7 @@ func (suite *UserHandlerTestSuite) SetupTest() {
 	suite.underTest = server
 }
 
-func (suite *UserHandlerTestSuite) TestGetUser() {
-	t := &models.User{
-		ID : 1,
-		Username : "vasya",
-		Email : "vasya@gmail.com",
-		Password : "12345",
-		LangID : 0,
-		PronounceON : 0,
-		Score : 15,
-		AvatarPath : "",
-	}
-	suite.dataBase.EXPECT().GetUserByID(1).Return(*t, true, nil)
-	r, _ := http.NewRequest("GET", "/users/1", nil)
-	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
+func PlaceTokenToRequest(token string, r *http.Request) {
 	cookie := &http.Cookie{
 			Name:  "session_id",
 			Value: token,
@@ -67,6 +54,23 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 		cookie.HttpOnly = false
 		cookie.Secure = false
 	r.AddCookie(cookie)
+}
+
+func (suite *UserHandlerTestSuite) TestGetUserCorrect() {
+	t := &models.User{
+		ID: 1,
+		Username: "vasya",
+		Email: "vasya@gmail.com",
+		Password: "12345",
+		LangID: 0,
+		PronounceON: 0,
+		Score: 15,
+		AvatarPath: "",
+	}
+	suite.dataBase.EXPECT().GetUserByID(1).Return(*t, true, nil)
+	r, _ := http.NewRequest("GET", "/users/", nil)
+	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
+	PlaceTokenToRequest(token, r)
 	w := httptest.NewRecorder()
 	suite.underTest.GetUser(w, r)
 
@@ -79,8 +83,59 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 	suite.Equal(t, result)
 }
 
-func (suite *UserHandlerTestSuite) TestUsersPaginate() {
+func (suite *UserHandlerTestSuite) TestGetUserIncorrect() {
+	suite.dataBase.EXPECT().GetUserByID(1).Return(models.User{}, false, nil)
+	r, _ := http.NewRequest("GET", "/users/", nil)
+	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
+	PlaceTokenToRequest(token, r)
+	w := httptest.NewRecorder()
+	suite.underTest.GetUser(w, r)
 
+	response := w.Result()
+	suite.Equal("404 Not Found", response.Status)
+}
+
+func (suite *UserHandlerTestSuite) TestUsersPaginate() {
+	t := []*models.UserTableElem{
+		&models.UserTableElem{
+			Username: "vasya",
+			Score: 5,
+			},
+		&models.UserTableElem{
+			Username: "petya",
+			Score: 7,
+			},
+		&models.UserTableElem{
+			Username: "kolya",
+			Score: 0,
+			},
+		&models.UserTableElem{
+			Username: "tanya",
+			Score: 9,
+			},
+	}
+	suite.dataBase.EXPECT().GetUsers(1, 5).Return(t, nil)
+
+	vars := map[string]string{
+		"rows": "5",
+		"page": "1",
+	}
+
+	r, _ := http.NewRequest("GET", "/users", nil)
+	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
+	PlaceTokenToRequest(token, r)
+	r = mux.SetURLVars(r, vars)
+
+	w := httptest.NewRecorder()
+	suite.underTest.UsersPaginate(w, r)
+	response := w.Result()
+
+	suite.Equal("200 OK", response.Status)
+	defer response.Body.Close()
+	result := new(models.UserTableElem)
+	json.NewDecoder(response.Body).Decode(result)
+
+	suite.Equal(t, result)
 }
 
 func (suite *UserHandlerTestSuite) UpdateUser() {
