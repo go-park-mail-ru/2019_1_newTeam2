@@ -41,7 +41,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPatch, http.MethodOptions)
+	router.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
 	router.HandleFunc("/users/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
 	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
