@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/user/2019_1_newTeam2/models"
 )
 
@@ -23,11 +24,38 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte 
 		return jsonStr
 	}
 	if br, err_r := server.DB.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON); br != true {
-		fmt.Println(err_r.Error())
+		server.Logger.Log(err_r.Error())
 		textError := models.Error{err_r.Error()}
 		WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
 	}
 	server.DB.IncUserLastID()
 	return jsonStr
+}
+
+func (server *Server) CheckLogin(w http.ResponseWriter, r *http.Request) (bool, int) {
+	SECRET := []byte(server.ServerConfig.Secret)
+	myCookie, err := r.Cookie(server.CookieField)
+
+	if err != nil {
+		return false, -1
+	}
+
+	token, err := jwt.Parse(myCookie.Value, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return SECRET, nil
+	})
+
+	if err != nil {
+		server.Logger.Log(err.Error())
+		return false, -1
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return true, int(claims["id"].(float64))
+	}
+	server.Logger.Log(err)
+	return false, -1
 }
