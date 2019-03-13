@@ -1,14 +1,19 @@
 package database
 
 import (
-	"crypto/sha256"
 	"fmt"
 	"strconv"
 
 	"github.com/dgrijalva/jwt-go"
 
 	"github.com/user/2019_1_newTeam2/models"
+	"golang.org/x/crypto/bcrypt"
 )
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
 
 func (db *Database) IncUserLastID() {
 	db.LastUserId++
@@ -17,12 +22,15 @@ func (db *Database) IncUserLastID() {
 func (db *Database) Login(username string, password string, secret []byte) (string, string, error) {
 	for _, i := range db.UserData {
 		if i.Username == username {
-			h := sha256.New()
-			h.Write([]byte(password))
-			if string(h.Sum(nil)) == i.Password {
+			// h := sha256.New()
+			// h.Write([]byte(password))
+			_, err := HashPassword(password)
+			if err != nil {
+				return "", "", fmt.Errorf("hash error")
+			}
+			if password == i.Password {
 				token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 					"username": username,
-					"password": password,
 					"id":       int64(i.ID),
 				})
 				str, _ := token.SignedString(secret)
@@ -53,9 +61,13 @@ func (db *Database) UserRegistration(username string, email string,
 	}
 	id := db.LastUserId
 	fmt.Println(db.LastUserId)
-	h := sha256.New()
-	h.Write([]byte(password))
-	db.UserData[id] = models.User{id, username, email, string(h.Sum(nil)), langid, pronounceOn, 0, "uploads/avatars/1.jpg"}
+	// h := sha256.New()
+	// h.Write([]byte(password))
+	_, err := HashPassword(password)
+	if err != nil {
+		return false, fmt.Errorf("hash error")
+	}
+	db.UserData[id] = models.User{id, username, email, password, langid, pronounceOn, 0, "uploads/avatars/1.jpg"}
 	return true, nil
 }
 

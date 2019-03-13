@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
-	"github.com/user/2019_1_newTeam2/server"
 )
 
 type cases struct {
@@ -16,7 +15,7 @@ type cases struct {
 }
 
 func TestSignup(t *testing.T) {
-	server := server.TestServer()
+	server := TestServer()
 	var testCase = cases{
 		ExpectedResponse: 200,
 		Input:            `{"username": "test_user_101", "email": "email@mail.ru", "password": "pass", "langID": 1, "pronounceOn": 1}`,
@@ -38,7 +37,7 @@ func TestSignup(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
-	server := server.TestServer()
+	server := TestServer()
 	var testCase = cases{
 		ExpectedResponse: 200,
 		Input:            `{"username": "test_user_1", "password": "pass"}`,
@@ -60,7 +59,7 @@ func TestLogin(t *testing.T) {
 }
 
 func TestNegativeCheck(t *testing.T) {
-	server := server.TestServer()
+	server := TestServer()
 	var testCase = cases{
 		ExpectedResponse: 204,
 		Input:            `{"username": "test_user_1", "password": "pass"}`,
@@ -82,7 +81,7 @@ func TestNegativeCheck(t *testing.T) {
 }
 
 func TestLogout(t *testing.T) {
-	server := server.TestServer()
+	server := TestServer()
 	var testCase = cases{
 		ExpectedResponse: 200,
 		Input:            `{"username": "test_user_1", "password": "pass"}`,
@@ -104,7 +103,7 @@ func TestLogout(t *testing.T) {
 }
 
 func TestPositiveCheck(t *testing.T) {
-	server := server.TestServer()
+	server := TestServer()
 	var testCase = cases{
 		ExpectedResponse: 200,
 		Input:            `{"username": "test_user_1", "password": "pass"}`,

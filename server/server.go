@@ -17,6 +17,7 @@ type Server struct {
 	Router       *mux.Router
 	DB           database.DBInterface
 	ServerConfig *config.Config
+	CookieField  string
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
@@ -26,6 +27,9 @@ func NewServer(pathToConfig string) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	server.CookieField = "session_id"
+
 	server.ServerConfig = newConfig
 	newDB, err := database.NewDataBase()
 	if err != nil {
@@ -47,9 +51,9 @@ func NewServer(pathToConfig string) (*Server, error) {
 	router.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/session/", server.Logout).Methods(http.MethodPatch, http.MethodOptions)
 	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
-	router.HandleFunc("/upload/{[0-9]+}", server.UploadAvatar).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc("/avatars/", server.UploadAvatar).Methods(http.MethodPost, http.MethodOptions)
 
-	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath))))
+	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
 	server.Router = router
 
