@@ -7,13 +7,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 
 	"github.com/user/2019_1_newTeam2/models"
-	"golang.org/x/crypto/bcrypt"
 )
-
-func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes), err
-}
 
 func (db *Database) IncUserLastID() {
 	db.LastUserId++
@@ -22,8 +16,6 @@ func (db *Database) IncUserLastID() {
 func (db *Database) Login(username string, password string, secret []byte) (string, string, error) {
 	for _, i := range db.UserData {
 		if i.Username == username {
-			// h := sha256.New()
-			// h.Write([]byte(password))
 			_, err := HashPassword(password)
 			if err != nil {
 				return "", "", fmt.Errorf("hash error")
@@ -60,9 +52,7 @@ func (db *Database) UserRegistration(username string, email string,
 		}
 	}
 	id := db.LastUserId
-	fmt.Println(db.LastUserId)
-	// h := sha256.New()
-	// h.Write([]byte(password))
+	db.Logger.Log(db.LastUserId)
 	_, err := HashPassword(password)
 	if err != nil {
 		return false, fmt.Errorf("hash error")
@@ -84,9 +74,9 @@ func (db *Database) UpdateUserById(userID int, username string, email string,
 
 func (db *Database) GetUsers(page int, rowsNum int) ([]models.UserTableElem, error) {
 	usersPage := make([]models.UserTableElem, 0)
-	fmt.Println(page, rowsNum)
+	db.Logger.Log(page, rowsNum)
 	offset := (page - 1) * rowsNum
-	fmt.Println(offset)
+	db.Logger.Log(offset)
 	// get data from db, if null is returned
 	if false {
 		return nil, fmt.Errorf("No such users")
@@ -109,7 +99,7 @@ func (db *Database) AddImage(path string, userID int) error {
 	}
 	user := db.UserData[userID]
 	user.AvatarPath = path
-	fmt.Println(path)
+	db.Logger.Log(path)
 	db.UserData[userID] = user
 	return nil
 }

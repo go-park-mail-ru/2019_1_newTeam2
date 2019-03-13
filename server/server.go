@@ -82,5 +82,6 @@ func (server *Server) Run() {
 	})
 
 	handler := c.Handler(server.Router)
+	server.Logger.Logf("Running app on port %s", port)
 	http.ListenAndServe(":"+port, handler)
 }
