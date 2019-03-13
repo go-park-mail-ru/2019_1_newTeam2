@@ -16,7 +16,6 @@ import (
 )
 
 func (server *Server) CheckLogin(w http.ResponseWriter, r *http.Request) (bool, int) {
-	fmt.Println("checklogin")
 	SECRET := []byte(server.ServerConfig.Secret)
 	myCookie, err := r.Cookie("session_id")
 
@@ -204,20 +203,17 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte 
 	var user models.User
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		// w.WriteHeader(http.StatusBadRequest)
 		WriteToResponse(w, http.StatusBadRequest, "")
 		return jsonStr
 	}
 	err = json.Unmarshal(jsonStr, &user)
 	if err != nil {
-		// w.WriteHeader(http.StatusBadRequest)
 		textError := models.Error{""}
 		WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
 	}
 	if br, err_r := server.DB.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON); br != true {
 		fmt.Println(err_r.Error())
-		// w.WriteHeader(http.StatusConflict)
 		textError := models.Error{err_r.Error()}
 		WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
@@ -227,17 +223,17 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte 
 }
 
 func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("debug")
 	pages, ok := r.URL.Query()["page"]
-	if !ok || len(pages[0]) < 1 {
+	if !ok || len(pages[0]) != 1 {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	rows, ok := r.URL.Query()["rows"]
-	if !ok || len(rows[0]) < 1 {
+	if !ok || len(rows[0]) != 1 {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
 	page, err := strconv.Atoi(pages[0])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

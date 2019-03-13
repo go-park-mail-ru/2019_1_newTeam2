@@ -27,6 +27,7 @@ func NewConfig(pathToConfig string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	// fmt.Println(conf)
+  
+	fmt.Println(conf.Port)
 	return conf, nil
 }
