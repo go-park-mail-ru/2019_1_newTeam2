@@ -12,14 +12,6 @@
       "description": "Everything about your users"
     },
     {
-      "name": "login",
-      "description": "login to app"
-    },
-    {
-      "name": "signup",
-      "description": "sign up to app"
-    },
-    {
       "name": "upload",
       "description": "uploading files"
     }
@@ -192,9 +184,41 @@
             "description": "Error happened"
           }
         }
+      },
+      "post": {
+        "summary": "signing up api",
+        "tags": [
+          "users"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "user object to register",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string",
+              "description": "token, that will be cookie, change that field, dunno how in headers"
+            }
+          },
+          "400": {
+            "description": "Error in request"
+          }
+        }
       }
     },
-    "/upload/avatar/": {
+    "/avatar/": {
       "post": {
         "tags": [
           "upload"
@@ -239,45 +263,36 @@
         }
       }
     },
-    "/signup/": {
-      "post": {
-        "summary": "signing up api",
+    "/session/": {
+      "get": {
+        "summary": "check if authorized",
         "tags": [
-          "signup"
-        ],
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "user object to register",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          }
+          "session"
         ],
         "responses": {
           "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "string",
-              "description": "token, that will be cookie, change that field, dunno how in headers"
-            }
+            "description": "logined"
           },
-          "400": {
-            "description": "Error in request"
+          "401": {
+            "description": "not logined"
           }
         }
-      }
-    },
-    "/login/": {
+      },
+      "patch": {
+        "summary": "unlogin",
+        "tags": [
+          "session"
+        ],
+        "responses": {
+          "200": {
+            "description": "done"
+          }
+        }
+      },
       "post": {
         "summary": "login api",
         "tags": [
-          "login"
+          "session"
         ],
         "consumes": [
           "application/json"
@@ -306,33 +321,6 @@
           },
           "401": {
             "description": "Cannot login user"
-          }
-        }
-      }
-    },
-    "/auth/": {
-      "get": {
-        "summary": "check if authorized",
-        "tags": [
-          "auth"
-        ],
-        "responses": {
-          "200": {
-            "description": "logined"
-          },
-          "401": {
-            "description": "not logined"
-          }
-        }
-      },
-      "delete": {
-        "summary": "unlogin",
-        "tags": [
-          "auth"
-        ],
-        "responses": {
-          "200": {
-            "description": "done"
           }
         }
       }
