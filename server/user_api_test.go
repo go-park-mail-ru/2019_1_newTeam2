@@ -291,9 +291,10 @@ type TestUpdateUserCase struct {
 	response string
 	exists   bool
 	err      error
+	id 		 int
 }
 
-func (suite *UserHandlerTestSuite) UpdateUser() {
+func (suite *UserHandlerTestSuite) TestUpdateUser() {
 	cases := []TestUpdateUserCase{
 		TestUpdateUserCase{
 			t: models.User{
@@ -306,18 +307,21 @@ func (suite *UserHandlerTestSuite) UpdateUser() {
 				Score:       15,
 				AvatarPath:  "",
 			},
+			id: 1,
 			response: "200 OK",
 			err:      nil,
 			exists:   true,
 		},
 		TestUpdateUserCase{
 			t:        models.User{},
+			id: 1,
 			response: "404 Not Found",
 			err:      nil,
 			exists:   false,
 		},
 		TestUpdateUserCase{
 			t:        models.User{},
+			id: 1,
 			response: "500 Internal Server Error",
 			err: &TestErr{
 				str: "db error",
@@ -327,9 +331,11 @@ func (suite *UserHandlerTestSuite) UpdateUser() {
 	}
 
 	for _, item := range cases {
-		suite.dataBase.EXPECT().GetUserByID(item.t.ID).Return(item.t, item.exists, item.err)
-		suite.dataBase.EXPECT().UpdateUserById(item.t.ID, item.t.Username, item.t.Email,
-			item.t.Password, item.t.LangID, item.t.PronounceON)
+		suite.dataBase.EXPECT().GetUserByID(item.id).Return(item.t, item.exists, item.err)
+		if item.exists {
+			suite.dataBase.EXPECT().UpdateUserById(item.t.ID, item.t.Username, item.t.Email,
+			item.t.Password, item.t.LangID, item.t.PronounceON)	
+		}
 		body, _ := json.Marshal(item.t)
 		r, _ := http.NewRequest("PATCH", "/users/", bytes.NewBuffer(body))
 		token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
@@ -352,7 +358,7 @@ type TestDeleteUserCase struct {
 	err      error
 }
 
-func (suite *UserHandlerTestSuite) DeleteUser() {
+func (suite *UserHandlerTestSuite) TestDeleteUser() {
 	cases := []TestDeleteUserCase{
 		TestDeleteUserCase{
 			t: models.User{
