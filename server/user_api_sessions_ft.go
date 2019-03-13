@@ -4,11 +4,13 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"strconv"
+	"os"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/user/2019_1_newTeam2/config"
 	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/logger"
 )
 
 type TestDatabase struct {
@@ -27,6 +29,9 @@ func TestServer() *Server {
 	newDB, _ := InitTestDataBase()
 	server.DB = newDB
 	server.Router = mux.NewRouter()
+	logger := new(logger.GoLogger)
+	logger.SetOutput(os.Stderr)
+	server.Logger = logger
 	return server
 }
 
