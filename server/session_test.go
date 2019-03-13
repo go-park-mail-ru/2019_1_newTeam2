@@ -149,7 +149,7 @@ func TestLogout(t *testing.T) {
 func TestBadJWTCheck(t *testing.T) {
 	server := TestServer()
 	var testCase = cases{
-		ExpectedResponse: 200,
+		ExpectedResponse: 204,
 		Input:            `{"username": "test_user_1", "password": "pass"}`,
 	}
 	regRequest, regErr := http.NewRequest("GET", "/session/", strings.NewReader(testCase.Input))
@@ -173,7 +173,7 @@ func TestBadJWTCheck(t *testing.T) {
 func TestPositiveCheck(t *testing.T) {
 	server := TestServer()
 	var testCase = cases{
-		ExpectedResponse: 204,
+		ExpectedResponse: 200,
 		Input:            `{"username": "test_user_1", "password": "pass"}`,
 	}
 	regRequest, regErr := http.NewRequest("GET", "/session/", strings.NewReader(testCase.Input))
