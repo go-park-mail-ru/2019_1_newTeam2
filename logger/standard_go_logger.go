@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"log"
 	"io"
+	"log"
 )
 
 type GoLogger struct {
@@ -18,7 +18,6 @@ func (stdLogger *GoLogger) Logf(format string, v ...interface{}) {
 	stdLogger.logger.Printf(format, v...)
 }
 
-func (stdLogger *GoLogger) SetOutput(out io.Writer){
+func (stdLogger *GoLogger) SetOutput(out io.Writer) {
 	stdLogger.logger.SetOutput(out)
 }
-

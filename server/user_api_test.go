@@ -5,18 +5,18 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 	"time"
-	"os"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/user/2019_1_newTeam2/config"
+	"github.com/user/2019_1_newTeam2/logger"
 	"github.com/user/2019_1_newTeam2/mock_database"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/server"
-	"github.com/user/2019_1_newTeam2/logger"
 )
 
 func TestUserHandlerSuite(t *testing.T) {
@@ -291,7 +291,7 @@ type TestUpdateUserCase struct {
 	response string
 	exists   bool
 	err      error
-	id 		 int
+	id       int
 }
 
 func (suite *UserHandlerTestSuite) TestUpdateUser() {
@@ -307,21 +307,21 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 				Score:       15,
 				AvatarPath:  "",
 			},
-			id: 1,
+			id:       1,
 			response: "200 OK",
 			err:      nil,
 			exists:   true,
 		},
 		TestUpdateUserCase{
 			t:        models.User{},
-			id: 1,
+			id:       1,
 			response: "404 Not Found",
 			err:      nil,
 			exists:   false,
 		},
 		TestUpdateUserCase{
 			t:        models.User{},
-			id: 1,
+			id:       1,
 			response: "500 Internal Server Error",
 			err: &TestErr{
 				str: "db error",
@@ -334,7 +334,7 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 		suite.dataBase.EXPECT().GetUserByID(item.id).Return(item.t, item.exists, item.err)
 		if item.exists {
 			suite.dataBase.EXPECT().UpdateUserById(item.t.ID, item.t.Username, item.t.Email,
-			item.t.Password, item.t.LangID, item.t.PronounceON)	
+				item.t.Password, item.t.LangID, item.t.PronounceON)
 		}
 		body, _ := json.Marshal(item.t)
 		r, _ := http.NewRequest("PATCH", "/users/", bytes.NewBuffer(body))
