@@ -66,7 +66,7 @@ func (server *Server) Run() {
 		AllowedHeaders:     []string{"Access-Control-Allow-Origin", "Charset", "Content-Type"},
 		AllowedOrigins:     []string{"http://localhost:3000", "https://thawing-gorge-14317.herokuapp.com", "http://localhost:8090", "https://warm-shelf-71623.herokuapp.com"},
 		AllowCredentials:   true,
-		AllowedMethods:     []string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE"},
+		AllowedMethods:     []string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"},
 		OptionsPassthrough: true,
 		Debug:              true,
 	})
