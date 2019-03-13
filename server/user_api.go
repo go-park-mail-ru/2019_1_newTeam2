@@ -79,22 +79,27 @@ func (server *Server) IsLogin(w http.ResponseWriter, r *http.Request) {
 func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("LoginAPI")
 	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
+		textError := models.Error{""}
+		WriteToResponse(w, http.StatusOK, textError)
 		return
 	}
 	var user models.UserAuth
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		textError := models.Error{""}
+		WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 	err = json.Unmarshal(jsonStr, &user)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		textError := models.Error{""}
+		WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 	if token, _, err := server.DB.Login(user.Username, user.Password, []byte(server.ServerConfig.Secret)); err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		textError := models.Error{err.Error()}
+		WriteToResponse(w, http.StatusUnauthorized, textError)
+		return
 	} else {
 		cookie := &http.Cookie{
 			Name:  "session_id",
@@ -199,17 +204,22 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte 
 	var user models.User
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		// w.WriteHeader(http.StatusBadRequest)
+		WriteToResponse(w, http.StatusBadRequest, "")
 		return jsonStr
 	}
 	err = json.Unmarshal(jsonStr, &user)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		// w.WriteHeader(http.StatusBadRequest)
+		textError := models.Error{""}
+		WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
 	}
 	if br, err_r := server.DB.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON); br != true {
 		fmt.Println(err_r.Error())
-		w.WriteHeader(http.StatusConflict)
+		// w.WriteHeader(http.StatusConflict)
+		textError := models.Error{err_r.Error()}
+		WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
 	}
 	server.DB.IncUserLastID()

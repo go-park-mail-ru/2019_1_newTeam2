@@ -28,11 +28,11 @@ func (db *Database) Login(username string, password string, secret []byte) (stri
 				str, _ := token.SignedString(secret)
 				return str, strconv.Itoa(i.ID), nil
 			} else {
-				return "", "", fmt.Errorf("Error bad password")
+				return "", "", fmt.Errorf("Неверный пароль")
 			}
 		}
 	}
-	return "", "", fmt.Errorf("Error not user")
+	return "", "", fmt.Errorf("Неверное имя пользователя")
 }
 
 func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
@@ -48,7 +48,7 @@ func (db *Database) UserRegistration(username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
 	for _, i := range db.UserData {
 		if i.Username == username {
-			return false, fmt.Errorf("already reg")
+			return false, fmt.Errorf("Такой пользователь уже существует")
 		}
 	}
 	id := db.LastUserId
