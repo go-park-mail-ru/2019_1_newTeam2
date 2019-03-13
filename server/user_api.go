@@ -16,7 +16,6 @@ import (
 )
 
 func (server *Server) CheckLogin(w http.ResponseWriter, r *http.Request) (bool, int) {
-	fmt.Println("checklogin")
 	SECRET := []byte(server.ServerConfig.Secret)
 	myCookie, err := r.Cookie("session_id")
 
