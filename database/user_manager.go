@@ -57,7 +57,7 @@ func (db *Database) UserRegistration(username string, email string,
 	if err != nil {
 		return false, fmt.Errorf("hash error")
 	}
-	db.UserData[id] = models.User{id, username, email, password, langid, pronounceOn, 0, "uploads/avatars/1.jpg"}
+	db.UserData[id] = models.User{id, username, email, password, langid, pronounceOn, 0, ""}
 	return true, nil
 }
 
@@ -68,7 +68,7 @@ func (db *Database) DeleteUserById(userID int) (bool, error) {
 
 func (db *Database) UpdateUserById(userID int, username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
-	db.UserData[userID] = models.User{userID, username, email, password, langid, pronounceOn, db.UserData[userID].Score, "uploads/avatars/1.jpg"}
+	db.UserData[userID] = models.User{userID, username, email, password, langid, pronounceOn, db.UserData[userID].Score, db.UserData[userID].AvatarPath}
 	return true, nil
 }
 
