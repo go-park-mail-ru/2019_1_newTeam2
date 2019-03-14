@@ -42,8 +42,10 @@ func (server *Server) IsLogin(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusNoContent)
 		w.Write([]byte("{}"))
+		server.Logger.Log("User not logined")
 		return
 	}
+	server.Logger.Log("User is logined")
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -126,6 +128,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	value, user_id := server.CheckLogin(w, r)
 	if !value {
 		w.WriteHeader(http.StatusUnauthorized)
+		return
 	}
 	result, find, err := server.DB.GetUserByID(user_id)
 	if err != nil {
@@ -176,29 +179,38 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	pages, ok := r.URL.Query()["page"]
 	if !ok || len(pages[0]) < 1 {
+		server.Logger.Log("No pages in query")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	rows, ok := r.URL.Query()["rows"]
 	if !ok || len(rows[0]) < 1 {
+		server.Logger.Log("No rows in query")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	page, err := strconv.Atoi(pages[0])
 	if err != nil {
+		server.Logger.Log("Incorrect pages")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	rowsNum, err := strconv.Atoi(rows[0])
 	if err != nil {
+		server.Logger.Log("Incorrect rows")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	result, err := server.DB.GetUsers(page, rowsNum)
 	if err != nil {
+		server.Logger.Log("No such a user")
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -206,6 +218,10 @@ func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	if value, user_id := server.CheckLogin(w, r); value {
 		var user models.User
 		jsonStr, err := ioutil.ReadAll(r.Body)
@@ -234,6 +250,10 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	if value, user_id := server.CheckLogin(w, r); value {
 		_, find, err := server.DB.GetUserByID(user_id)
 		if err != nil {

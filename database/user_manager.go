@@ -57,7 +57,7 @@ func (db *Database) UserRegistration(username string, email string,
 	if err != nil {
 		return false, fmt.Errorf("hash error")
 	}
-	db.UserData[id] = models.User{id, username, email, password, langid, pronounceOn, 0, ""}
+	db.UserData[id] = models.User{id, username, email, password, langid, pronounceOn, 0, "files/avatars/shrek.jpg"}
 	return true, nil
 }
 

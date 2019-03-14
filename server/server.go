@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
 	"github.com/user/2019_1_newTeam2/config"
@@ -63,7 +63,6 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
-
 	server.Router = router
 
 	return server, nil
@@ -83,8 +82,8 @@ func (server *Server) Run() {
 		OptionsPassthrough: true,
 		Debug:              true,
 	})
-	loggedRouter := handlers.LoggingHandler(os.Stderr, server.Router)
-	handler := c.Handler(loggedRouter)
+	handler := handlers.LoggingHandler(os.Stderr, server.Router)
+	handler = c.Handler(handler)
 	server.Logger.Logf("Running app on port %s", port)
 	http.ListenAndServe(":"+port, handler)
 }

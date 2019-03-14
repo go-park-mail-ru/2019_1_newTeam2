@@ -19,6 +19,8 @@ import (
 	"github.com/user/2019_1_newTeam2/server"
 )
 
+const correctToken string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
+
 func TestUserHandlerSuite(t *testing.T) {
 	suite.Run(t, new(UserHandlerTestSuite))
 }
@@ -69,6 +71,8 @@ type TestGetUserCase struct {
 	id       int
 	exists   bool
 	err      error
+	method   string
+	token    string
 }
 
 type TestErr struct {
@@ -95,7 +99,9 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 			response: "200 OK",
 			id:       1,
 			err:      nil,
+			method:   "GET",
 			exists:   true,
+			token:    correctToken,
 		},
 		TestGetUserCase{
 			t:        models.User{},
@@ -103,22 +109,37 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 			id:       1,
 			err:      nil,
 			exists:   false,
+			method:   "GET",
+			token:    correctToken,
 		},
 		TestGetUserCase{
 			t:        models.User{},
 			response: "500 Internal Server Error",
 			id:       1,
+			method:   "GET",
 			err: &TestErr{
 				str: "db error",
 			},
 			exists: false,
+			token:  correctToken,
+		},
+		TestGetUserCase{
+			t:        models.User{},
+			response: "200 OK",
+			id:       1,
+			method:   "OPTIONS",
+			err: &TestErr{
+				str: "db error",
+			},
+			exists: false,
+			token:  correctToken,
 		},
 	}
 
 	for _, item := range cases {
 		suite.dataBase.EXPECT().GetUserByID(item.id).Return(item.t, item.exists, item.err)
-		r, _ := http.NewRequest("GET", "/users/", nil)
-		token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
+		r, _ := http.NewRequest(item.method, "/users/", nil)
+		token := correctToken
 		PlaceTokenToRequest(token, r)
 		w := httptest.NewRecorder()
 		suite.underTest.GetUser(w, r)
@@ -136,16 +157,17 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 }
 
 type TestUsersPaginateCase struct {
-	t        []models.UserTableElem
-	response string
-	err      error
-	row      int
-	page     int
-	strRow   string
-	strPage  string
-	rowsURL  map[string]string
-	pageURL  map[string]string
+	t            []models.UserTableElem
+	response     string
+	err          error
+	row          int
+	page         int
+	strRow       string
+	strPage      string
+	rowsURL      map[string]string
+	pageURL      map[string]string
 	queryCorrect bool
+	method       string
 }
 
 func (suite *UserHandlerTestSuite) TestUsersPaginate() {
@@ -169,13 +191,14 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 					Score:    9,
 				},
 			},
-			row:      1,
-			page:     5,
-			strRow:   "1",
-			strPage:  "5",
-			response: "200 OK",
+			row:          1,
+			page:         5,
+			strRow:       "1",
+			strPage:      "5",
+			response:     "200 OK",
 			queryCorrect: true,
-			err:      nil,
+			method:       "GET",
+			err:          nil,
 		},
 
 		TestUsersPaginateCase{
@@ -197,12 +220,13 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 					Score:    9,
 				},
 			},
-			row:      1,
-			strRow:   "",
-			page:     5,
-			strPage:  "",
+			row:          1,
+			strRow:       "",
+			page:         5,
+			strPage:      "",
 			queryCorrect: false,
-			response: "400 Bad Request",
+			method:       "GET",
+			response:     "400 Bad Request",
 			err: &TestErr{
 				str: "no query",
 			},
@@ -227,11 +251,12 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 					Score:    9,
 				},
 			},
-			row:      1,
-			strRow:   "ede",
-			page:     5,
-			strPage:  "ede",
-			response: "400 Bad Request",
+			row:          1,
+			strRow:       "ede",
+			page:         5,
+			strPage:      "ede",
+			method:       "GET",
+			response:     "400 Bad Request",
 			queryCorrect: false,
 			err: &TestErr{
 				str: "bad query",
@@ -257,28 +282,57 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 					Score:    9,
 				},
 			},
-			row:      1,
-			strRow:   "1",
-			page:     5,
-			strPage:  "5",
+			row:          1,
+			strRow:       "1",
+			page:         5,
+			strPage:      "5",
 			queryCorrect: true,
-			response: "404 Not Found",
+			method:       "GET",
+			response:     "404 Not Found",
 			err: &TestErr{
 				str: "not found",
+			},
+		},
+
+		TestUsersPaginateCase{
+			t:            []models.UserTableElem{},
+			row:          1,
+			strRow:       "1",
+			page:         5,
+			strPage:      "5",
+			queryCorrect: true,
+			method:       "OPTIONS",
+			response:     "200 OK",
+			err: &TestErr{
+				str: "not found",
+			},
+		},
+
+		TestUsersPaginateCase{
+			t:            []models.UserTableElem{},
+			row:          1,
+			page:         5,
+			queryCorrect: true,
+			method:       "GET",
+			response:     "400 Bad Request",
+			err: &TestErr{
+				str: "no query",
 			},
 		},
 	}
 
 	for _, item := range cases {
 		if item.queryCorrect {
-			suite.dataBase.EXPECT().GetUsers(item.page, item.row).Return(item.t, item.err)	
+			suite.dataBase.EXPECT().GetUsers(item.page, item.row).Return(item.t, item.err)
 		}
-		r, _ := http.NewRequest("GET", "/users", nil)
-		token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
+		r, _ := http.NewRequest(item.method, "/users", nil)
+		token := correctToken
 		PlaceTokenToRequest(token, r)
 		q := r.URL.Query()
-		q.Add("rows", item.strRow)
-		q.Add("page", item.strPage)
+		if item.err == nil || item.err.Error() != "no query" {
+			q.Add("rows", item.strRow)
+			q.Add("page", item.strPage)
+		}
 		r.URL.RawQuery = q.Encode()
 		w := httptest.NewRecorder()
 		suite.underTest.UsersPaginate(w, r)
@@ -300,6 +354,7 @@ type TestUpdateUserCase struct {
 	exists   bool
 	err      error
 	id       int
+	method   string
 }
 
 func (suite *UserHandlerTestSuite) TestUpdateUser() {
@@ -316,6 +371,7 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 				AvatarPath:  "",
 			},
 			id:       1,
+			method:   "PUT",
 			response: "200 OK",
 			err:      nil,
 			exists:   true,
@@ -323,6 +379,7 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 		TestUpdateUserCase{
 			t:        models.User{},
 			id:       1,
+			method:   "PUT",
 			response: "404 Not Found",
 			err:      nil,
 			exists:   false,
@@ -330,7 +387,18 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 		TestUpdateUserCase{
 			t:        models.User{},
 			id:       1,
+			method:   "PUT",
 			response: "500 Internal Server Error",
+			err: &TestErr{
+				str: "db error",
+			},
+			exists: false,
+		},
+		TestUpdateUserCase{
+			t:        models.User{},
+			id:       1,
+			method:   "OPTIONS",
+			response: "200 OK",
 			err: &TestErr{
 				str: "db error",
 			},
@@ -345,8 +413,8 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 				item.t.Password, item.t.LangID, item.t.PronounceON)
 		}
 		body, _ := json.Marshal(item.t)
-		r, _ := http.NewRequest("PATCH", "/users/", bytes.NewBuffer(body))
-		token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
+		r, _ := http.NewRequest(item.method, "/users/", bytes.NewBuffer(body))
+		token := correctToken
 		PlaceTokenToRequest(token, r)
 
 		w := httptest.NewRecorder()
@@ -354,6 +422,7 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 		suite.underTest.UpdateUser(w, r)
 
 		response := w.Result()
+
 		suite.Equal(item.response, response.Status)
 	}
 }
@@ -364,6 +433,7 @@ type TestDeleteUserCase struct {
 	response string
 	exists   bool
 	err      error
+	method   string
 }
 
 func (suite *UserHandlerTestSuite) TestDeleteUser() {
@@ -379,6 +449,7 @@ func (suite *UserHandlerTestSuite) TestDeleteUser() {
 				Score:       15,
 				AvatarPath:  "",
 			},
+			method:   "DELETE",
 			response: "200 OK",
 			id:       1,
 			err:      nil,
@@ -386,6 +457,7 @@ func (suite *UserHandlerTestSuite) TestDeleteUser() {
 		},
 		TestDeleteUserCase{
 			t:        models.User{},
+			method:   "DELETE",
 			response: "404 Not Found",
 			id:       1,
 			err:      nil,
@@ -393,7 +465,19 @@ func (suite *UserHandlerTestSuite) TestDeleteUser() {
 		},
 		TestDeleteUserCase{
 			t:        models.User{},
+			method:   "DELETE",
 			response: "500 Internal Server Error",
+			id:       1,
+			err: &TestErr{
+				str: "db error",
+			},
+			exists: false,
+		},
+
+		TestDeleteUserCase{
+			t:        models.User{},
+			method:   "OPTIONS",
+			response: "200 OK",
 			id:       1,
 			err: &TestErr{
 				str: "db error",
@@ -407,8 +491,8 @@ func (suite *UserHandlerTestSuite) TestDeleteUser() {
 		suite.dataBase.EXPECT().UpdateUserById(item.t.ID, item.t.Username, item.t.Email,
 			item.t.Password, item.t.LangID, item.t.PronounceON)
 		body, _ := json.Marshal(item.t)
-		r, _ := http.NewRequest("PATCH", "/users/", bytes.NewBuffer(body))
-		token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
+		r, _ := http.NewRequest(item.method, "/users/", bytes.NewBuffer(body))
+		token := correctToken
 		PlaceTokenToRequest(token, r)
 
 		w := httptest.NewRecorder()
