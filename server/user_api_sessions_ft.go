@@ -76,7 +76,6 @@ func (db *TestDatabase) UserRegistration(username string, email string,
 		}
 	}
 	id := db.LastUserId
-	fmt.Println(db.LastUserId)
 	h := sha256.New()
 	h.Write([]byte(password))
 	db.UserData[id] = models.User{id, username, email, string(h.Sum(nil)), langid, pronounceOn, 0, "uploads/avatars/1.jpg"}
