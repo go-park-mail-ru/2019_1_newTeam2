@@ -35,7 +35,7 @@ func NewDataBase() (*Database, error) {
 	}
 
 	for i := 0; i < db.LastUserId; i++ {
-		data[i] = models.User{i, "test_user_" + strconv.Itoa(i), "kek@lol.kl", password, 0, 1, 0, "files/avatars/" + strconv.Itoa(i) + ".jpg"}
+		data[i] = models.User{i, "test_user_" + strconv.Itoa(i), "kek@lol.kl", password, 0, 1, 0, "files/avatars/" + "shrek" + ".jpg"}
 	}
 	db.UserData = data
 	return db, nil

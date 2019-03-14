@@ -177,12 +177,12 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 
 func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
 	pages, ok := r.URL.Query()["page"]
-	if !ok || len(pages[0]) != 1 {
+	if !ok || len(pages[0]) < 1 {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	rows, ok := r.URL.Query()["rows"]
-	if !ok || len(rows[0]) != 1 {
+	if !ok || len(rows[0]) < 1 {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
