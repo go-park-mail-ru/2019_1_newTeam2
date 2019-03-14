@@ -10,6 +10,7 @@ type Config struct {
 	Port        string `json:"port"`
 	UploadPath  string `json:"uploadPath"`
 	AvatarsPath string `json:"avatarsPath"`
+	AllowedHosts []string `json:"AllowedHosts"`
 	// anything u want
 }
 
