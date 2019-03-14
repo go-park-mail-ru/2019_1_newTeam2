@@ -1,7 +1,6 @@
 package database
 
 import (
-	"crypto/sha256"
 	"fmt"
 	"strconv"
 
@@ -17,12 +16,13 @@ func (db *Database) IncUserLastID() {
 func (db *Database) Login(username string, password string, secret []byte) (string, string, error) {
 	for _, i := range db.UserData {
 		if i.Username == username {
-			h := sha256.New()
-			h.Write([]byte(password))
-			if string(h.Sum(nil)) == i.Password {
+			_, err := HashPassword(password)
+			if err != nil {
+				return "", "", fmt.Errorf("hash error")
+			}
+			if password == i.Password {
 				token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 					"username": username,
-					"password": password,
 					"id":       int64(i.ID),
 				})
 				str, _ := token.SignedString(secret)
@@ -52,10 +52,12 @@ func (db *Database) UserRegistration(username string, email string,
 		}
 	}
 	id := db.LastUserId
-	fmt.Println(db.LastUserId)
-	h := sha256.New()
-	h.Write([]byte(password))
-	db.UserData[id] = models.User{id, username, email, string(h.Sum(nil)), langid, pronounceOn, 0, "uploads/avatars/1.jpg"}
+	db.Logger.Log(db.LastUserId)
+	_, err := HashPassword(password)
+	if err != nil {
+		return false, fmt.Errorf("hash error")
+	}
+	db.UserData[id] = models.User{id, username, email, password, langid, pronounceOn, 0, "files/avatars/shrek.jpg"}
 	return true, nil
 }
 
@@ -66,15 +68,15 @@ func (db *Database) DeleteUserById(userID int) (bool, error) {
 
 func (db *Database) UpdateUserById(userID int, username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
-	db.UserData[userID] = models.User{userID, username, email, password, langid, pronounceOn, db.UserData[userID].Score, "uploads/avatars/1.jpg"}
+	db.UserData[userID] = models.User{userID, username, email, password, langid, pronounceOn, db.UserData[userID].Score, db.UserData[userID].AvatarPath}
 	return true, nil
 }
 
 func (db *Database) GetUsers(page int, rowsNum int) ([]models.UserTableElem, error) {
 	usersPage := make([]models.UserTableElem, 0)
-	fmt.Println(page, rowsNum)
+	db.Logger.Log(page, rowsNum)
 	offset := (page - 1) * rowsNum
-	fmt.Println(offset)
+	db.Logger.Log(offset)
 	// get data from db, if null is returned
 	if false {
 		return nil, fmt.Errorf("No such users")
@@ -97,7 +99,7 @@ func (db *Database) AddImage(path string, userID int) error {
 	}
 	user := db.UserData[userID]
 	user.AvatarPath = path
-	fmt.Println(path)
+	db.Logger.Log(path)
 	db.UserData[userID] = user
 	return nil
 }

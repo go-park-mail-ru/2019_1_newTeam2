@@ -3,11 +3,13 @@ package server
 import (
 	"crypto/sha256"
 	"fmt"
+	"os"
 	"strconv"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/user/2019_1_newTeam2/config"
+	"github.com/user/2019_1_newTeam2/logger"
 	"github.com/user/2019_1_newTeam2/models"
 )
 
@@ -17,13 +19,20 @@ type TestDatabase struct {
 }
 
 func TestServer() *Server {
-	pathToConfig := "../config/config.json"
 	server := new(Server)
-	newConfig, _ := config.NewConfig(pathToConfig)
-	server.ServerConfig = newConfig
+	server.ServerConfig = &config.Config{
+		Secret:      "kekusmaxima",
+		Port:        "8090",
+		AvatarsPath: "/avatars/",
+		UploadPath:  "./upload/",
+	}
 	newDB, _ := InitTestDataBase()
 	server.DB = newDB
 	server.Router = mux.NewRouter()
+	logger := new(logger.GoLogger)
+	logger.SetOutput(os.Stderr)
+	logger.SetPrefix("TESTLOG: ")
+	server.Logger = logger
 	return server
 }
 
@@ -48,7 +57,6 @@ func (db *TestDatabase) Login(username string, password string, secret []byte) (
 			if string(h.Sum(nil)) == i.Password {
 				token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 					"username": username,
-					"password": password,
 					"id":       int64(i.ID),
 				})
 				str, _ := token.SignedString(secret)
@@ -69,7 +77,6 @@ func (db *TestDatabase) UserRegistration(username string, email string,
 		}
 	}
 	id := db.LastUserId
-	fmt.Println(db.LastUserId)
 	h := sha256.New()
 	h.Write([]byte(password))
 	db.UserData[id] = models.User{id, username, email, string(h.Sum(nil)), langid, pronounceOn, 0, "uploads/avatars/1.jpg"}

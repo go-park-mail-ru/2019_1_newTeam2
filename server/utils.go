@@ -1,11 +1,10 @@
 package server
 
 import (
-	"strings"
-	"net/http"
 	"encoding/json"
+	"net/http"
+	"strings"
 )
-
 
 func TypeRequest(url string) (string, string) {
 	separatorPosition := strings.Index(url[1:], "/")

@@ -1,7 +1,6 @@
 package filesystem
 
 import (
-	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -21,19 +20,8 @@ func saveFile(file multipart.File, handle *multipart.FileHeader, path string) (s
 }
 
 func UploadFile(w http.ResponseWriter, r *http.Request, callback func(header multipart.FileHeader) error, basePath string, path string) (string, error) {
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
-		return "", nil
-	}
-
-	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return "", fmt.Errorf("method not allowed")
-	}
-
 	file, handle, err := r.FormFile("file")
 	if err != nil {
-		fmt.Println(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return "", err
 	}

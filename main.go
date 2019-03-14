@@ -1,8 +1,8 @@
 package main
 
 import (
-	"os"
 	"github.com/user/2019_1_newTeam2/server"
+	"os"
 )
 
 func main() {

@@ -1,2 +1,7 @@
 .idea
 main
+*config.json
+upload
+form.html
+*.out
+cover.html
