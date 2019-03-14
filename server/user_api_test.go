@@ -503,3 +503,5 @@ func (suite *UserHandlerTestSuite) TestDeleteUser() {
 		suite.Equal(item.response, response.Status)
 	}
 }
+
+
