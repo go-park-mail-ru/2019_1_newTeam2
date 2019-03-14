@@ -5,11 +5,25 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/user/2019_1_newTeam2/models"
 )
 
+func (server *Server) CreateCookie(token string, minutes int, w http.ResponseWriter, r *http.Request) {
+	cookie := &http.Cookie{
+		Name:  server.CookieField,
+		Value: token,
+	}
+	cookie.Path = "/"
+	cookie.Expires = time.Now().Add(time.Duration(minutes) * time.Minute)
+	cookie.HttpOnly = true
+	cookie.Secure = false
+	http.SetCookie(w, cookie)
+}
+
+//  создание пользователя и возвращение данных в функцию регистрации для дальнейшей авторизации
 func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte {
 	var user models.User
 	jsonStr, err := ioutil.ReadAll(r.Body)
