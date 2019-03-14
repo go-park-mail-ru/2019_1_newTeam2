@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
-	"time"
 
 	"github.com/user/2019_1_newTeam2/filesystem"
 	"github.com/user/2019_1_newTeam2/models"
@@ -19,15 +18,7 @@ func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	cookie := &http.Cookie{
-		Name:  server.CookieField,
-		Value: "logout",
-	}
-	cookie.Path = "/"
-	cookie.Expires = time.Now().Add(-1 * time.Microsecond)
-	cookie.HttpOnly = true
-	cookie.Secure = false
-	http.SetCookie(w, cookie)
+	server.CreateCookie("logout", -1, w, r)
 	w.WriteHeader(http.StatusOK)
 	server.Logger.Log("successful logout")
 }
@@ -74,15 +65,7 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 		WriteToResponse(w, http.StatusUnauthorized, textError)
 		return
 	} else {
-		cookie := &http.Cookie{
-			Name:  server.CookieField,
-			Value: token,
-		}
-		cookie.Path = "/"
-		cookie.Expires = time.Now().Add(5 * time.Hour)
-		cookie.HttpOnly = true
-		cookie.Secure = false
-		http.SetCookie(w, cookie)
+		server.CreateCookie(token, 20, w, r)
 		w.Write([]byte(token))
 		w.WriteHeader(http.StatusOK)
 	}
@@ -107,15 +90,7 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 	if token, _, err := server.DB.Login(user.Username, user.Password, []byte(server.ServerConfig.Secret)); err != nil {
 		server.Logger.Log(err.Error())
 	} else {
-		cookie := &http.Cookie{
-			Name:  server.CookieField,
-			Value: token,
-		}
-		cookie.Path = "/"
-		cookie.Expires = time.Now().Add(5 * time.Hour)
-		cookie.HttpOnly = true
-		cookie.Secure = false
-		http.SetCookie(w, cookie)
+		server.CreateCookie(token, 20, w, r)
 		w.Write([]byte(token))
 	}
 }
@@ -222,31 +197,32 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	if value, user_id := server.CheckLogin(w, r); value {
-		var user models.User
-		jsonStr, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		err = json.Unmarshal(jsonStr, &user)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		_, find, err := server.DB.GetUserByID(user_id)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		if !find {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-		server.DB.UpdateUserById(user_id, user.Username, user.Email, user.Password, user.LangID, user.PronounceON)
-		w.WriteHeader(http.StatusOK)
+	value, user_id := server.CheckLogin(w, r)
+	if !value {
+		w.WriteHeader(http.StatusUnauthorized)
 	}
-	w.WriteHeader(http.StatusUnauthorized)
+	var user models.User
+	jsonStr, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	err = json.Unmarshal(jsonStr, &user)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	_, find, err := server.DB.GetUserByID(user_id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if !find {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	server.DB.UpdateUserById(user_id, user.Username, user.Email, user.Password, user.LangID, user.PronounceON)
+	w.WriteHeader(http.StatusOK)
 }
 
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
