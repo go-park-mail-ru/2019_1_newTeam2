@@ -10,7 +10,6 @@ type GoLogger struct {
 }
 
 func (stdLogger *GoLogger) Log(v ...interface{}) {
-	stdLogger.logger.Print("LOG: ")
 	stdLogger.logger.Print(v...)
 }
 
@@ -20,4 +19,8 @@ func (stdLogger *GoLogger) Logf(format string, v ...interface{}) {
 
 func (stdLogger *GoLogger) SetOutput(out io.Writer) {
 	stdLogger.logger.SetOutput(out)
+}
+
+func (stdLogger *GoLogger) SetPrefix(prefix string) {
+	stdLogger.logger.SetPrefix(prefix)	
 }

@@ -28,6 +28,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	logger := new(logger.GoLogger)
 	logger.SetOutput(os.Stderr)
+	logger.SetPrefix("LOG: ")
 	server.Logger = logger
 
 	newConfig, err := config.NewConfig(pathToConfig)

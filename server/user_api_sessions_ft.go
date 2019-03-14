@@ -31,6 +31,7 @@ func TestServer() *Server {
 	server.Router = mux.NewRouter()
 	logger := new(logger.GoLogger)
 	logger.SetOutput(os.Stderr)
+	logger.SetPrefix("TESTLOG: ")
 	server.Logger = logger
 	return server
 }

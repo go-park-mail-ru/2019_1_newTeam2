@@ -190,10 +190,12 @@ func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
 	page, err := strconv.Atoi(pages[0])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 	rowsNum, err := strconv.Atoi(rows[0])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 	result, err := server.DB.GetUsers(page, rowsNum)
 	if err != nil {

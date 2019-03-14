@@ -47,6 +47,7 @@ func (suite *UserHandlerTestSuite) SetupTest() {
 
 	logger := new(logger.GoLogger)
 	logger.SetOutput(os.Stderr)
+	logger.SetPrefix("TESTLOG: ")
 	server.Logger = logger
 }
 
@@ -144,6 +145,7 @@ type TestUsersPaginateCase struct {
 	strPage  string
 	rowsURL  map[string]string
 	pageURL  map[string]string
+	queryCorrect bool
 }
 
 func (suite *UserHandlerTestSuite) TestUsersPaginate() {
@@ -172,6 +174,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			strRow:   "1",
 			strPage:  "5",
 			response: "200 OK",
+			queryCorrect: true,
 			err:      nil,
 		},
 
@@ -198,6 +201,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			strRow:   "",
 			page:     5,
 			strPage:  "",
+			queryCorrect: false,
 			response: "400 Bad Request",
 			err: &TestErr{
 				str: "no query",
@@ -228,6 +232,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			page:     5,
 			strPage:  "ede",
 			response: "400 Bad Request",
+			queryCorrect: false,
 			err: &TestErr{
 				str: "bad query",
 			},
@@ -256,6 +261,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			strRow:   "1",
 			page:     5,
 			strPage:  "5",
+			queryCorrect: true,
 			response: "404 Not Found",
 			err: &TestErr{
 				str: "not found",
@@ -264,7 +270,9 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 	}
 
 	for _, item := range cases {
-		suite.dataBase.EXPECT().GetUsers(item.page, item.row).Return(item.t, item.err)
+		if item.queryCorrect {
+			suite.dataBase.EXPECT().GetUsers(item.page, item.row).Return(item.t, item.err)	
+		}
 		r, _ := http.NewRequest("GET", "/users", nil)
 		token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
 		PlaceTokenToRequest(token, r)
