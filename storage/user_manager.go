@@ -3,6 +3,7 @@ package storage
 import (
 	"fmt"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/user/2019_1_newTeam2/models"
 )
 
@@ -10,12 +11,32 @@ func (db *Database) IncUserLastID() {
 	db.LastUserId++
 }
 
+/*
+	ID          int    `json:"id,omitempty"`
+	Username    string `json:"username"`
+	Email       string `json:"email"`
+	Password    string `json:"password,omitempty"`
+	LangID      int    `json:"langID, int"`
+	PronounceON int    `json:"pronounceOn, int"`
+	Score       int    `json:"score, int"`
+	AvatarPath  string `json:"path"`
+}
+*/
+
 func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
-	for _, i := range db.UserData {
-		if i.ID == userID {
-			return i, true, nil
-		}
+
+	results, err := db.Conn.Query("SELECT ID, Username, Email, Password, LangID, PronounceON, Score, AvatarPath FROM wordtrainer.user WHERE ID = ?", userID)
+
+	if err != nil {
+		return models.User{}, false, nil
 	}
+
+	var user models.User
+	err = results.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.LangID, &user.PronounceON, &user.Score, &user.AvatarPath)
+	if err != nil {
+		return models.User{}, false, nil
+	}
+
 	return models.User{}, false, nil
 }
 
