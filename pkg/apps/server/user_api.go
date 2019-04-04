@@ -101,6 +101,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
+	fmt.Println("Checklogin...")
 	value, user_id := server.CheckLogin(w, r)
 	if !value {
 		w.WriteHeader(http.StatusUnauthorized)

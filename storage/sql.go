@@ -21,6 +21,8 @@ var createTableStatements = []string{
 	);`,
 }
 
+var GetUserByIDQuery = "SELECT ID, Username, Email, Password, LangID, PronounceON, Score, AvatarPath FROM wordtrainer.user WHERE ID = ?"
+
 func createTable(conn *sql.DB) error {
 	for _, stmt := range createTableStatements {
 		_, err := conn.Exec(stmt)

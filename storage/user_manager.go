@@ -25,19 +25,21 @@ func (db *Database) IncUserLastID() {
 
 func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
 
-	results, err := db.Conn.Query("SELECT ID, Username, Email, Password, LangID, PronounceON, Score, AvatarPath FROM wordtrainer.user WHERE ID = ?", userID)
+	results, err := db.Conn.Query(GetUserByIDQuery, userID)
 
 	if err != nil {
-		return models.User{}, false, nil
+		return models.User{}, false, err
 	}
 
-	var user models.User
-	err = results.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.LangID, &user.PronounceON, &user.Score, &user.AvatarPath)
-	if err != nil {
-		return models.User{}, false, nil
+	user := new(models.User)
+	for results.Next() {
+		err = results.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.LangID, &user.PronounceON, &user.Score, &user.AvatarPath)
+		if err != nil {
+			return models.User{}, false, nil
+		}
 	}
-
-	return models.User{}, false, nil
+	fmt.Println("username: ", user.Username)
+	return *user, true, nil
 }
 
 func (db *Database) DeleteUserById(userID int) (bool, error) {
