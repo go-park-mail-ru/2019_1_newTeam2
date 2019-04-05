@@ -34,6 +34,12 @@ func (db *Database) Login(username string, password string, secret []byte) (stri
 
 func (db *Database) UserRegistration(username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
+
+	check, _ := db.CheckUserByUsername(username)
+	if check {
+		return false, fmt.Errorf("Такой пользователь уже существует")
+	}
+
 	for _, i := range db.UserData {
 		if i.Username == username {
 			return false, fmt.Errorf("Такой пользователь уже существует")

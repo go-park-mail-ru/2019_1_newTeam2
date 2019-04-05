@@ -23,8 +23,24 @@ func (db *Database) IncUserLastID() {
 }
 */
 
-func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
+func (db *Database) CheckUserByUsername(username string) (bool, error) {
+	results, err := db.Conn.Query(GetUserByUsernameQuery, username)
 
+	if err != nil {
+		return false, err
+	}
+
+	user := new(models.User)
+	for results.Next() {
+		err = results.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.LangID, &user.PronounceON, &user.Score, &user.AvatarPath)
+		if err != nil {
+			return false, nil
+		}
+	}
+	return true, nil
+}
+
+func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
 	results, err := db.Conn.Query(GetUserByIDQuery, userID)
 
 	if err != nil {
@@ -38,7 +54,6 @@ func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
 			return models.User{}, false, nil
 		}
 	}
-	fmt.Println("username: ", user.Username)
 	return *user, true, nil
 }
 
@@ -50,6 +65,7 @@ func (db *Database) DeleteUserById(userID int) (bool, error) {
 func (db *Database) UpdateUserById(userID int, username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
 	db.UserData[userID] = models.User{userID, username, email, password, langid, pronounceOn, db.UserData[userID].Score, db.UserData[userID].AvatarPath}
+
 	return true, nil
 }
 
