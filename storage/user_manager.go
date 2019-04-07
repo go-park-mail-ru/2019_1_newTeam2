@@ -72,7 +72,6 @@ func (db *Database) UpdateUserById(userID int, username string, email string,
 		return false, fmt.Errorf("Такого пользователя не существует")
 	}
 
-	db.Logger.Log(db.LastUserId)
 	hashPassword, err := HashPassword(password)
 
 	if err != nil {
@@ -100,23 +99,22 @@ func (db *Database) UpdateUserById(userID int, username string, email string,
 
 // TODO (sergeychur): GetUsers
 func (db *Database) GetUsers(page int, rowsNum int) ([]models.UserTableElem, error) {
-	usersPage := make([]models.UserTableElem, 0)
-	db.Logger.Log(page, rowsNum)
-	offset := (page - 1) * rowsNum
-	db.Logger.Log(offset)
+	// usersPage := make([]models.UserTableElem, 0)
+	// db.Logger.Log(page, rowsNum)
+	// offset := (page - 1) * rowsNum
+	// db.Logger.Log(offset)
 	// get data from db, if null is returned
-	if false {
-		return nil, fmt.Errorf("No such users")
-	}
-	j := 0
-	for _, i := range db.UserData {
-		j++
-		usersPage = append(usersPage, models.UserTableElem{i.Username, i.Score})
-		if j == rowsNum {
-			break
-		}
-	}
-	return usersPage, nil
+	// if false {
+	return nil, fmt.Errorf("No such users")
+	// }
+	// j := 0
+	// for _, i := range db.UserData {
+	// 	usersPage = append(usersPage, models.UserTableElem{i.Username, i.Score})
+	// 	if j == rowsNum {
+	// 		break
+	// 	}
+	// }
+	// return usersPage, nil
 }
 
 func (db *Database) AddImage(path string, userID int) error {
@@ -147,7 +145,6 @@ func (db *Database) UserRegistration(username string, email string,
 		return false, fmt.Errorf("Такой пользователь уже существует")
 	}
 
-	db.Logger.Log(db.LastUserId)
 	hashPassword, err := HashPassword(password)
 
 	if err != nil {
