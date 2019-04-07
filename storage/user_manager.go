@@ -7,37 +7,24 @@ import (
 	"github.com/user/2019_1_newTeam2/models"
 )
 
-func (db *Database) IncUserLastID() {
-	db.LastUserId++
-}
-
-/*
-	ID          int    `json:"id,omitempty"`
-	Username    string `json:"username"`
-	Email       string `json:"email"`
-	Password    string `json:"password,omitempty"`
-	LangID      int    `json:"langID, int"`
-	PronounceON int    `json:"pronounceOn, int"`
-	Score       int    `json:"score, int"`
-	AvatarPath  string `json:"path"`
-}
-*/
-
-func (db *Database) CheckUserByUsername(username string) (bool, error) {
+func (db *Database) CheckUserByUsername(username string) (models.User, bool, error) {
 	results, err := db.Conn.Query(GetUserByUsernameQuery, username)
 
 	if err != nil {
-		return false, err
+		return models.User{}, false, err
 	}
 
 	user := new(models.User)
 	for results.Next() {
 		err = results.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.LangID, &user.PronounceON, &user.Score, &user.AvatarPath)
 		if err != nil {
-			return false, nil
+			return models.User{}, false, nil
 		}
 	}
-	return true, nil
+	if user.Username == "" {
+		return models.User{}, false, nil
+	}
+	return *user, true, nil
 }
 
 func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
@@ -105,19 +92,18 @@ func (db *Database) AddImage(path string, userID int) error {
 func (db *Database) UserRegistration(username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
 
-	check, _ := db.CheckUserByUsername(username)
+	_, check, _ := db.CheckUserByUsername(username)
 	if check {
 		return false, fmt.Errorf("Такой пользователь уже существует")
 	}
 
-	for _, i := range db.UserData {
-		if i.Username == username {
-			return false, fmt.Errorf("Такой пользователь уже существует")
-		}
-	}
-	id := db.LastUserId
 	db.Logger.Log(db.LastUserId)
-	_, err := HashPassword(password)
+	hashPassword, err := HashPassword(password)
+	kekPassword, err := HashPassword(password)
+	fmt.Println("-- password: ", password)
+	fmt.Println("-- hash password: ", hashPassword)
+	fmt.Println("-- kek password: ", kekPassword)
+
 	if err != nil {
 		return false, fmt.Errorf("hash error")
 	}
@@ -126,7 +112,7 @@ func (db *Database) UserRegistration(username string, email string,
 		AddUserQuery,
 		username,
 		email,
-		password,
+		hashPassword,
 		langid,
 		pronounceOn,
 		0,
@@ -137,6 +123,5 @@ func (db *Database) UserRegistration(username string, email string,
 		return false, fmt.Errorf("user not create")
 	}
 
-	db.UserData[id] = models.User{id, username, email, password, langid, pronounceOn, 0, "files/avatars/shrek.jpg"}
 	return true, nil
 }

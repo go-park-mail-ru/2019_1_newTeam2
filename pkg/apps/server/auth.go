@@ -44,7 +44,6 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte 
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
 	}
-	server.DB.IncUserLastID()
 	return jsonStr
 }
 
