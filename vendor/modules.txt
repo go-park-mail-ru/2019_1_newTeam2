@@ -1,0 +1,25 @@
+# github.com/davecgh/go-spew v1.1.0
+github.com/davecgh/go-spew/spew
+# github.com/dgrijalva/jwt-go v3.2.0+incompatible
+github.com/dgrijalva/jwt-go
+# github.com/go-sql-driver/mysql v1.4.1
+github.com/go-sql-driver/mysql
+# github.com/golang/mock v1.2.0
+github.com/golang/mock/gomock
+# github.com/gorilla/handlers v1.4.0
+github.com/gorilla/handlers
+# github.com/gorilla/mux v1.7.0
+github.com/gorilla/mux
+# github.com/pmezard/go-difflib v1.0.0
+github.com/pmezard/go-difflib/difflib
+# github.com/rs/cors v1.6.0
+github.com/rs/cors
+# github.com/stretchr/testify v1.3.0
+github.com/stretchr/testify/suite
+github.com/stretchr/testify/assert
+github.com/stretchr/testify/require
+# golang.org/x/crypto v0.0.0-20190403202508-8e1b8d32e692
+golang.org/x/crypto/bcrypt
+golang.org/x/crypto/blowfish
+# google.golang.org/appengine v1.5.0
+google.golang.org/appengine/cloudsql
