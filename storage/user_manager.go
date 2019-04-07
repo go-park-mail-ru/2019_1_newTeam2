@@ -11,18 +11,6 @@ func (db *Database) IncUserLastID() {
 	db.LastUserId++
 }
 
-/*
-	ID          int    `json:"id,omitempty"`
-	Username    string `json:"username"`
-	Email       string `json:"email"`
-	Password    string `json:"password,omitempty"`
-	LangID      int    `json:"langID, int"`
-	PronounceON int    `json:"pronounceOn, int"`
-	Score       int    `json:"score, int"`
-	AvatarPath  string `json:"path"`
-}
-*/
-
 func (db *Database) CheckUserByUsername(username string) (bool, error) {
 	results, err := db.Conn.Query(GetUserByUsernameQuery, username)
 
@@ -33,11 +21,13 @@ func (db *Database) CheckUserByUsername(username string) (bool, error) {
 	user := new(models.User)
 	for results.Next() {
 		err = results.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.LangID, &user.PronounceON, &user.Score, &user.AvatarPath)
+		fmt.Println("test: ", user.ID)
 		if err != nil {
 			return false, nil
 		}
+		return true, nil
 	}
-	return true, nil
+	return false, nil
 }
 
 func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
@@ -110,14 +100,14 @@ func (db *Database) UserRegistration(username string, email string,
 		return false, fmt.Errorf("Такой пользователь уже существует")
 	}
 
-	for _, i := range db.UserData {
-		if i.Username == username {
-			return false, fmt.Errorf("Такой пользователь уже существует")
-		}
-	}
-	id := db.LastUserId
+	// for _, i := range db.UserData {
+	// 	if i.Username == username {
+	// 		return false, fmt.Errorf("Такой пользователь уже существует")
+	// 	}
+	// }
+
 	db.Logger.Log(db.LastUserId)
-	_, err := HashPassword(password)
+	hash_password, err := HashPassword(password)
 	if err != nil {
 		return false, fmt.Errorf("hash error")
 	}
@@ -126,7 +116,7 @@ func (db *Database) UserRegistration(username string, email string,
 		AddUserQuery,
 		username,
 		email,
-		password,
+		hash_password,
 		langid,
 		pronounceOn,
 		0,
@@ -137,6 +127,6 @@ func (db *Database) UserRegistration(username string, email string,
 		return false, fmt.Errorf("user not create")
 	}
 
-	db.UserData[id] = models.User{id, username, email, password, langid, pronounceOn, 0, "files/avatars/shrek.jpg"}
+	// db.UserData[id] = models.User{id, username, email, password, langid, pronounceOn, 0, "files/avatars/shrek.jpg"}
 	return true, nil
 }
