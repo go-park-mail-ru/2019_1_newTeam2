@@ -3,6 +3,7 @@ package storage
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -23,13 +24,16 @@ func NewDataBase() (*Database, error) {
 	logger.SetOutput(os.Stderr)
 	db.Logger = logger
 
-	dsn := "root_use:Abc123456.@tcp(localhost:3306)/"
+	dsn := "root_use" + ":Abc123456*" + "@tcp(localhost:3306)/"
 	database, err := sql.Open("mysql", dsn)
 
 	if err != nil {
 		return nil, fmt.Errorf("mysql: could not get a connection: %v", err)
 	}
-
+	err = database.Ping()
+	if err != nil {
+		log.Println("lol")
+	}
 	err = createTable(database)
 	if err != nil {
 		return nil, fmt.Errorf("mysql: could not create database: %v", err)
