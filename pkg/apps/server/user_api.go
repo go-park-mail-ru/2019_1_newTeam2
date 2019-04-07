@@ -11,6 +11,7 @@ import (
 
 	"github.com/user/2019_1_newTeam2/filesystem"
 	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/pkg/responses"
 )
 
 func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
@@ -44,25 +45,25 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("LoginAPI")
 	if r.Method == http.MethodOptions {
 		textError := models.Error{""}
-		WriteToResponse(w, http.StatusOK, textError)
+		responses.WriteToResponse(w, http.StatusOK, textError)
 		return
 	}
 	var user models.UserAuth
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		textError := models.Error{""}
-		WriteToResponse(w, http.StatusBadRequest, textError)
+		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 	err = json.Unmarshal(jsonStr, &user)
 	if err != nil {
 		textError := models.Error{""}
-		WriteToResponse(w, http.StatusBadRequest, textError)
+		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 	if token, _, err := server.DB.Login(user.Username, user.Password, []byte(server.ServerConfig.Secret)); err != nil {
 		textError := models.Error{err.Error()}
-		WriteToResponse(w, http.StatusUnauthorized, textError)
+		responses.WriteToResponse(w, http.StatusUnauthorized, textError)
 		return
 	} else {
 		server.CreateCookie(token, 20, w, r)
@@ -100,6 +101,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
+	fmt.Println("Checklogin...")
 	value, user_id := server.CheckLogin(w, r)
 	if !value {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -114,7 +116,7 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	WriteToResponse(w, http.StatusOK, result)
+	responses.WriteToResponse(w, http.StatusOK, result)
 }
 
 func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
@@ -189,7 +191,7 @@ func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	WriteToResponse(w, http.StatusOK, result)
+	responses.WriteToResponse(w, http.StatusOK, result)
 }
 
 func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {

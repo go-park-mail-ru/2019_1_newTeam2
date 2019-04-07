@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/user/2019_1_newTeam2/server"
 	"os"
+
+	"github.com/user/2019_1_newTeam2/pkg/apps/server"
 )
 
 func main() {
@@ -19,3 +20,4 @@ func main() {
 	}
 	serv.Run()
 }
+

@@ -9,15 +9,15 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
-	"github.com/user/2019_1_newTeam2/config"
-	"github.com/user/2019_1_newTeam2/database"
 	"github.com/user/2019_1_newTeam2/filesystem"
-	"github.com/user/2019_1_newTeam2/logger"
+	"github.com/user/2019_1_newTeam2/pkg/config"
+	"github.com/user/2019_1_newTeam2/pkg/logger"
+	"github.com/user/2019_1_newTeam2/storage"
 )
 
 type Server struct {
 	Router       *mux.Router
-	DB           database.DBInterface
+	DB           storage.DBInterface
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
 	CookieField  string
@@ -39,7 +39,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	server.CookieField = "session_id"
 
 	server.ServerConfig = newConfig
-	newDB, err := database.NewDataBase()
+	newDB, err := storage.NewDataBase()
 	if err != nil {
 		return nil, err
 	}

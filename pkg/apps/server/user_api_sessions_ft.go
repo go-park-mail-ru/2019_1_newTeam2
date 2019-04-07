@@ -8,9 +8,9 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
-	"github.com/user/2019_1_newTeam2/config"
-	"github.com/user/2019_1_newTeam2/logger"
 	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/pkg/config"
+	"github.com/user/2019_1_newTeam2/pkg/logger"
 )
 
 type TestDatabase struct {
