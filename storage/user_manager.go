@@ -64,6 +64,7 @@ func (db *Database) DeleteUserById(userID int) (bool, error) {
 
 func (db *Database) UpdateUserById(userID int, username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
+
 	db.UserData[userID] = models.User{userID, username, email, password, langid, pronounceOn, db.UserData[userID].Score, db.UserData[userID].AvatarPath}
 
 	return true, nil
@@ -99,4 +100,43 @@ func (db *Database) AddImage(path string, userID int) error {
 	db.Logger.Log(path)
 	db.UserData[userID] = user
 	return nil
+}
+
+func (db *Database) UserRegistration(username string, email string,
+	password string, langid int, pronounceOn int) (bool, error) {
+
+	check, _ := db.CheckUserByUsername(username)
+	if check {
+		return false, fmt.Errorf("Такой пользователь уже существует")
+	}
+
+	for _, i := range db.UserData {
+		if i.Username == username {
+			return false, fmt.Errorf("Такой пользователь уже существует")
+		}
+	}
+	id := db.LastUserId
+	db.Logger.Log(db.LastUserId)
+	_, err := HashPassword(password)
+	if err != nil {
+		return false, fmt.Errorf("hash error")
+	}
+
+	_, CreateErr := db.Conn.Exec(
+		AddUserQuery,
+		username,
+		email,
+		password,
+		langid,
+		pronounceOn,
+		0,
+		"files/avatars/shrek.jpg",
+	)
+
+	if CreateErr != nil {
+		return false, fmt.Errorf("user not create")
+	}
+
+	db.UserData[id] = models.User{id, username, email, password, langid, pronounceOn, 0, "files/avatars/shrek.jpg"}
+	return true, nil
 }
