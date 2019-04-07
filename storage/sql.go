@@ -47,14 +47,14 @@ var createTableStatements = []string{
 		ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 		frequency DOUBLE NOT NULL,
 		card_id INT UNSIGNED NOT NULL,
-		FOREIGN KEY (word) REFERENCES word (ID),
+		FOREIGN KEY (card_id) REFERENCES card (ID)
 	);`,
 	`CREATE TABLE IF NOT EXISTS dictionary_to_library (
 		ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 		dictionary_id INT UNSIGNED NOT NULL,
 		library_id INT UNSIGNED NOT NULL,
 		FOREIGN KEY (dictionary_id) REFERENCES cards_library (ID),
-		FOREIGN KEY (library_id) REFERENCES dictionary (ID),
+		FOREIGN KEY (library_id) REFERENCES dictionary (ID)
 	);`,
 }
 
