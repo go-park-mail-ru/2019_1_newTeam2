@@ -61,6 +61,8 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
+
+	fmt.Println("pass: ", user.Password)
 	if token, _, err := server.DB.Login(user.Username, user.Password, []byte(server.ServerConfig.Secret)); err != nil {
 		textError := models.Error{err.Error()}
 		responses.WriteToResponse(w, http.StatusUnauthorized, textError)
@@ -88,6 +90,7 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	fmt.Println("pass: ", user.Password)
 	if token, _, err := server.DB.Login(user.Username, user.Password, []byte(server.ServerConfig.Secret)); err != nil {
 		server.Logger.Log(err.Error())
 	} else {

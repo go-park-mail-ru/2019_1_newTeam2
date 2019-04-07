@@ -14,7 +14,6 @@ type UserManager interface {
 	AddImage(path string, userID int) error
 	UpdateUserById(userID int, username string, email string,
 		password string, langid int, pronounceOn int) (bool, error)
-	IncUserLastID() // remove in future
 }
 
 type DBInterface interface {
