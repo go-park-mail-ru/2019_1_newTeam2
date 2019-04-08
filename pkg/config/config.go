@@ -11,7 +11,8 @@ type Config struct {
 	UploadPath   string   `json:"uploadPath"`
 	AvatarsPath  string   `json:"avatarsPath"`
 	AllowedHosts []string `json:"AllowedHosts"`
-	// anything u want
+	DBUser       string   `json:"dbUser"`
+	DBPassUser   string   `json:"dbPassUser"`
 }
 
 func NewConfig(pathToConfig string) (*Config, error) {

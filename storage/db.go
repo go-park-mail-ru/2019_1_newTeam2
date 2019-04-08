@@ -17,14 +17,14 @@ type Database struct {
 	Logger logger.LoggerInterface
 }
 
-func NewDataBase() (*Database, error) {
+func NewDataBase(username string, pass string) (*Database, error) {
 	// error is possible error from database
 	db := new(Database)
 	logger := new(logger.GoLogger)
 	logger.SetOutput(os.Stderr)
 	db.Logger = logger
 
-	dsn := "root_use" + ":Abc123456#" + "@tcp(localhost:3306)/"
+	dsn := username + ":" + pass + "@tcp(localhost:3306)/"
 	database, err := sql.Open("mysql", dsn)
 
 	if err != nil {
