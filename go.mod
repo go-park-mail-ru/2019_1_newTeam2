@@ -11,4 +11,5 @@ require (
 	github.com/rs/cors v1.6.0
 	github.com/stretchr/testify v1.3.0
 	golang.org/x/crypto v0.0.0-20190403202508-8e1b8d32e692
+	google.golang.org/appengine v1.5.0 // indirect
 )
