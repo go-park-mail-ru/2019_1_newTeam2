@@ -102,7 +102,6 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
-
 	function := func(header multipart.FileHeader) error {
 		re := regexp.MustCompile(`image/.*`)
 		if !re.MatchString(header.Header.Get("Content-Type")) {

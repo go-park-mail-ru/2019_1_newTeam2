@@ -57,15 +57,21 @@ func NewServer(pathToConfig string) (*Server, error) {
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
 
+	needLogin := router.PathPrefix("/").Subrouter()
+	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret)))
+	// need login
+	needLogin.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
+	needLogin.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
+	needLogin.HandleFunc("/users/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
+	needLogin.HandleFunc("/avatars/", server.UploadAvatar).Methods(http.MethodPost, http.MethodOptions)
+	needLogin.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
+
+
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
-	router.HandleFunc("/users/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
 	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
-	router.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/session/", server.Logout).Methods(http.MethodPatch, http.MethodOptions)
 	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
-	router.HandleFunc("/avatars/", server.UploadAvatar).Methods(http.MethodPost, http.MethodOptions)
+
 
 	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
@@ -79,17 +85,6 @@ func (server *Server) Run() {
 	if port == "" {
 		port = server.ServerConfig.Port
 	}
-
-	/*c := cors.New(cors.Options{
-		AllowedHeaders:     []string{"Access-Control-Allow-Origin", "Charset", "Content-Type"},
-		AllowedOrigins:     server.ServerConfig.AllowedHosts,
-		AllowCredentials:   true,
-		AllowedMethods:     []string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"},
-		OptionsPassthrough: true,
-		Debug:              true,
-	})*/
-	//handler := handlers.LoggingHandler(os.Stderr, server.Router)
-	//handler = c.Handler(handler)
 	server.Logger.Logf("Running app on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, server.Router))
 }
