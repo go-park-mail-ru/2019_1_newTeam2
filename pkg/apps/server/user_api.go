@@ -15,20 +15,12 @@ import (
 )
 
 func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	server.CreateCookie("logout", -1, w, r)
 	w.WriteHeader(http.StatusOK)
 	server.Logger.Log("successful logout")
 }
 
 func (server *Server) IsLogin(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 
 	if value, _ := server.CheckLogin(w, r); !value {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -43,11 +35,6 @@ func (server *Server) IsLogin(w http.ResponseWriter, r *http.Request) {
 
 func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("LoginAPI")
-	if r.Method == http.MethodOptions {
-		textError := models.Error{""}
-		responses.WriteToResponse(w, http.StatusOK, textError)
-		return
-	}
 	var user models.UserAuth
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -76,10 +63,6 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 
 func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("SignUpAPI")
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	if value, _ := server.CheckLogin(w, r); value {
 		w.WriteHeader(http.StatusOK)
 	}
@@ -100,10 +83,6 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	fmt.Println("Checklogin...")
 	value, user_id := server.CheckLogin(w, r)
 	if !value {
@@ -123,10 +102,6 @@ func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 
 	function := func(header multipart.FileHeader) error {
 		re := regexp.MustCompile(`image/.*`)
@@ -159,10 +134,6 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	pages, ok := r.URL.Query()["page"]
 	if !ok || len(pages[0]) < 1 {
 		server.Logger.Log("No pages in query")
@@ -198,10 +169,6 @@ func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	value, user_id := server.CheckLogin(w, r)
 	if !value {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -231,10 +198,6 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	if value, user_id := server.CheckLogin(w, r); value {
 		_, find, err := server.DB.GetUserByID(user_id)
 		if err != nil {

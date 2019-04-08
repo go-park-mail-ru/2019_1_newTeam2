@@ -45,47 +45,95 @@ func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
 }
 
 func (db *Database) DeleteUserById(userID int) (bool, error) {
-	delete(db.UserData, userID)
+	_, check, _ := db.GetUserByID(userID)
+	if !check {
+		db.Logger.Log("Такого пользователя не существует")
+		return false, fmt.Errorf("Такого пользователя не существует")
+	}
+
+	_, DeleteErr := db.Conn.Exec(
+		DeleteUserQuery,
+		userID,
+	)
+
+	if DeleteErr != nil {
+		db.Logger.Log("user not create")
+		return false, fmt.Errorf("user not create")
+	}
+
 	return true, nil
 }
 
 func (db *Database) UpdateUserById(userID int, username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
+	_, check, _ := db.GetUserByID(userID)
+	if !check {
+		db.Logger.Log("Такого пользователя не существует")
+		return false, fmt.Errorf("Такого пользователя не существует")
+	}
 
-	db.UserData[userID] = models.User{userID, username, email, password, langid, pronounceOn, db.UserData[userID].Score, db.UserData[userID].AvatarPath}
+	hashPassword, err := HashPassword(password)
+
+	if err != nil {
+		db.Logger.Log("hash error")
+		return false, fmt.Errorf("hash error")
+	}
+
+	_, CreateErr := db.Conn.Exec(
+		UpdateUserQuery,
+		username,
+		email,
+		hashPassword,
+		langid,
+		pronounceOn,
+		userID,
+	)
+
+	if CreateErr != nil {
+		db.Logger.Log("user not create")
+		return false, fmt.Errorf("user not create")
+	}
 
 	return true, nil
 }
 
+// TODO (sergeychur): GetUsers
 func (db *Database) GetUsers(page int, rowsNum int) ([]models.UserTableElem, error) {
-	usersPage := make([]models.UserTableElem, 0)
-	db.Logger.Log(page, rowsNum)
-	offset := (page - 1) * rowsNum
-	db.Logger.Log(offset)
+	// usersPage := make([]models.UserTableElem, 0)
+	// db.Logger.Log(page, rowsNum)
+	// offset := (page - 1) * rowsNum
+	// db.Logger.Log(offset)
 	// get data from db, if null is returned
-	if false {
-		return nil, fmt.Errorf("No such users")
-	}
-	j := 0
-	for _, i := range db.UserData {
-		j++
-		usersPage = append(usersPage, models.UserTableElem{i.Username, i.Score})
-		if j == rowsNum {
-			break
-		}
-	}
-	return usersPage, nil
+	// if false {
+	return nil, fmt.Errorf("No such users")
+	// }
+	// j := 0
+	// for _, i := range db.UserData {
+	// 	usersPage = append(usersPage, models.UserTableElem{i.Username, i.Score})
+	// 	if j == rowsNum {
+	// 		break
+	// 	}
+	// }
+	// return usersPage, nil
 }
 
 func (db *Database) AddImage(path string, userID int) error {
-	_, ok := db.UserData[userID]
-	if !ok {
-		return fmt.Errorf("no such user")
+	_, check, _ := db.GetUserByID(userID)
+	if !check {
+		db.Logger.Log("Такого пользователя не существует")
+		return fmt.Errorf("Такого пользователя не существует")
 	}
-	user := db.UserData[userID]
-	user.AvatarPath = path
-	db.Logger.Log(path)
-	db.UserData[userID] = user
+
+	_, CreateErr := db.Conn.Exec(
+		UpdateImagePathUserQuery,
+		path,
+		userID,
+	)
+
+	if CreateErr != nil {
+		db.Logger.Log("user not create")
+		return fmt.Errorf("user not create")
+	}
 	return nil
 }
 
@@ -97,12 +145,7 @@ func (db *Database) UserRegistration(username string, email string,
 		return false, fmt.Errorf("Такой пользователь уже существует")
 	}
 
-	db.Logger.Log(db.LastUserId)
 	hashPassword, err := HashPassword(password)
-	kekPassword, err := HashPassword(password)
-	fmt.Println("-- password: ", password)
-	fmt.Println("-- hash password: ", hashPassword)
-	fmt.Println("-- kek password: ", kekPassword)
 
 	if err != nil {
 		return false, fmt.Errorf("hash error")
@@ -116,11 +159,11 @@ func (db *Database) UserRegistration(username string, email string,
 		langid,
 		pronounceOn,
 		0,
-		"files/avatars/shrek.jpg",
+		"files/avatars/avatar.jpg",
 	)
 
 	if CreateErr != nil {
-		return false, fmt.Errorf("user not create")
+		return false, fmt.Errorf("CreateErr: user not create")
 	}
 
 	return true, nil

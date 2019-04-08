@@ -1,13 +1,15 @@
 package server
 
 import (
+	"github.com/user/2019_1_newTeam2/pkg/middlewares"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 
-	"github.com/gorilla/handlers"
+	//"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/rs/cors"
+	//"github.com/rs/cors"
 
 	"github.com/user/2019_1_newTeam2/filesystem"
 	"github.com/user/2019_1_newTeam2/pkg/config"
@@ -51,6 +53,10 @@ func NewServer(pathToConfig string) (*Server, error) {
 	}
 	router := mux.NewRouter()
 
+	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
+	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
+	router.Use(middlewares.CreatePanicRecoveryMiddleware())
+
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
@@ -74,16 +80,16 @@ func (server *Server) Run() {
 		port = server.ServerConfig.Port
 	}
 
-	c := cors.New(cors.Options{
+	/*c := cors.New(cors.Options{
 		AllowedHeaders:     []string{"Access-Control-Allow-Origin", "Charset", "Content-Type"},
 		AllowedOrigins:     server.ServerConfig.AllowedHosts,
 		AllowCredentials:   true,
 		AllowedMethods:     []string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"},
 		OptionsPassthrough: true,
 		Debug:              true,
-	})
-	handler := handlers.LoggingHandler(os.Stderr, server.Router)
-	handler = c.Handler(handler)
+	})*/
+	//handler := handlers.LoggingHandler(os.Stderr, server.Router)
+	//handler = c.Handler(handler)
 	server.Logger.Logf("Running app on port %s", port)
-	http.ListenAndServe(":"+port, handler)
+	log.Fatal(http.ListenAndServe(":"+port, server.Router))
 }
