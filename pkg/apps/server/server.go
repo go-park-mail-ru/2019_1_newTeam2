@@ -58,7 +58,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
 
 	needLogin := router.PathPrefix("/").Subrouter()
-	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret)))
+	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, IsLogined))
 	// need login
 	needLogin.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)

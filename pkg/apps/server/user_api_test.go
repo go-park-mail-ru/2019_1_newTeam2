@@ -12,11 +12,11 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/user/2019_1_newTeam2/config"
-	"github.com/user/2019_1_newTeam2/logger"
-	"github.com/user/2019_1_newTeam2/mock_database"
+	"github.com/user/2019_1_newTeam2/pkg/config"
+	"github.com/user/2019_1_newTeam2/pkg/logger"
+	"github.com/user/2019_1_newTeam2/mocks"
 	"github.com/user/2019_1_newTeam2/models"
-	"github.com/user/2019_1_newTeam2/server"
+	"github.com/user/2019_1_newTeam2/pkg/apps/server"
 )
 
 const correctToken string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
@@ -27,7 +27,7 @@ func TestUserHandlerSuite(t *testing.T) {
 
 type UserHandlerTestSuite struct {
 	suite.Suite
-	dataBase  *mock_database.MockDBInterface
+	dataBase  *mock_storage.MockDBInterface
 	underTest *server.Server
 }
 
@@ -35,7 +35,7 @@ func (suite *UserHandlerTestSuite) SetupTest() {
 	mockCtrl := gomock.NewController(suite.T())
 	defer mockCtrl.Finish()
 
-	suite.dataBase = mock_database.NewMockDBInterface(mockCtrl)
+	suite.dataBase = mock_storage.NewMockDBInterface(mockCtrl)
 
 	server := new(server.Server)
 	config := new(config.Config)
@@ -117,17 +117,6 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 			response: "500 Internal Server Error",
 			id:       1,
 			method:   "GET",
-			err: &TestErr{
-				str: "db error",
-			},
-			exists: false,
-			token:  correctToken,
-		},
-		TestGetUserCase{
-			t:        models.User{},
-			response: "200 OK",
-			id:       1,
-			method:   "OPTIONS",
 			err: &TestErr{
 				str: "db error",
 			},
@@ -297,20 +286,6 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 		TestUsersPaginateCase{
 			t:            []models.UserTableElem{},
 			row:          1,
-			strRow:       "1",
-			page:         5,
-			strPage:      "5",
-			queryCorrect: true,
-			method:       "OPTIONS",
-			response:     "200 OK",
-			err: &TestErr{
-				str: "not found",
-			},
-		},
-
-		TestUsersPaginateCase{
-			t:            []models.UserTableElem{},
-			row:          1,
 			page:         5,
 			queryCorrect: true,
 			method:       "GET",
@@ -394,16 +369,6 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 			},
 			exists: false,
 		},
-		TestUpdateUserCase{
-			t:        models.User{},
-			id:       1,
-			method:   "OPTIONS",
-			response: "200 OK",
-			err: &TestErr{
-				str: "db error",
-			},
-			exists: false,
-		},
 	}
 
 	for _, item := range cases {
@@ -467,17 +432,6 @@ func (suite *UserHandlerTestSuite) TestDeleteUser() {
 			t:        models.User{},
 			method:   "DELETE",
 			response: "500 Internal Server Error",
-			id:       1,
-			err: &TestErr{
-				str: "db error",
-			},
-			exists: false,
-		},
-
-		TestDeleteUserCase{
-			t:        models.User{},
-			method:   "OPTIONS",
-			response: "200 OK",
 			id:       1,
 			err: &TestErr{
 				str: "db error",

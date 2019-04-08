@@ -45,6 +45,8 @@ func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
 }
 
 func (db *Database) DeleteUserById(userID int) (bool, error) {
+	// TODO(whoever): no sense in 2 queries, no such user means success,
+	// and user can delete only himself, so if there is no user in DB, it's epic fail
 	_, check, _ := db.GetUserByID(userID)
 	if !check {
 		db.Logger.Log("Такого пользователя не существует")
@@ -139,7 +141,7 @@ func (db *Database) AddImage(path string, userID int) error {
 
 func (db *Database) UserRegistration(username string, email string,
 	password string, langid int, pronounceOn int) (bool, error) {
-
+	// here should possibly be transaction
 	_, check, _ := db.CheckUserByUsername(username)
 	if check {
 		return false, fmt.Errorf("Такой пользователь уже существует")
