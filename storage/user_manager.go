@@ -163,7 +163,7 @@ func (db *Database) UserRegistration(username string, email string,
 	)
 
 	if CreateErr != nil {
-		return false, fmt.Errorf("user not create")
+		return false, fmt.Errorf("CreateErr: user not create")
 	}
 
 	return true, nil

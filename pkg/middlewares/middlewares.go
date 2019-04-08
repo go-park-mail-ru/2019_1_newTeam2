@@ -2,12 +2,13 @@ package middlewares
 
 import (
 	"fmt"
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
-	"github.com/rs/cors"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 func CreateLoggingMiddleware(writer io.Writer, prefix string) mux.MiddlewareFunc {
@@ -19,10 +20,9 @@ func CreateLoggingMiddleware(writer io.Writer, prefix string) mux.MiddlewareFunc
 
 			res := []byte(fmt.Sprintf("[%s] %s %s %s %d %s %s\n", prefix, r.Method, r.RemoteAddr, r.URL.Path,
 				lw.statusCode, http.StatusText(lw.statusCode), time.Since(start)))
-			_,_ = writer.Write(res)
+			_, _ = writer.Write(res)
 		})
 	}
-
 
 }
 
@@ -50,6 +50,6 @@ func CreatePanicRecoveryMiddleware() mux.MiddlewareFunc {
 	return handlers.RecoveryHandler(handlers.PrintRecoveryStack(true))
 }
 
-func CreateCheckAuthMiddleware(secret []byte) mux.MiddlewareFunc {
+// func CreateCheckAuthMiddleware(secret []byte) mux.MiddlewareFunc {
 
-}
+// }

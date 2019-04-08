@@ -24,7 +24,7 @@ func NewDataBase() (*Database, error) {
 	logger.SetOutput(os.Stderr)
 	db.Logger = logger
 
-	dsn := "root_use" + ":Abc123456*" + "@tcp(localhost:3306)/"
+	dsn := "root_use" + ":Abc123456#" + "@tcp(localhost:3306)/"
 	database, err := sql.Open("mysql", dsn)
 
 	if err != nil {
