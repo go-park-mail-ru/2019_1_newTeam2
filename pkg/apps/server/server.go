@@ -1,11 +1,12 @@
 package server
 
 import (
-	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 
 	//"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -41,7 +42,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	server.CookieField = "session_id"
 
 	server.ServerConfig = newConfig
-	newDB, err := storage.NewDataBase()
+	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
 	if err != nil {
 		return nil, err
 	}
