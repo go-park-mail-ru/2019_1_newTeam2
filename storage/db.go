@@ -34,10 +34,6 @@ func NewDataBase(username string, pass string) (*Database, error) {
 	if err != nil {
 		log.Println("lol")
 	}
-	err = createTable(database)
-	if err != nil {
-		return nil, fmt.Errorf("mysql: could not create database: %v", err)
-	}
 
 	db.Conn = database
 	return db, nil
