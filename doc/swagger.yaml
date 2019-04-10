@@ -1,19 +1,27 @@
 swagger: '2.0'
 info:
   description: This is our api for word trainer app
-  version: 1.0.0
+  version: 1.0.1
   title: Word Trainer
 host: thawing-gorge-14317.herokuapp.com
 tags:
   - name: users
     description: Everything about your users
+  - name: session
+    description: session files  
   - name: upload
     description: uploading files
+  - name: language
+    description: language api
+  - name: card
+    description: card api
+  - name: dictionary
+    description: dictionary api
 schemes:
   - https
   - http
 paths:
-  /users?rows=[0-9]+&page=[0-9]+:
+  /users:
     get:
       tags:
         - users
@@ -41,26 +49,6 @@ paths:
               $ref: '#/definitions/UserForTable'
         '400':
           description: Invalid status value
-  '/users/{userId}':
-    get:
-      tags:
-        - users
-      summary: Get profile of other user
-      operationId: GetUser
-      produces:
-        - application/json
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          type: integer
-      responses:
-        '200':
-          description: successful operation
-          schema:
-            $ref: '#/definitions/User'
-        '400':
-          description: Error while searching for user
   /users/:
     get:
       tags:
@@ -135,7 +123,7 @@ paths:
           schema:
             $ref: '#/definitions/User'
       responses:
-        '200':
+        '201':
           description: successful operation
           schema:
             type: string
@@ -216,7 +204,297 @@ paths:
           description: Eroor in request
         '401':
           description: Cannot login user
+  /languages:
+    get:
+      tags:
+        - language
+      summary: Gets languages list
+      parameters:
+        - name: rows
+          in: query
+          required: true
+          type: integer
+          description: rows per page
+        - name: page
+          in: query
+          required: true
+          type: integer
+          description: page sequence number
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Language'
+        '400':
+          description: Invalid status value
+  /dictionary:
+    get:
+      tags:
+        - dictionary
+      summary: Gets dictionary list
+      produces:
+        - application/json
+      parameters:
+        - name: rows
+          in: query
+          required: true
+          type: integer
+          description: rows per page
+        - name: page
+          in: query
+          required: true
+          type: integer
+          description: page sequence number
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Dictionary'
+        '400':
+          description: Error while searching for dictionary
+  /dictionary/{dictionaryId}:
+    get:
+      tags:
+        - dictionary
+      summary: Get dictionary info
+      produces:
+        - application/json
+      parameters:
+        - name: dictionaryId
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Dictionary'
+        '400':
+          description: Error while searching for user
+  /dictionary/:
+    put:
+      tags:
+        - dictionary
+      summary: Update dictionary info
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: dictionaryId
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Dictionary'
+              
+        '400':
+          description: Error while searching for dictionary
+    delete:
+      tags:
+        - dictionary
+      summary: Delete dictionary
+      parameters:
+        - name: dictionaryId
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Cannot understand path
+        '404':
+          description: No such user
+        '500':
+          description: Error happened
+    post:
+      summary: Create dictionary
+      tags:
+        - dictionary
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: user object to register
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Dictionary'
+      responses:
+        '201':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Dictionary'
+
+  /card:
+    get:
+      tags:
+        - card
+      summary: Gets cards list
+      produces:
+        - application/json
+      parameters:
+        - name: rows
+          in: query
+          required: true
+          type: integer
+          description: rows per page
+        - name: page
+          in: query
+          required: true
+          type: integer
+          description: page sequence number
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Card'
+        
+        '404':
+          description: Error while searching for card
+  /card/{cardId}:
+    get:
+      tags:
+        - card
+      summary: Get card info
+      produces:
+        - application/json
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Card'
+        '404':
+          description: Error while searching for card
+  /card/:
+    put:
+      tags:
+        - card
+      summary: Update card info
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Card'
+              
+        '404':
+          description: Error while searching for card
+    delete:
+      tags:
+        - card
+      summary: Delete card
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: No such user
+        '500':
+          description: Error happened
+    post:
+      summary: Create card
+      tags:
+        - card
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: user object to register
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Card'
+      responses:
+        '201':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Card'
+              
+        '404':
+          description: Error in request
+
+
+
+
 definitions:
+  Language:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+  Word:
+    type: object
+    properties:
+      name:
+        type: string
+      language:
+        $ref: '#/definitions/Language'
+  Card:
+    type: object
+    properties:
+      id:
+        type: integer
+      word:
+        $ref: '#/definitions/Word'
+      translation:
+        $ref: '#/definitions/Word'
+  Dictionary:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      language:
+        $ref: '#/definitions/Language'
+      cards:
+        type: array
+        items:
+          $ref: '#/definitions/Card'
   UserForTable:
     type: object
     properties:

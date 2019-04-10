@@ -60,19 +60,30 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	needLogin := router.PathPrefix("/").Subrouter()
 	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, IsLogined))
-	// need login
+	// "need login"
 	needLogin.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/avatars/", server.UploadAvatar).Methods(http.MethodPost, http.MethodOptions)
 	needLogin.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
-
+	//  end "need login"
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc("/session/", server.Logout).Methods(http.MethodPatch, http.MethodOptions)
 	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
 
+	router.HandleFunc("/dictionary/", server.LoginAPI).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/dictionary/", server.LoginAPI).Methods(http.MethodPut, http.MethodOptions)
+	router.HandleFunc("/dictionary/", server.LoginAPI).Methods(http.MethodDelete, http.MethodOptions)
+	router.HandleFunc("/dictionary/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
+
+	router.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPut, http.MethodOptions)
+	router.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodDelete, http.MethodOptions)
+	router.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
+
+	router.HandleFunc("/languages/", server.LoginAPI).Methods(http.MethodGet, http.MethodOptions)
 
 	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
