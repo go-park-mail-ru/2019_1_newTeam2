@@ -47,29 +47,35 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte 
 	return jsonStr
 }
 
-func (server *Server) CheckLogin(w http.ResponseWriter, r *http.Request) (bool, int) {
-	SECRET := []byte(server.ServerConfig.Secret)
-	myCookie, err := r.Cookie(server.CookieField)
+
+func IsLogined(r *http.Request, secret []byte, cookieField string) bool {
+	_, err := GetIdFromCookie(r, secret, cookieField)
+	return err == nil
+}
+
+func GetIdFromCookie(r *http.Request, secret []byte, cookieField string) (int, error){
+	cookie, err := r.Cookie(cookieField)
 
 	if err != nil {
-		return false, -1
+		return 0, err
 	}
 
-	token, err := jwt.Parse(myCookie.Value, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return SECRET, nil
+		return secret, nil
 	})
 
 	if err != nil {
-		server.Logger.Log(err.Error())
-		return false, -1
+		return 0, err
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return true, int(claims["id"].(float64))
+		return int(claims["id"].(float64)), nil
 	}
-	server.Logger.Log(err)
-	return false, -1
+	return 0, fmt.Errorf("token invalid")
 }
+
+
+// TODO(Me): divide functionality into check if logined and get userID from jwt token

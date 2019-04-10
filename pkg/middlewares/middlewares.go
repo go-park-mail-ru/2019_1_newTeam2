@@ -3,6 +3,7 @@ package middlewares
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"time"
 
@@ -50,6 +51,16 @@ func CreatePanicRecoveryMiddleware() mux.MiddlewareFunc {
 	return handlers.RecoveryHandler(handlers.PrintRecoveryStack(true))
 }
 
-// func CreateCheckAuthMiddleware(secret []byte) mux.MiddlewareFunc {
-
-// }
+func CreateCheckAuthMiddleware(secret []byte, cookieField string,
+	checkFunc func(request *http.Request, secret []byte, cookieField string) bool) mux.MiddlewareFunc {
+	return func(handler http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if checkFunc(r, secret, cookieField) {
+				handler.ServeHTTP(w, r)
+				return
+			}
+			w.WriteHeader(http.StatusUnauthorized)
+			log.Println("Check auth middleware fail")
+		})
+	}
+}
