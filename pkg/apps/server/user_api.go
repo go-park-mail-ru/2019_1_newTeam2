@@ -179,14 +179,14 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
-		userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
-		isDelete, err := server.DB.DeleteUserById(userId)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		if !isDelete {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
+	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	isDelete, err := server.DB.DeleteUserById(userId)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if !isDelete {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 }

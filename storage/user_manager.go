@@ -45,14 +45,6 @@ func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
 }
 
 func (db *Database) DeleteUserById(userID int) (bool, error) {
-	// TODO(whoever): no sense in 2 queries, no such user means success,
-	// and user can delete only himself, so if there is no user in DB, it's epic fail
-	_, check, _ := db.GetUserByID(userID)
-	if !check {
-		db.Logger.Log("Такого пользователя не существует")
-		return false, fmt.Errorf("Такого пользователя не существует")
-	}
-
 	_, DeleteErr := db.Conn.Exec(
 		DeleteUserQuery,
 		userID,
