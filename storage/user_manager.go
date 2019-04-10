@@ -28,18 +28,11 @@ func (db *Database) CheckUserByUsername(username string) (models.User, bool, err
 }
 
 func (db *Database) GetUserByID(userID int) (models.User, bool, error) {
-	results, err := db.Conn.Query(GetUserByIDQuery, userID)
-
+	row := db.Conn.QueryRow(GetUserByIDQuery, userID)
+	user := new(models.User)
+	err := row.Scan(&user)
 	if err != nil {
 		return models.User{}, false, err
-	}
-
-	user := new(models.User)
-	for results.Next() {
-		err = results.Scan(&user.ID, &user.Username, &user.Email, &user.LangID, &user.PronounceON, &user.Score, &user.AvatarPath)
-		if err != nil {
-			return models.User{}, false, nil
-		}
 	}
 	return *user, true, nil
 }

@@ -1,8 +1,6 @@
-package storage
+package interfaces
 
-import (
-	"github.com/user/2019_1_newTeam2/models"
-)
+import "github.com/user/2019_1_newTeam2/models"
 
 type UserManager interface {
 	Login(username string, password string, secret []byte) (string, string, error)
@@ -14,13 +12,4 @@ type UserManager interface {
 	AddImage(path string, userID int) error
 	UpdateUserById(userID int, username string, email string,
 		password string, langid int, pronounceOn int) (bool, error)
-}
-
-type DBInterface interface {
-	UserManager
-	// interface for other managers
-	// method to connect to db
-	// method to query sql
-	// method to exec sql
-	// ..
 }

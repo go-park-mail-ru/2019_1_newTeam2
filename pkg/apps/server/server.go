@@ -16,11 +16,12 @@ import (
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
 	"github.com/user/2019_1_newTeam2/storage"
+	"github.com/user/2019_1_newTeam2/storage/interfaces"
 )
 
 type Server struct {
 	Router       *mux.Router
-	DB           storage.DBInterface
+	DB           interfaces.DBInterface
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
 	CookieField  string

@@ -101,3 +101,8 @@ func (db *TestDatabase) UpdateUserById(userID int, username string, email string
 func (db *TestDatabase) IncUserLastID() {
 	return
 }
+
+func (db *TestDatabase) GetLangs() (models.Language, bool, error) {
+	return models.Language{}, true, nil
+}
+
