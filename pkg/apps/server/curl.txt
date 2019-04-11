@@ -1,0 +1,3 @@
+Create dictionary
+
+curl -d '{"id": 0, "name": "test_dict", "description": "new test dictionary", "cards": [{ "id": 0, "word": {"name": "word1", "langID": 1}, "translation": { "name": "word2", "langID": 1}}, { "id": 0, "word": {"name": "word1", "langID": 1}, "translation": { "name": "word2", "langID": 1}}]}' -H "Content-Type: application/json" -X POST --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.zx74_EaDbjCYgF15bvWTfU6fHPvBCBROe_gZNWns5Cw" http://localhost:8090/dictionary/

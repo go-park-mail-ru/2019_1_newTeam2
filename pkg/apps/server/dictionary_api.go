@@ -10,7 +10,8 @@ import (
 )
 
 func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request) {
-	server.Logger.Log("LoginAPI")
+	server.Logger.Log("CreateDictionaryAPI")
+	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
 	var dictionary models.CreateDictionary
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -25,7 +26,7 @@ func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err = server.DB.DictionaryCreate(2, dictionary.Name, dictionary.Description, dictionary.Cards); err != nil {
+	if err = server.DB.DictionaryCreate(userId, dictionary.Name, dictionary.Description, dictionary.Cards); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -34,7 +35,7 @@ func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request
 }
 
 func (server *Server) UpdateDictionaryAPI(w http.ResponseWriter, r *http.Request) {
-	server.Logger.Log("LoginAPI")
+	server.Logger.Log("UpdateDictionaryAPI")
 	var dictionary models.CreateDictionary
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -58,7 +59,7 @@ func (server *Server) UpdateDictionaryAPI(w http.ResponseWriter, r *http.Request
 }
 
 func (server *Server) DeleteDictionaryAPI(w http.ResponseWriter, r *http.Request) {
-	server.Logger.Log("LoginAPI")
+	server.Logger.Log("DeleteDictionaryAPI")
 	var dictionary models.CreateDictionary
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {

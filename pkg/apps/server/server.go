@@ -61,7 +61,6 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	needLogin := router.PathPrefix("/").Subrouter()
 	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, IsLogined))
-	// "need login"
 	needLogin.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
@@ -70,10 +69,9 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	needLogin.HandleFunc("/dictionary", server.DictsPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/dictionary/{id:[0-9]+}", server.GetDictionaryById).Methods(http.MethodGet, http.MethodOptions)
-	// TODO (tsaanstu): set needLogin
-	router.HandleFunc("/dictionary/", server.UpdateDictionaryAPI).Methods(http.MethodPut, http.MethodOptions)
-	router.HandleFunc("/dictionary/", server.DeleteDictionaryAPI).Methods(http.MethodDelete, http.MethodOptions)
-	router.HandleFunc("/dictionary/", server.CreateDictionaryAPI).Methods(http.MethodPost, http.MethodOptions)
+	needLogin.HandleFunc("/dictionary/", server.UpdateDictionaryAPI).Methods(http.MethodPut, http.MethodOptions)
+	needLogin.HandleFunc("/dictionary/", server.DeleteDictionaryAPI).Methods(http.MethodDelete, http.MethodOptions)
+	needLogin.HandleFunc("/dictionary/", server.CreateDictionaryAPI).Methods(http.MethodPost, http.MethodOptions)
 
 	// mb to need login?
 	needLogin.HandleFunc("/cards{dictId:[0-9]+}", server.CardsPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
@@ -81,7 +79,6 @@ func NewServer(pathToConfig string) (*Server, error) {
 	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPut, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
-	//  end "need login"
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
