@@ -34,7 +34,6 @@ type UserHandlerTestSuite struct {
 func (suite *UserHandlerTestSuite) SetupTest() {
 	mockCtrl := gomock.NewController(suite.T())
 	defer mockCtrl.Finish()
-
 	suite.dataBase = mock_interfaces.NewMockDBInterface(mockCtrl)
 
 	server := new(server.Server)

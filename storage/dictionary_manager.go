@@ -36,7 +36,7 @@ func (db *Database) DictionaryUpdate(DictID int, Name string, Description string
 	return nil
 }
 
-func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.AddedToDictCard) error {
+func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) error {
 	result, CreateErr := db.Conn.Exec(
 		CreateEmptyDictionary,
 		Name,
@@ -56,11 +56,11 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	for _, it := range Cards {
 		var WordID, TranslationID, CardID, CardsLibraryID int
 		var err error
-		WordID, err = db.CreateWord(it.Word)
+		WordID, err = CreateWord(db, it.Word)
 		if err != nil {
 			return err
 		}
-		TranslationID, err = db.CreateWord(it.Translation)
+		TranslationID, err = CreateWord(db, it.Translation)
 		if err != nil {
 			return err
 		}
@@ -80,22 +80,40 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	return nil
 }
 
-// УДАЛИТЬ
+func (db *Database)GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error) {
+	dicts := make([]models.DictionaryInfo, 0)
+	db.Logger.Log(page, rowsNum)
+	offset := (page - 1) * rowsNum
+	db.Logger.Log(offset)
+	rows, err := db.Conn.Query(DictsPaginate, userId, rowsNum, offset)
+	if err != nil {
+		return dicts, false, err
+	}
+	defer rows.Close()
+	i := 0
+	for rows.Next() {
+		i++
+		dict := models.DictionaryInfo{}
+		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description/*, &dict.UserId*/)
+		// TODO(sergeychur): say about userId, may be useful, if no delete
+		if err != nil{
+			return dicts, false, err
+		}
+		dicts = append(dicts, dict)
+	}
+	if i == 0 {
+		return dicts, false, nil
+	}
+	return dicts, true, nil
+}
+func (db *Database) GetDict(dictId int) (models.DictionaryInfo, bool, error) {
+	dict := models.DictionaryInfo{}
+	row := db.Conn.QueryRow(GetDictById, dictId)
+	err := row.Scan(&dict.ID, &dict.Name, &dict.Description/*, &dict.UserId*/)
+	if err != nil {
+		return models.DictionaryInfo{}, false, err
+	}
+	return dict, true, nil
+}
 
-// func (db *Database) GetCard(cardId int) (models.AddedToDictCard, bool, error) {
-// 	card := models.AddedToDictCard{}
-// 	card.Word = new(models.AddedToDictWord)
-// 	card.Translation = new(models.AddedToDictWord)
 
-// 	const GetCardById = "SELECT c.id, w1.name, w1.LangID, " +
-// 		" w2.name, w2.LangID from card c join word w1 " +
-// 		"on (w1.id = c.word) join word w2 on " +
-// 		"(w2.id = c.translation) where c.id = ?"
-
-// 	row := db.Conn.QueryRow(GetCardById, cardId)
-// 	err := row.Scan(&card.ID, &card.Word.Name, &card.Word.Language, &card.Translation.Name, &card.Translation.Language)
-// 	if err != nil {
-// 		return models.AddedToDictCard{}, false, err
-// 	}
-// 	return card, true, nil
-// }
