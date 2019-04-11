@@ -12,3 +12,10 @@ type DictionaryInfo struct {
 	Name        string `json:"name,omitempty"`
 	Description string `json:"description,omitempty"`
 }
+
+type DictReduced struct {
+	ID       int       `json:"id,omitempty"`
+	Name     string    `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
+	UserId int `json:"id,omitempty"`
+}

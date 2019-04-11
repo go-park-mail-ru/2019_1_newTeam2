@@ -16,11 +16,12 @@ import (
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
 	"github.com/user/2019_1_newTeam2/storage"
+	"github.com/user/2019_1_newTeam2/storage/interfaces"
 )
 
 type Server struct {
 	Router       *mux.Router
-	DB           storage.DBInterface
+	DB           interfaces.DBInterface
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
 	CookieField  string
@@ -65,25 +66,28 @@ func NewServer(pathToConfig string) (*Server, error) {
 	needLogin.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/avatars/", server.UploadAvatar).Methods(http.MethodPost, http.MethodOptions)
-	needLogin.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
-	//  end "need login"
+	needLogin.HandleFunc("/languages/", server.GetLangs).Methods(http.MethodGet, http.MethodOptions)
 
-	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
-	router.HandleFunc("/session/", server.Logout).Methods(http.MethodPatch, http.MethodOptions)
-	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
-
-	router.HandleFunc("/dictionary/", server.LoginAPI).Methods(http.MethodGet, http.MethodOptions)
+	needLogin.HandleFunc("/dictionary", server.DictsPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
+	needLogin.HandleFunc("/dictionary/{id:[0-9]+}", server.GetDictionaryById).Methods(http.MethodGet, http.MethodOptions)
+	// TODO (tsaanstu): set needLogin
 	router.HandleFunc("/dictionary/", server.UpdateDictionaryAPI).Methods(http.MethodPut, http.MethodOptions)
 	router.HandleFunc("/dictionary/", server.DeleteDictionaryAPI).Methods(http.MethodDelete, http.MethodOptions)
 	router.HandleFunc("/dictionary/", server.CreateDictionaryAPI).Methods(http.MethodPost, http.MethodOptions)
 
-	router.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPut, http.MethodOptions)
-	router.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodDelete, http.MethodOptions)
-	router.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
+	// mb to need login?
+	needLogin.HandleFunc("/cards{dictId:[0-9]+}", server.CardsPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
+	needLogin.HandleFunc("/card/{id:[0-9]+}", server.GetCardById).Methods(http.MethodGet, http.MethodOptions)
+	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPut, http.MethodOptions)
+	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodDelete, http.MethodOptions)
+	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
+	//  end "need login"
 
-	router.HandleFunc("/languages/", server.LoginAPI).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/session/", server.Logout).Methods(http.MethodPatch, http.MethodOptions)
+	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
 
 	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 

@@ -3,15 +3,13 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/user/2019_1_newTeam2/filesystem"
+	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/pkg/responses"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"regexp"
-	"strconv"
-
-	"github.com/user/2019_1_newTeam2/filesystem"
-	"github.com/user/2019_1_newTeam2/models"
-	"github.com/user/2019_1_newTeam2/pkg/responses"
 )
 
 func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
@@ -118,33 +116,18 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
-	pages, ok := r.URL.Query()["page"]
-	if !ok || len(pages[0]) < 1 {
-		server.Logger.Log("No pages in query")
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	rows, ok := r.URL.Query()["rows"]
-	if !ok || len(rows[0]) < 1 {
-		server.Logger.Log("No rows in query")
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	page, err := strconv.Atoi(pages[0])
+	page :=0
+	rowsNum := 0
+	err := ParseParams(w, r, &page, &rowsNum)
 	if err != nil {
-		server.Logger.Log("Incorrect pages")
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	rowsNum, err := strconv.Atoi(rows[0])
+	result, found, err := server.DB.GetUsers(page, rowsNum)
 	if err != nil {
-		server.Logger.Log("Incorrect rows")
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	result, err := server.DB.GetUsers(page, rowsNum)
-	if err != nil {
+	if !found {
 		server.Logger.Log("No such a user")
 		w.WriteHeader(http.StatusNotFound)
 		return

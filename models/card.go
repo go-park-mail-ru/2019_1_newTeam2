@@ -11,3 +11,5 @@ type AddedToDictCard struct {
 	Word        *AddedToDictWord `json:"word,omitempty"`
 	Translation *AddedToDictWord `json:"translation,omitempty"`
 }
+
+
