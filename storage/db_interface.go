@@ -17,6 +17,7 @@ type UserManager interface {
 }
 
 type DictionaryManager interface {
+	DictionaryDelete(DictID int) error
 	DictionaryCreate(UserID int, Name string, Description string, Cards []models.AddedToDictCard) error
 	DictionaryUpdate(DictID int, Name string, Description string) error
 }

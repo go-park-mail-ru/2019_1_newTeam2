@@ -75,7 +75,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	router.HandleFunc("/dictionary/", server.LoginAPI).Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/dictionary/", server.UpdateDictionaryAPI).Methods(http.MethodPut, http.MethodOptions)
-	router.HandleFunc("/dictionary/", server.LoginAPI).Methods(http.MethodDelete, http.MethodOptions)
+	router.HandleFunc("/dictionary/", server.DeleteDictionaryAPI).Methods(http.MethodDelete, http.MethodOptions)
 	router.HandleFunc("/dictionary/", server.CreateDictionaryAPI).Methods(http.MethodPost, http.MethodOptions)
 
 	router.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodGet, http.MethodOptions)
