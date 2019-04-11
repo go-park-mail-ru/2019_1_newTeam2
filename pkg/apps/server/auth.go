@@ -76,6 +76,3 @@ func GetIdFromCookie(r *http.Request, secret []byte, cookieField string) (int, e
 	}
 	return 0, fmt.Errorf("token invalid")
 }
-
-
-// TODO(Me): divide functionality into check if logined and get userID from jwt token

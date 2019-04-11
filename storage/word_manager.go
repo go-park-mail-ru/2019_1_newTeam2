@@ -6,16 +6,16 @@ import (
 	"github.com/user/2019_1_newTeam2/models"
 )
 
-func (db *Database) WordIfExist(word *models.AddedToDictWord) (int, bool) {
+func (db *Database) WordIfExist(word *models.Word) (int, bool) {
 
 	return 0, false
 }
 
-func (db *Database) CreateWord(word *models.AddedToDictWord) (int, error) {
+func (db *Database) CreateWord(word *models.Word) (int, error) {
 	result, CreateErr := db.Conn.Exec(
 		CreateWord,
 		word.Name,
-		word.Language,
+		word.LanguageId,
 	)
 
 	if CreateErr != nil {

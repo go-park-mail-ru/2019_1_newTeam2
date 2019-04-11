@@ -19,7 +19,6 @@ func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) IsLogin(w http.ResponseWriter, r *http.Request) {
-
 	if value := IsLogined(r, []byte(server.ServerConfig.Secret), server.CookieField); !value {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusNoContent)

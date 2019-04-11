@@ -4,7 +4,7 @@ type CreateDictionary struct {
 	ID          int               `json:"id,omitempty"`
 	Name        string            `json:"name,omitempty"`
 	Description string            `json:"description,omitempty"`
-	Cards       []AddedToDictCard `json:"cards,omitempty"`
+	Cards       []Card `json:"cards,omitempty"`
 }
 
 type DictionaryInfo struct {
@@ -13,9 +13,3 @@ type DictionaryInfo struct {
 	Description string `json:"description,omitempty"`
 }
 
-type DictReduced struct {
-	ID       int       `json:"id,omitempty"`
-	Name     string    `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
-	UserId int `json:"id,omitempty"`
-}
