@@ -1,9 +1,9 @@
 package models
 
 type Card struct {
-	ID          int   `json:"id,omitempty"`
-	Word        *Word `json:"word,omitempty"`
-	Translation *Word `json:"translation,omitempty"`
+	ID          int    `json:"id,omitempty"`
+	Word        *Word1 `json:"word,omitempty"`
+	Translation *Word1 `json:"translation,omitempty"`
 }
 
 type AddedToDictCard struct {

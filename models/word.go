@@ -1,6 +1,6 @@
 package models
 
-type Word struct {
+type Word1 struct {
 	Name     string    `json:"name,omitempty"`
 	Language *Language `json:"language,omitempty"`
 }
