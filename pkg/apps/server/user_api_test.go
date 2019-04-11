@@ -27,7 +27,7 @@ func TestUserHandlerSuite(t *testing.T) {
 
 type UserHandlerTestSuite struct {
 	suite.Suite
-	dataBase  *mock_storage.MockDBInterface
+	dataBase  *mock_interfaces.MockDBInterface
 	underTest *server.Server
 }
 
@@ -35,7 +35,7 @@ func (suite *UserHandlerTestSuite) SetupTest() {
 	mockCtrl := gomock.NewController(suite.T())
 	defer mockCtrl.Finish()
 
-	suite.dataBase = mock_storage.NewMockDBInterface(mockCtrl)
+	suite.dataBase = mock_interfaces.NewMockDBInterface(mockCtrl)
 
 	server := new(server.Server)
 	config := new(config.Config)
@@ -149,6 +149,7 @@ type TestUsersPaginateCase struct {
 	t            []models.UserTableElem
 	response     string
 	err          error
+	got bool
 	row          int
 	page         int
 	strRow       string
@@ -187,6 +188,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			response:     "200 OK",
 			queryCorrect: true,
 			method:       "GET",
+			got: true,
 			err:          nil,
 		},
 
@@ -215,6 +217,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			strPage:      "",
 			queryCorrect: false,
 			method:       "GET",
+			got: false,
 			response:     "400 Bad Request",
 			err: &TestErr{
 				str: "no query",
@@ -245,6 +248,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			page:         5,
 			strPage:      "ede",
 			method:       "GET",
+			got: false,
 			response:     "400 Bad Request",
 			queryCorrect: false,
 			err: &TestErr{
@@ -277,10 +281,9 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			strPage:      "5",
 			queryCorrect: true,
 			method:       "GET",
+			got: false,
 			response:     "404 Not Found",
-			err: &TestErr{
-				str: "not found",
-			},
+			err: nil,
 		},
 
 		TestUsersPaginateCase{
@@ -289,6 +292,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			page:         5,
 			queryCorrect: true,
 			method:       "GET",
+			got: false,
 			response:     "400 Bad Request",
 			err: &TestErr{
 				str: "no query",
@@ -298,13 +302,14 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 
 	for _, item := range cases {
 		if item.queryCorrect {
-			suite.dataBase.EXPECT().GetUsers(item.page, item.row).Return(item.t, item.err)
+
+			suite.dataBase.EXPECT().GetUsers(item.page, item.row).Return(item.t, item.got, item.err)
 		}
 		r, _ := http.NewRequest(item.method, "/users", nil)
 		token := correctToken
 		PlaceTokenToRequest(token, r)
 		q := r.URL.Query()
-		if item.err == nil || item.err.Error() != "no query" {
+		if item.err == nil {
 			q.Add("rows", item.strRow)
 			q.Add("page", item.strPage)
 		}
@@ -313,7 +318,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 		suite.underTest.UsersPaginate(w, r)
 		response := w.Result()
 		suite.Equal(item.response, response.Status)
-		if item.err == nil {
+		if item.err == nil && item.got {
 			defer response.Body.Close()
 			result := []models.UserTableElem{}
 
