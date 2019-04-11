@@ -5,3 +5,5 @@ type Card struct {
 	Word        *Word `json:"word,omitempty"`
 	Translation *Word `json:"translation,omitempty"`
 }
+
+

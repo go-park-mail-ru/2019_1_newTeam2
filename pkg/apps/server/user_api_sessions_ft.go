@@ -89,8 +89,8 @@ func (db *TestDatabase) GetUserByID(userID int) (models.User, bool, error) {
 func (db *TestDatabase) DeleteUserById(userID int) (bool, error) {
 	return true, nil
 }
-func (db *TestDatabase) GetUsers(page int, rowsNum int) ([]models.UserTableElem, error) {
-	return []models.UserTableElem{}, nil
+func (db *TestDatabase) GetUsers(page int, rowsNum int) ([]models.UserTableElem, bool, error) {
+	return []models.UserTableElem{}, true, nil
 }
 func (db *TestDatabase) AddImage(path string, userID int) error {
 	return nil
@@ -106,3 +106,19 @@ func (db *TestDatabase) GetLangs() (models.Language, bool, error) {
 	return models.Language{}, true, nil
 }
 
+func (db *TestDatabase) GetCards(userId int, page int, rowsNum int) ([]models.Card, bool, error) {
+	cards := make([]models.Card, 0)
+	return cards, true, nil
+}
+func (db *TestDatabase) GetCard(cardId int) (models.Card, bool, error) {
+	return models.Card{}, true, nil
+}
+
+func (db *TestDatabase) GetDict(dictId int) (models.DictReduced, bool, error) {
+	return models.DictReduced{}, true, nil
+}
+
+func (db *TestDatabase)GetDicts(userId int, page int, rowsNum int) ([]models.DictReduced, bool, error) {
+	a := make([]models.DictReduced, 0)
+	return a, true, nil
+}

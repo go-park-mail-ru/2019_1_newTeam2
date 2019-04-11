@@ -84,24 +84,30 @@ func (db *Database) UpdateUserById(userID int, username string, email string,
 	return true, nil
 }
 
-// TODO (sergeychur): GetUsers
-func (db *Database) GetUsers(page int, rowsNum int) ([]models.UserTableElem, error) {
-	// usersPage := make([]models.UserTableElem, 0)
-	// db.Logger.Log(page, rowsNum)
-	// offset := (page - 1) * rowsNum
-	// db.Logger.Log(offset)
-	// get data from db, if null is returned
-	// if false {
-	return nil, fmt.Errorf("No such users")
-	// }
-	// j := 0
-	// for _, i := range db.UserData {
-	// 	usersPage = append(usersPage, models.UserTableElem{i.Username, i.Score})
-	// 	if j == rowsNum {
-	// 		break
-	// 	}
-	// }
-	// return usersPage, nil
+func (db *Database) GetUsers(page int, rowsNum int) ([]models.UserTableElem, bool, error) {
+	usersPage := make([]models.UserTableElem, 0)
+	db.Logger.Log(page, rowsNum)
+	offset := (page - 1) * rowsNum
+	db.Logger.Log(offset)
+	rows, err := db.Conn.Query(UsersPaginate, rowsNum, offset)
+	if err != nil {
+		return usersPage, false, err
+	}
+	defer rows.Close()
+	i := 0
+	for rows.Next() {
+		i++
+		user := models.UserTableElem{}
+		err := rows.Scan(&user.Username, &user.Score)
+		if err != nil{
+			return usersPage, false, err
+		}
+		usersPage = append(usersPage, user)
+	}
+	if i == 0 {
+		return usersPage, false, nil
+	}
+	return usersPage, true, nil
 }
 
 func (db *Database) AddImage(path string, userID int) error {
@@ -150,6 +156,7 @@ func (db *Database) UserRegistration(username string, email string,
 	)
 
 	if CreateErr != nil {
+		db.Logger.Log(CreateErr)
 		return false, fmt.Errorf("CreateErr: user not create")
 	}
 
