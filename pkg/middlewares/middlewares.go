@@ -30,7 +30,7 @@ func CreateLoggingMiddleware(writer io.Writer, prefix string) mux.MiddlewareFunc
 func CreateCorsMiddleware(allowedHosts []string) mux.MiddlewareFunc {
 	return func(handler http.Handler) http.Handler {
 		c := cors.New(cors.Options{
-			AllowedHeaders:     []string{"Access-Control-Allow-Origin", "Charset", "Content-Type"},
+			AllowedHeaders:     []string{"Access-Control-Allow-Origin", "Charset", "Content-Type", "Access-Control-Allow-Credentials"},
 			AllowedOrigins:     allowedHosts,
 			AllowCredentials:   true,
 			AllowedMethods:     []string{"GET", "HEAD", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"},
