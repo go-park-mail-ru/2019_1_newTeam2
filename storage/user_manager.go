@@ -3,7 +3,6 @@ package storage
 import (
 	"fmt"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/user/2019_1_newTeam2/models"
 )
 

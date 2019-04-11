@@ -2,11 +2,11 @@ package storage
 
 import "fmt"
 
-func (db *Database) CreateCard(WordID int, TranslationID int) (int, error) {
+func (db *Database) CreateCardsLibrary(CardID int) (int, error) {
 	result, CreateErr := db.Conn.Exec(
-		CreateCard,
-		WordID,
-		TranslationID,
+		CreateCardsLibrary,
+		0,
+		CardID,
 	)
 
 	if CreateErr != nil {

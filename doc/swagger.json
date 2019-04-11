@@ -382,7 +382,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/Dictionary"
+                "$ref": "#/definitions/DictionaryInfo"
               }
             }
           },
@@ -413,7 +413,7 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/Dictionary"
+              "$ref": "#/definitions/DictionaryInfo"
             }
           },
           "400": {
@@ -448,7 +448,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/Dictionary"
+                "$ref": "#/definitions/DictionaryInfo"
               }
             }
           },
@@ -520,7 +520,7 @@
         }
       }
     },
-    "/card": {
+    "/cards/{dictionaryID}": {
       "get": {
         "tags": [
           "card"
@@ -543,6 +543,13 @@
             "required": true,
             "type": "integer",
             "description": "page sequence number"
+          },
+          {
+            "name": "dictionaryID",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "dictionary id"
           }
         ],
         "responses": {
@@ -687,6 +694,37 @@
             "description": "Error in request"
           }
         }
+      },
+      "patch": {
+        "summary": "Add card to dictionary",
+        "tags": [
+          "card"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "cardId",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "dictionaryId",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "Error in request"
+          }
+        }
       }
     }
   },
@@ -708,8 +746,8 @@
         "name": {
           "type": "string"
         },
-        "language": {
-          "$ref": "#/definitions/Language"
+        "langID": {
+          "type": "integer"
         }
       }
     },
@@ -727,6 +765,20 @@
         }
       }
     },
+    "DictionaryInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
     "Dictionary": {
       "type": "object",
       "properties": {
@@ -736,8 +788,8 @@
         "name": {
           "type": "string"
         },
-        "language": {
-          "$ref": "#/definitions/Language"
+        "description": {
+          "type": "string"
         },
         "cards": {
           "type": "array",

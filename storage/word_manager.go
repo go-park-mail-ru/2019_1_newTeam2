@@ -1,12 +1,21 @@
 package storage
 
-import "fmt"
+import (
+	"fmt"
 
-func (db *Database) CreateCard(WordID int, TranslationID int) (int, error) {
+	"github.com/user/2019_1_newTeam2/models"
+)
+
+func (db *Database) WordIfExist(word *models.AddedToDictWord) (int, bool) {
+
+	return 0, false
+}
+
+func (db *Database) CreateWord(word *models.AddedToDictWord) (int, error) {
 	result, CreateErr := db.Conn.Exec(
-		CreateCard,
-		WordID,
-		TranslationID,
+		CreateWord,
+		word.Name,
+		word.Language,
 	)
 
 	if CreateErr != nil {

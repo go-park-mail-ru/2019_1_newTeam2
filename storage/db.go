@@ -34,6 +34,7 @@ func NewDataBase(username string, pass string) (*Database, error) {
 	if err != nil {
 		log.Println("lol")
 	}
+	_, err = database.Exec("USE wordtrainer")
 
 	db.Conn = database
 	return db, nil

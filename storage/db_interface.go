@@ -16,8 +16,14 @@ type UserManager interface {
 		password string, langid int, pronounceOn int) (bool, error)
 }
 
+type DictionaryManager interface {
+	DictionaryCreate(UserID int, Name string, Description string, Cards []models.AddedToDictCard) error
+	DictionaryUpdate(DictID int, Name string, Description string) error
+}
+
 type DBInterface interface {
 	UserManager
+	DictionaryManager
 	// interface for other managers
 	// method to connect to db
 	// method to query sql

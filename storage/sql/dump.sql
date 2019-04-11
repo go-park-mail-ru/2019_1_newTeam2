@@ -25,7 +25,8 @@ CREATE TABLE user (
 );
 CREATE TABLE dictionary (
 	ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-	name VARCHAR(255) NOT NULL,
+	name VARCHAR(100) NOT NULL,
+	description VARCHAR(500) NOT NULL,
 	UserID INT UNSIGNED NOT NULL,
 	FOREIGN KEY (UserID) REFERENCES user (ID)
 );
@@ -52,6 +53,6 @@ CREATE TABLE dictionary_to_library (
 	ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 	dictionary_id INT UNSIGNED NOT NULL,
 	library_id INT UNSIGNED NOT NULL,
-	FOREIGN KEY (dictionary_id) REFERENCES cards_library (ID),
-	FOREIGN KEY (library_id) REFERENCES dictionary (ID)
+	FOREIGN KEY (dictionary_id) REFERENCES dictionary (ID),
+	FOREIGN KEY (library_id) REFERENCES cards_library (ID)
 );
