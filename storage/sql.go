@@ -32,10 +32,11 @@ const (
 		"ORDER BY id;"
 
 	//  word
-	CreateWord = "INSERT INTO word (name, LangID) VALUES (?, ?)"
+	GetWord = "SELECT ID FROM word WHERE name = ? AND LangID = ?"
 
 	//  card
-	CreateCard    = "INSERT INTO card (word, translation) VALUES (?, ?)"
+	CreateCard = "INSERT INTO card (word, translation) VALUES (?, ?)"
+
 	CardsPaginate = ""
 	GetCardById   = "SELECT c.id, w1.name, w1.LangID, " +
 		" w2.name, w2.LangID from card c join word w1 " +

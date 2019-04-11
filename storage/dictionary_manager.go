@@ -55,21 +55,14 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	}
 	for _, it := range Cards {
 		var WordID, TranslationID, CardID, CardsLibraryID int
-		var res bool
 		var err error
-		WordID, res = db.WordIfExist(it.Word)
-		if !res {
-			WordID, err = db.CreateWord(it.Word)
-			if err != nil {
-				return err
-			}
+		WordID, err = db.CreateWord(it.Word)
+		if err != nil {
+			return err
 		}
-		TranslationID, res = db.WordIfExist(it.Translation)
-		if !res {
-			TranslationID, err = db.CreateWord(it.Translation)
-			if err != nil {
-				return err
-			}
+		TranslationID, err = db.CreateWord(it.Translation)
+		if err != nil {
+			return err
 		}
 		CardID, err = db.CreateCard(WordID, TranslationID)
 		if err != nil {
