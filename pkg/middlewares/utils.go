@@ -17,4 +17,3 @@ func (w *logResWriter) WriteHeader(code int) {
 	w.statusCode = code
 	w.ResponseWriter.WriteHeader(code)
 }
-

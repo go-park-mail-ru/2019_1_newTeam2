@@ -1,22 +1,22 @@
 package server_test
 
 import (
-"bytes"
-"encoding/json"
-"net/http"
-"net/http/httptest"
-"os"
-"testing"
-"time"
+	"bytes"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"testing"
+	"time"
 
-"github.com/golang/mock/gomock"
-"github.com/stretchr/testify/suite"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/suite"
 
-"github.com/user/2019_1_newTeam2/pkg/config"
-"github.com/user/2019_1_newTeam2/pkg/logger"
-"github.com/user/2019_1_newTeam2/mocks"
-"github.com/user/2019_1_newTeam2/models"
-"github.com/user/2019_1_newTeam2/pkg/apps/server"
+	"github.com/user/2019_1_newTeam2/mocks"
+	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/pkg/apps/server"
+	"github.com/user/2019_1_newTeam2/pkg/config"
+	"github.com/user/2019_1_newTeam2/pkg/logger"
 )
 
 const correctToken string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
@@ -148,7 +148,7 @@ type TestUsersPaginateCase struct {
 	t            []models.UserTableElem
 	response     string
 	err          error
-	got bool
+	got          bool
 	row          int
 	page         int
 	strRow       string
@@ -187,7 +187,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			response:     "200 OK",
 			queryCorrect: true,
 			method:       "GET",
-			got: true,
+			got:          true,
 			err:          nil,
 		},
 
@@ -216,7 +216,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			strPage:      "",
 			queryCorrect: false,
 			method:       "GET",
-			got: false,
+			got:          false,
 			response:     "400 Bad Request",
 			err: &TestErr{
 				str: "no query",
@@ -247,7 +247,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			page:         5,
 			strPage:      "ede",
 			method:       "GET",
-			got: false,
+			got:          false,
 			response:     "400 Bad Request",
 			queryCorrect: false,
 			err: &TestErr{
@@ -280,9 +280,9 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			strPage:      "5",
 			queryCorrect: true,
 			method:       "GET",
-			got: false,
+			got:          false,
 			response:     "404 Not Found",
-			err: nil,
+			err:          nil,
 		},
 
 		TestUsersPaginateCase{
@@ -291,7 +291,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			page:         5,
 			queryCorrect: true,
 			method:       "GET",
-			got: false,
+			got:          false,
 			response:     "400 Bad Request",
 			err: &TestErr{
 				str: "no query",
@@ -461,5 +461,3 @@ func (suite *UserHandlerTestSuite) TestDeleteUser() {
 		suite.Equal(item.response, response.Status)
 	}
 }
-
-

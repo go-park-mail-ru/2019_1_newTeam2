@@ -47,13 +47,12 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte 
 	return jsonStr
 }
 
-
 func IsLogined(r *http.Request, secret []byte, cookieField string) bool {
 	_, err := GetIdFromCookie(r, secret, cookieField)
 	return err == nil
 }
 
-func GetIdFromCookie(r *http.Request, secret []byte, cookieField string) (int, error){
+func GetIdFromCookie(r *http.Request, secret []byte, cookieField string) (int, error) {
 	cookie, err := r.Cookie(cookieField)
 
 	if err != nil {

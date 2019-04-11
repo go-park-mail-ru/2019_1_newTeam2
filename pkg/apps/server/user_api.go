@@ -115,7 +115,7 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
-	page :=0
+	page := 0
 	rowsNum := 0
 	err := ParseParams(w, r, &page, &rowsNum)
 	if err != nil {

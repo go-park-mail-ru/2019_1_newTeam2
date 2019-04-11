@@ -22,5 +22,5 @@ func (stdLogger *GoLogger) SetOutput(out io.Writer) {
 }
 
 func (stdLogger *GoLogger) SetPrefix(prefix string) {
-	stdLogger.logger.SetPrefix(prefix)	
+	stdLogger.logger.SetPrefix(prefix)
 }

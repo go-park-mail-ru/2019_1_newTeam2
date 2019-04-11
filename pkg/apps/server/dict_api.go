@@ -1,14 +1,14 @@
 package server
 
 import (
-"encoding/json"
+	"encoding/json"
 	"github.com/gorilla/mux"
 	"io/ioutil"
-"net/http"
+	"net/http"
 	"strconv"
 
 	"github.com/user/2019_1_newTeam2/models"
-"github.com/user/2019_1_newTeam2/pkg/responses"
+	"github.com/user/2019_1_newTeam2/pkg/responses"
 )
 
 func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request) {

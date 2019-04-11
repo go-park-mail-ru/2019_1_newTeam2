@@ -27,7 +27,6 @@ type DictionaryManager interface {
 	GetDict(dictId int) (models.DictionaryInfo, bool, error)
 }
 
-
 type LanguageManager interface {
 	GetLangs() (models.Language, bool, error)
 }

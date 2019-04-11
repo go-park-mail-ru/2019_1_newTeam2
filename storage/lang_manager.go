@@ -8,7 +8,7 @@ func (db *Database) GetLangs() (models.Language, bool, error) {
 		return models.Language{}, false, err
 	}
 
-	lang:= new(models.Language)
+	lang := new(models.Language)
 	for results.Next() {
 		err = results.Scan(&lang.ID, &lang.Name)
 		if err != nil {

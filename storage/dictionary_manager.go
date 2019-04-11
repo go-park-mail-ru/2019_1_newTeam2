@@ -80,7 +80,7 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	return nil
 }
 
-func (db *Database)GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error) {
+func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error) {
 	dicts := make([]models.DictionaryInfo, 0)
 	db.Logger.Log(page, rowsNum)
 	offset := (page - 1) * rowsNum
@@ -94,9 +94,9 @@ func (db *Database)GetDicts(userId int, page int, rowsNum int) ([]models.Diction
 	for rows.Next() {
 		i++
 		dict := models.DictionaryInfo{}
-		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description/*, &dict.UserId*/)
+		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description /*, &dict.UserId*/)
 		// TODO(sergeychur): say about userId, may be useful, if no delete
-		if err != nil{
+		if err != nil {
 			return dicts, false, err
 		}
 		dicts = append(dicts, dict)
@@ -109,11 +109,9 @@ func (db *Database)GetDicts(userId int, page int, rowsNum int) ([]models.Diction
 func (db *Database) GetDict(dictId int) (models.DictionaryInfo, bool, error) {
 	dict := models.DictionaryInfo{}
 	row := db.Conn.QueryRow(GetDictById, dictId)
-	err := row.Scan(&dict.ID, &dict.Name, &dict.Description/*, &dict.UserId*/)
+	err := row.Scan(&dict.ID, &dict.Name, &dict.Description /*, &dict.UserId*/)
 	if err != nil {
 		return models.DictionaryInfo{}, false, err
 	}
 	return dict, true, nil
 }
-
-

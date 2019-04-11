@@ -98,7 +98,7 @@ func (db *Database) GetUsers(page int, rowsNum int) ([]models.UserTableElem, boo
 		i++
 		user := models.UserTableElem{}
 		err := rows.Scan(&user.Username, &user.Score)
-		if err != nil{
+		if err != nil {
 			return usersPage, false, err
 		}
 		usersPage = append(usersPage, user)

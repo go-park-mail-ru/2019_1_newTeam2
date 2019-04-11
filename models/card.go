@@ -1,7 +1,7 @@
 package models
 
 type CardFull struct {
-	ID          int    `json:"id,omitempty"`
+	ID          int       `json:"id,omitempty"`
 	Word        *WordFull `json:"word,omitempty"`
 	Translation *WordFull `json:"translation,omitempty"`
 }
@@ -11,4 +11,3 @@ type Card struct {
 	Word        *Word `json:"word,omitempty"`
 	Translation *Word `json:"translation,omitempty"`
 }
-
