@@ -737,6 +737,9 @@
         },
         "translation": {
           "$ref": "#/definitions/Word"
+        },
+        "frequency": {
+          "type": "number"
         }
       }
     },

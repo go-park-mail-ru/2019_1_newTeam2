@@ -482,6 +482,8 @@ definitions:
         $ref: '#/definitions/Word'
       translation:
         $ref: '#/definitions/Word'
+      frequency:
+        type: number
   DictionaryInfo:
     type: object
     properties:
