@@ -64,37 +64,6 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	return nil
 }
 
-func (db *Database) SetCardToDictionary(dictID int, card models.Card) error {
-	var WordID, TranslationID, CardID, CardsLibraryID int
-	var err error
-	WordID, err = CreateWord(db, card.Word)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	TranslationID, err = CreateWord(db, card.Translation)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	CardID, err = db.CreateCard(WordID, TranslationID)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	CardsLibraryID, err = db.CreateCardsLibrary(CardID)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = db.AddToDictionaryToLibrary(dictID, CardsLibraryID)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	return nil
-}
-
 func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error) {
 	dicts := make([]models.DictionaryInfo, 0)
 	db.Logger.Log(page, rowsNum)

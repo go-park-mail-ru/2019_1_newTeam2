@@ -17,6 +17,7 @@ type DBInterface interface {
 type CardManager interface {
 	GetCards(dictId int, page int, rowsNum int) ([]models.Card, bool, error)
 	GetCard(cardId int) (models.Card, bool, error)
+	SetCardToDictionary(dictID int, card models.Card) error
 }
 
 type DictionaryManager interface {
