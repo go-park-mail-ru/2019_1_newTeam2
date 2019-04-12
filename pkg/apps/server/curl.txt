@@ -3,3 +3,6 @@ curl -d '{"id": 0, "name": "test_dict", "description": "new test dictionary", "c
 
 Update dictionary
 curl -d '{"id": 1, "name": "new name", "description": "update dictionary name"}' -H "Content-Type: application/json" -X PUT --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.zx74_EaDbjCYgF15bvWTfU6fHPvBCBROe_gZNWns5Cw" http://localhost:8090/dictionary/
+
+Set Card To Dictionary
+curl -d '{ "id": 0, "word": {"name": "add_me_please", "langID": 1}, "translation": { "name": "add_me_please_tr", "langID": 2}}' -X POST --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJ0c2FhbnN0aSJ9.avqxqLTh9pCv6QPtf--jqvg1W-QLmDxVpi_GOmmYwek" http://localhost:8090/card/?dictionaryId=1
