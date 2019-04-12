@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/user/2019_1_newTeam2/models"
@@ -40,7 +41,7 @@ func (db *Database) GetCards(dictId int, page int, rowsNum int) ([]models.Card, 
 		i++
 		card := models.Card{}
 		err := rows.Scan(&card.ID, &card.Word.LanguageId, &card.Word.Name,
-			&card.Translation.LanguageId, &card.Translation.Name)
+			&card.Translation.LanguageId, &card.Translation.Name, &card.Frequency)
 		if err != nil {
 			return cards, false, err
 		}
@@ -56,7 +57,11 @@ func (db *Database) GetCard(cardId int) (models.Card, bool, error) {
 	card.Word = new(models.Word)
 	card.Translation = new(models.Word)
 	row := db.Conn.QueryRow(GetCardById, cardId)
-	err := row.Scan(&card.ID, &card.Word.Name, &card.Word.LanguageId, &card.Translation.Name, &card.Translation.LanguageId)
+	err := row.Scan(&card.ID, &card.Word.Name, &card.Word.LanguageId,
+		&card.Translation.Name, &card.Translation.LanguageId, &card.Frequency)
+	if err == sql.ErrNoRows {
+		return models.Card{}, false, nil
+	}
 	if err != nil {
 		return models.Card{}, false, err
 	}

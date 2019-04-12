@@ -1,0 +1,3 @@
+FROM mysql:latest
+
+COPY ./storage/sql/dump.sql /docker-entrypoint-initdb.d/dump.sql

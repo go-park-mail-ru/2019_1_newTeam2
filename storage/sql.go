@@ -37,21 +37,24 @@ const (
 	//  card
 	CreateCard = "INSERT INTO card (word, translation) VALUES (?, ?)"
 
-	CardsPaginate = "SELECT c.id, w1.LangID, w1.name, w2.LangID, w2.name FROM card c JOIN " +
-		"(SELECT card.id " +
+	CardsPaginate = "SELECT c_l.id, w1.LangID, w1.name, w2.LangID, w2.name, c_l.frequency FROM card c " +
+		"JOIN (SELECT card.id " +
 		"FROM dictionary_to_library d_l " +
 		"JOIN cards_library c_l ON (d_l.library_id = c_l.id) " +
 		"JOIN card card ON(card.id = c_l.card_id) " +
 		"WHERE d_l.dictionary_id = ? " +
 		"ORDER BY card_id LIMIT ? OFFSET ?) l " +
 		"ON (c.id = l.id) " +
+		"JOIN cards_library c_l ON ( c_l.card_id = c.id) " +
 		"JOIN word w1 on (w1.id = c.word) " +
 		"JOIN word w2 on (w2.id = c.translation) " +
 		"ORDER BY id"
-	GetCardById = "SELECT c.id, w1.name, w1.LangID, " +
-		" w2.name, w2.LangID from card c join word w1 " +
+	GetCardById = "SELECT c_l.id, w1.name, w1.LangID, " +
+		" w2.name, w2.LangID, c_l.frequency from cards_library c_l " +
+		"join card c on c_l.card_id = c.id " +
+		" join word w1 " +
 		"on (w1.id = c.word) join word w2 on " +
-		"(w2.id = c.translation) where c.id = ?"
+		"(w2.id = c.translation) where c_l.id = ?"
 
 	//  language
 	CreateLanguage = "INSERT INTO language (name) VALUES (?)"
