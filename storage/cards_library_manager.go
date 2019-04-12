@@ -1,13 +1,15 @@
 package storage
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func (db *Database) CreateCardsLibrary(CardID int) (int, error) {
 	result, CreateErr := db.Conn.Exec(
 		CreateCardsLibrary,
 		0,
-		1,
 		CardID,
+		1,
 	)
 
 	if CreateErr != nil {
