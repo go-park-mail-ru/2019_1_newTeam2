@@ -29,7 +29,7 @@ func (db *Database) DictionaryUpdate(DictID int, Name string, Description string
 		DictID,
 	)
 	if UpdateErr != nil {
-		fmt.Println("UpdateErr: user not update: ", UpdateErr)
+		db.Logger.Log(UpdateErr)
 		return fmt.Errorf("UpdateErr: user not update")
 	}
 
@@ -44,15 +44,13 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 		UserID,
 	)
 	if CreateErr != nil {
-		fmt.Println("CreateErr: user not create")
-		fmt.Println(CreateErr)
+		db.Logger.Log(CreateErr)
 		return fmt.Errorf("CreateErr: user not create")
 	}
 
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
-		fmt.Println("CreateErr: user not create")
-		fmt.Println(GetIDErr)
+		db.Logger.Log(GetIDErr)
 		return fmt.Errorf("GetIDErr: can`t get last dict id")
 	}
 	for _, it := range Cards {

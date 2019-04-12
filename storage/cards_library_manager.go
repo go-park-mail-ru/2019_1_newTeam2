@@ -32,7 +32,6 @@ func (db *Database) IfExistCardLibrary(CardID int) int {
 	if err != nil {
 		return 0
 	}
-	fmt.Println("ID: ", ID)
 	return ID
 }
 
@@ -65,34 +64,34 @@ func (db *Database) SetCardToDictionary(dictID int, card models.Card) error {
 	var err error
 	WordID, err = CreateWord(db, card.Word)
 	if err != nil {
-		fmt.Println(err)
+		db.Logger.Log(err)
 		return err
 	}
 	TranslationID, err = CreateWord(db, card.Translation)
 	if err != nil {
-		fmt.Println(err)
+		db.Logger.Log(err)
 		return err
 	}
 	CardID, err = db.CreateCard(WordID, TranslationID)
 	if err != nil {
-		fmt.Println(err)
+		db.Logger.Log(err)
 		return err
 	}
 	if CardsLibraryID = db.IfExistCardLibrary(CardID); CardsLibraryID == 0 {
 		CardsLibraryID, err = db.CreateCardsLibrary(CardID)
 		if err != nil {
-			fmt.Println(err)
+			db.Logger.Log(err)
 			return err
 		}
 	} else {
 		if err = db.IncrementCount(CardsLibraryID); err != nil {
-			fmt.Println(err)
+			db.Logger.Log(err)
 			return err
 		}
 	}
 	err = db.AddToDictionaryToLibrary(dictID, CardsLibraryID)
 	if err != nil {
-		fmt.Println(err)
+		db.Logger.Log(err)
 		return err
 	}
 	return nil
