@@ -23,7 +23,7 @@ func CreateWord(db *Database, word *models.Word) (int, error) {
 
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
-		return 0, fmt.Errorf("GetIDErr: can`t get last dict id")
+		return 0, fmt.Errorf("GetIDErr: can`t get last word id")
 	}
 
 	if lastID != 0 {

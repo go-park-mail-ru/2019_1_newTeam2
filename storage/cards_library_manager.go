@@ -25,6 +25,41 @@ func (db *Database) CreateCardsLibrary(CardID int) (int, error) {
 	return int(lastID), nil
 }
 
+func (db *Database) IfExistCardLibrary(CardID int) int {
+	var ID int
+	row := db.Conn.QueryRow(GetIDCardsLibrary, CardID)
+	err := row.Scan(&ID)
+	if err != nil {
+		return 0
+	}
+	fmt.Println("ID: ", ID)
+	return ID
+}
+
+func (db *Database) IncrementCount(CardID int) error {
+	_, err := db.Conn.Exec(
+		IncrCountCardsLibrary,
+		CardID,
+	)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *Database) DecrementCount(CardID int) error {
+	_, err := db.Conn.Exec(
+		DectCountCardsLibrary,
+		CardID,
+	)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (db *Database) SetCardToDictionary(dictID int, card models.Card) error {
 	var WordID, TranslationID, CardID, CardsLibraryID int
 	var err error
@@ -43,10 +78,17 @@ func (db *Database) SetCardToDictionary(dictID int, card models.Card) error {
 		fmt.Println(err)
 		return err
 	}
-	CardsLibraryID, err = db.CreateCardsLibrary(CardID)
-	if err != nil {
-		fmt.Println(err)
-		return err
+	if CardsLibraryID = db.IfExistCardLibrary(CardID); CardsLibraryID == 0 {
+		CardsLibraryID, err = db.CreateCardsLibrary(CardID)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	} else {
+		if err = db.IncrementCount(CardsLibraryID); err != nil {
+			fmt.Println(err)
+			return err
+		}
 	}
 	err = db.AddToDictionaryToLibrary(dictID, CardsLibraryID)
 	if err != nil {
