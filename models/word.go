@@ -7,5 +7,5 @@ type WordFull struct {
 
 type Word struct {
 	Name       string `json:"name,omitempty"`
-	LanguageId int    `json:"languageId,omitempty,int"`
+	LanguageId int    `json:"langID,omitempty,int"`
 }

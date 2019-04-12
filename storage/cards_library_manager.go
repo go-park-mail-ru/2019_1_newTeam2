@@ -6,6 +6,7 @@ func (db *Database) CreateCardsLibrary(CardID int) (int, error) {
 	result, CreateErr := db.Conn.Exec(
 		CreateCardsLibrary,
 		0,
+		1,
 		CardID,
 	)
 

@@ -58,7 +58,7 @@ const (
 	GetLangs       = "SELECT * FROM language"
 
 	//  cards_library
-	CreateCardsLibrary     = "INSERT INTO cards_library (frequency, card_id) VALUES (?, ?)"
+	CreateCardsLibrary     = "INSERT INTO cards_library (frequency, card_id, count) VALUES (?, ?, ?)"
 	DeleteListCardsLibrary = "DELETE FROM cards_library WHERE ID in ?"
 
 	//  dictionary_to_library

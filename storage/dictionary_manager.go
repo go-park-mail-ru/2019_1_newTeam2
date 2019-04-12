@@ -44,13 +44,15 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 		UserID,
 	)
 	if CreateErr != nil {
-		fmt.Println("CreateErr: user not create: ", CreateErr)
+		fmt.Println("CreateErr: user not create")
+		fmt.Println(CreateErr)
 		return fmt.Errorf("CreateErr: user not create")
 	}
 
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
-		fmt.Println("GetIDErr: can`t get last dict id")
+		fmt.Println("CreateErr: user not create")
+		fmt.Println(GetIDErr)
 		return fmt.Errorf("GetIDErr: can`t get last dict id")
 	}
 	for _, it := range Cards {
@@ -58,22 +60,27 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 		var err error
 		WordID, err = CreateWord(db, it.Word)
 		if err != nil {
+			fmt.Println(err)
 			return err
 		}
 		TranslationID, err = CreateWord(db, it.Translation)
 		if err != nil {
+			fmt.Println(err)
 			return err
 		}
 		CardID, err = db.CreateCard(WordID, TranslationID)
 		if err != nil {
+			fmt.Println(err)
 			return err
 		}
 		CardsLibraryID, err = db.CreateCardsLibrary(CardID)
 		if err != nil {
+			fmt.Println(err)
 			return err
 		}
 		err = db.AddToDictionaryToLibrary(int(lastID), CardsLibraryID)
 		if err != nil {
+			fmt.Println(err)
 			return err
 		}
 	}
@@ -106,6 +113,7 @@ func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.Dictio
 	}
 	return dicts, true, nil
 }
+
 func (db *Database) GetDict(dictId int) (models.DictionaryInfo, bool, error) {
 	dict := models.DictionaryInfo{}
 	row := db.Conn.QueryRow(GetDictById, dictId)
