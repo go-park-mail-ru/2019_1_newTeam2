@@ -36,6 +36,7 @@ const (
 
 	//  card
 	CreateCard = "INSERT INTO card (word, translation) VALUES (?, ?)"
+	GetCard    = "SELECT ID FROM card WHERE word = ? AND translation = ?"
 
 	CardsPaginate = "SELECT c_l.id, w1.LangID, w1.name, w2.LangID, w2.name, c_l.frequency FROM card c " +
 		"JOIN (SELECT card.id " +
@@ -63,6 +64,9 @@ const (
 	//  cards_library
 	CreateCardsLibrary     = "INSERT INTO cards_library (frequency, card_id, count) VALUES (?, ?, ?)"
 	DeleteListCardsLibrary = "DELETE FROM cards_library WHERE ID in ?"
+	GetIDCardsLibrary      = "SELECT ID FROM cards_library WHERE card_id = ?"
+	IncrCountCardsLibrary  = "UPDATE cards_library SET count = count + 1 WHERE ID = ?"
+	DectCountCardsLibrary  = "UPDATE cards_library SET count = count - 1 WHERE ID = ?"
 
 	//  dictionary_to_library
 	CreateDictionaryToLibrary = "INSERT INTO dictionary_to_library (dictionary_id, library_id) VALUES (?, ?)"

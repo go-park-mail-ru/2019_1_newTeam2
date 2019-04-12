@@ -3,26 +3,42 @@ package storage
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 
 	"github.com/user/2019_1_newTeam2/models"
 )
 
 func (db *Database) CreateCard(WordID int, TranslationID int) (int, error) {
+	Query := "INSERT INTO card (word, translation) SELECT * FROM (SELECT \"" +
+		strconv.Itoa(WordID) + "\", " + strconv.Itoa(TranslationID) +
+		") AS tmp WHERE NOT EXISTS " +
+		"(SELECT word, translation FROM card WHERE word = ? AND translation = ?) LIMIT 1"
 	result, CreateErr := db.Conn.Exec(
-		CreateCard,
+		Query,
 		WordID,
 		TranslationID,
 	)
 
 	if CreateErr != nil {
-		return 0, fmt.Errorf("CreateErr: word not create")
+		return 0, fmt.Errorf("Err: card not create and not found")
 	}
 
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
-		return 0, fmt.Errorf("GetIDErr: can`t get last dict id")
+		return 0, fmt.Errorf("GetIDErr: can`t get last card id")
 	}
-	return int(lastID), nil
+
+	if lastID != 0 {
+		return int(lastID), nil
+	}
+
+	var ID int64
+	row := db.Conn.QueryRow(GetCard, WordID, TranslationID)
+	err := row.Scan(&ID)
+	if err != nil {
+		return 0, fmt.Errorf("Err: card not create and not found")
+	}
+	return int(ID), nil
 }
 
 func (db *Database) GetCards(dictId int, page int, rowsNum int) ([]models.Card, bool, error) {
@@ -52,6 +68,7 @@ func (db *Database) GetCards(dictId int, page int, rowsNum int) ([]models.Card, 
 	}
 	return cards, true, nil
 }
+
 func (db *Database) GetCard(cardId int) (models.Card, bool, error) {
 	card := models.Card{}
 	card.Word = new(models.Word)
