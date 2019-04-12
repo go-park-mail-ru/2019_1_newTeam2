@@ -668,6 +668,12 @@
         ],
         "parameters": [
           {
+            "name": "dictionaryId",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
             "in": "body",
             "name": "body",
             "description": "user object to register",
@@ -689,37 +695,6 @@
                 "$ref": "#/definitions/Card"
               }
             }
-          },
-          "404": {
-            "description": "Error in request"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Add card to dictionary",
-        "tags": [
-          "card"
-        ],
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "cardId",
-            "in": "path",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "dictionaryId",
-            "in": "path",
-            "required": true,
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "successful operation"
           },
           "404": {
             "description": "Error in request"
