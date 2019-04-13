@@ -151,7 +151,7 @@ func (db *Database) UserRegistration(username string, email string,
 		langid,
 		pronounceOn,
 		0,
-		"files/avatars/avatar.jpg",
+		"",
 	)
 
 	if CreateErr != nil {
