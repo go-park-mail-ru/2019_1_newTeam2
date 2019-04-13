@@ -612,10 +612,16 @@
         ],
         "parameters": [
           {
-            "name": "cardId",
-            "in": "path",
+            "in": "body",
+            "name": "body",
+            "description": "user object to register",
             "required": true,
-            "type": "integer"
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Card"
+              }
+            }
           }
         ],
         "responses": {
@@ -640,10 +646,16 @@
         "summary": "Delete card",
         "parameters": [
           {
-            "name": "cardId",
-            "in": "path",
+            "in": "body",
+            "name": "body",
+            "description": "user object to register",
             "required": true,
-            "type": "integer"
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CardDelete"
+              }
+            }
           }
         ],
         "responses": {
@@ -708,7 +720,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer"
+          "type": "integer",
+          "description": "omitempty"
         },
         "name": {
           "type": "string"
@@ -726,11 +739,23 @@
         }
       }
     },
+    "CardDelete": {
+      "type": "object",
+      "properties": {
+        "dictionaryId": {
+          "type": "integer"
+        },
+        "cardId": {
+          "type": "integer"
+        }
+      }
+    },
     "Card": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer"
+          "type": "integer",
+          "description": "omitempty"
         },
         "word": {
           "$ref": "#/definitions/Word"
@@ -747,7 +772,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer"
+          "type": "integer",
+          "description": "omitempty"
         },
         "name": {
           "type": "string"
@@ -761,7 +787,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer"
+          "type": "integer",
+          "description": "omitempty"
         },
         "name": {
           "type": "string"
@@ -806,7 +833,8 @@
       "properties": {
         "id": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "omitempty"
         },
         "username": {
           "type": "string"

@@ -77,7 +77,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	needLogin.HandleFunc("/cards", server.CardsPaginate).Queries("dict", "{dictId}", "rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/card/{id:[0-9]+}", server.GetCardById).Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPut, http.MethodOptions)
-	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodDelete, http.MethodOptions)
+	needLogin.HandleFunc("/card/", server.DeleteCardInDictionary).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.CreateCardInDictionary).Methods(http.MethodPost, http.MethodOptions)
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)

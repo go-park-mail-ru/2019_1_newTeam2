@@ -6,6 +6,18 @@ import (
 	"github.com/user/2019_1_newTeam2/models"
 )
 
+func (db *Database) DeleteCardInDictionary(dictionaryID int, cardID int) error {
+	if err := db.DecrementCount(cardID); err != nil {
+		db.Logger.Log(err)
+		return err
+	}
+	if err := db.DeleteDictionaryToLibraryByID(dictionaryID, cardID); err != nil {
+		db.Logger.Log(err)
+		return err
+	}
+	return nil
+}
+
 func (db *Database) CreateCardsLibrary(CardID int) (int, error) {
 	result, CreateErr := db.Conn.Exec(
 		CreateCardsLibrary,
@@ -13,11 +25,9 @@ func (db *Database) CreateCardsLibrary(CardID int) (int, error) {
 		CardID,
 		1,
 	)
-
 	if CreateErr != nil {
 		return 0, fmt.Errorf("CreateErr: word not create")
 	}
-
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
 		return 0, fmt.Errorf("GetIDErr: can`t get last dict id")

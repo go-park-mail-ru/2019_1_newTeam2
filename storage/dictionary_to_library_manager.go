@@ -15,3 +15,17 @@ func (db *Database) AddToDictionaryToLibrary(lastID int, CardsLibraryID int) err
 
 	return nil
 }
+
+func (db *Database) DeleteDictionaryToLibraryByID(dictionaryID int, cardID int) error {
+	_, DeleteErr := db.Conn.Exec(
+		DeleteDictionaryToLibraryByID,
+		dictionaryID,
+		cardID,
+	)
+
+	if DeleteErr != nil {
+		return DeleteErr
+	}
+
+	return nil
+}
