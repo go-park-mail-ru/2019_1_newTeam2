@@ -11,4 +11,4 @@ GET Card
 curl -X GET --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.KGisCdKujxlsZtXRPO_VFuWv8ZiX7QjcTJERwe-35Ug" http://localhost:8090/card/1
 
 Delete Card in Dictionary
-curl -X DELETE -d '{ "dictionaryId": 1, "cardId": 2}' --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.KGisCdKujxlsZtXRPO_VFuWv8ZiX7QjcTJERwe-35Ug" http://localhost:8090/card/?dictionaryId=1&cardId=2
+curl -X DELETE -d '{ "dictionaryId": 1, "cardId": 2}' --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.KGisCdKujxlsZtXRPO_VFuWv8ZiX7QjcTJERwe-35Ug" http://localhost:8090/card/
