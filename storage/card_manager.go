@@ -56,6 +56,8 @@ func (db *Database) GetCards(dictId int, page int, rowsNum int) ([]models.Card, 
 	for rows.Next() {
 		i++
 		card := models.Card{}
+		card.Word = new(models.Word)
+		card.Translation = new(models.Word)
 		err := rows.Scan(&card.ID, &card.Word.LanguageId, &card.Word.Name,
 			&card.Translation.LanguageId, &card.Translation.Name, &card.Frequency)
 		if err != nil {
