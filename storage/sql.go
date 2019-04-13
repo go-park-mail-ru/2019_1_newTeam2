@@ -69,5 +69,6 @@ const (
 	DectCountCardsLibrary  = "UPDATE cards_library SET count = count - 1 WHERE ID = ?"
 
 	//  dictionary_to_library
-	CreateDictionaryToLibrary = "INSERT INTO dictionary_to_library (dictionary_id, library_id) VALUES (?, ?)"
+	CreateDictionaryToLibrary     = "INSERT INTO dictionary_to_library (dictionary_id, library_id) VALUES (?, ?)"
+	DeleteDictionaryToLibraryByID = "DELETE FROM dictionary_to_library WHERE dictionary_id = ? AND library_id = ?"
 )

@@ -7,8 +7,13 @@ type CardFull struct {
 }
 
 type Card struct {
-	ID          int   `json:"id,omitempty"`
-	Word        *Word `json:"word,omitempty"`
-	Translation *Word `json:"translation,omitempty"`
-	Frequency float64 `json:"frequency,omitempty"`
+	ID          int     `json:"id,omitempty"`
+	Word        *Word   `json:"word,omitempty"`
+	Translation *Word   `json:"translation,omitempty"`
+	Frequency   float64 `json:"frequency,omitempty"`
+}
+
+type CardDelete struct {
+	DictionaryId int `json:"dictionaryId"`
+	CardId       int `json:"cardId"`
 }

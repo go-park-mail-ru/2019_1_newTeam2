@@ -401,10 +401,14 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: cardId
-          in: path
+        - in: body
+          name: body
+          description: user object to register
           required: true
-          type: integer
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Card'
       responses:
         '200':
           description: successful operation
@@ -419,10 +423,14 @@ paths:
         - card
       summary: Delete card
       parameters:
-        - name: cardId
-          in: path
+        - in: body
+          name: body
+          description: user object to register
           required: true
-          type: integer
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CardDelete'
       responses:
         '200':
           description: OK
@@ -464,6 +472,7 @@ definitions:
     properties:
       id:
         type: integer
+        description: omitempty
       name:
         type: string
   Word:
@@ -473,11 +482,19 @@ definitions:
         type: string
       langID:
         type: integer
+  CardDelete:
+    type: object
+    properties:
+      dictionaryId:
+        type: integer
+      cardId:
+        type: integer
   Card:
     type: object
     properties:
       id:
         type: integer
+        description: omitempty
       word:
         $ref: '#/definitions/Word'
       translation:
@@ -489,6 +506,7 @@ definitions:
     properties:
       id:
         type: integer
+        description: omitempty
       name:
         type: string
       description:
@@ -498,6 +516,7 @@ definitions:
     properties:
       id:
         type: integer
+        description: omitempty
       name:
         type: string
       description:
@@ -528,6 +547,7 @@ definitions:
       id:
         type: integer
         format: int32
+        description: omitempty
       username:
         type: string
       email:

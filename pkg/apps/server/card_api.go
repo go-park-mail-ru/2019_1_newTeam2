@@ -15,13 +15,6 @@ import (
 func (server *Server) CardsPaginate(w http.ResponseWriter, r *http.Request) {
 	page := 0
 	rowsNum := 0
-	/*vars := mux.Vars(r)
-	dictIdStr := vars["dictId"]
-	dictId, err := strconv.Atoi(dictIdStr)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}*/
 	dictId, ok := r.URL.Query()["dict"]
 	if !ok {
 		responses.WriteToResponse(w, http.StatusBadRequest, fmt.Errorf("no dict id"))
@@ -68,6 +61,33 @@ func (server *Server) GetCardById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	responses.WriteToResponse(w, http.StatusOK, result)
+}
+
+func (server *Server) DeleteCardInDictionary(w http.ResponseWriter, r *http.Request) {
+	server.Logger.Log("DeleteCardInDictionaryAPI")
+	fmt.Println(r.URL.Query())
+
+	var card models.CardDelete
+
+	jsonStr, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		textError := models.Error{""}
+		responses.WriteToResponse(w, http.StatusBadRequest, textError)
+		return
+	}
+
+	err = json.Unmarshal(jsonStr, &card)
+	if err != nil {
+		textError := models.Error{""}
+		responses.WriteToResponse(w, http.StatusBadRequest, textError)
+		return
+	}
+
+	if err = server.DB.DeleteCardInDictionary(card.DictionaryId, card.CardId); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func (server *Server) CreateCardInDictionary(w http.ResponseWriter, r *http.Request) {
