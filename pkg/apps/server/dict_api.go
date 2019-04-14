@@ -100,7 +100,6 @@ func (server *Server) GetDictionaryById(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	// TODO(sergeychur): have a look some shit with ids
 	result, found, err := server.DB.GetDict(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

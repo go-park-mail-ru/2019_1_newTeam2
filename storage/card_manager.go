@@ -47,7 +47,6 @@ func (db *Database) GetCards(dictId int, page int, rowsNum int) ([]models.Card, 
 	offset := (page - 1) * rowsNum
 	db.Logger.Log(offset)
 	rows, err := db.Conn.Query(CardsPaginate, dictId, rowsNum, offset)
-	// TODO(sergeychur): implement query
 	if err != nil {
 		db.Logger.Log(err)
 		return cards, false, err
