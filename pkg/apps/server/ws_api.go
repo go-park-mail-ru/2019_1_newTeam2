@@ -9,11 +9,10 @@ import (
 
 func (server *Server) WSSubscribe(w http.ResponseWriter, r *http.Request) {
 	id, err := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
-	/*if err != nil {
+	if err != nil {
 		responses.WriteToResponse(w, http.StatusUnauthorized, nil)
 		return
-	}*/
-	id = 0
+	}
 	err = server.hub.AddClient(w, r, id)
 	if err != nil {
 		responses.WriteToResponse(w, http.StatusBadRequest, models.Error{Message: "cannot subscribe"})
