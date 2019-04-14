@@ -100,5 +100,5 @@ BEGIN
 		INSERT INTO dictionary_to_library(dictionary_id, library_id) VALUES (new_dict_id, cur_c_l_id);
 	END LOOP;
 	CLOSE c1;
-	SELECT new_dict_id, dict_name, dict_desc, dict_owner;
+	SELECT new_dict_id, dict_name, dict_desc, thief_id;
 END;
