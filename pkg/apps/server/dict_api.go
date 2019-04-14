@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -121,18 +120,15 @@ func (server *Server) DictsPaginate(w http.ResponseWriter, r *http.Request) {
 	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
 	err := ParseParams(w, r, &page, &rowsNum)
 	if err != nil {
-		fmt.Println("[lol]")
 		return
 	}
 	result, found, err := server.DB.GetDicts(userId, page, rowsNum)
 	if err != nil {
-		fmt.Println("[kek]")
 		server.Logger.Log(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	if !found {
-		fmt.Println("[4eburek]")
 		server.Logger.Log(err)
 		w.WriteHeader(http.StatusNotFound)
 		return
