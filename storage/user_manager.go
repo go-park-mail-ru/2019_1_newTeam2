@@ -51,33 +51,34 @@ func (db *Database) DeleteUserById(userID int) (bool, error) {
 }
 
 func (db *Database) UpdateUserById(userID int, username string, email string,
-	password string, langid int, pronounceOn int) (bool, error) {
+	/*password string,*/ langid int, pronounceOn int) (bool, error) {
 	_, check, _ := db.GetUserByID(userID)
 	if !check {
 		db.Logger.Log("Такого пользователя не существует")
 		return false, fmt.Errorf("Такого пользователя не существует")
 	}
 
-	hashPassword, err := HashPassword(password)
+	// hashPassword, err := HashPassword(password)
 
-	if err != nil {
-		db.Logger.Log("hash error")
-		return false, fmt.Errorf("hash error")
-	}
+	// if err != nil {
+	// 	db.Logger.Log("hash error")
+	// 	return false, fmt.Errorf("hash error")
+	// }
 
-	_, CreateErr := db.Conn.Exec(
+	_, UpdateErr := db.Conn.Exec(
 		UpdateUserQuery,
 		username,
 		email,
-		hashPassword,
+		// hashPassword,
 		langid,
 		pronounceOn,
 		userID,
 	)
 
-	if CreateErr != nil {
-		db.Logger.Log("user not create")
-		return false, fmt.Errorf("user not create")
+	if UpdateErr != nil {
+		db.Logger.Log("user not update")
+		fmt.Println(UpdateErr)
+		return false, fmt.Errorf("user not update")
 	}
 
 	return true, nil
@@ -123,8 +124,9 @@ func (db *Database) AddImage(path string, userID int) error {
 	)
 
 	if CreateErr != nil {
-		db.Logger.Log("user not create")
-		return fmt.Errorf("user not create")
+		fmt.Println(CreateErr)
+		db.Logger.Log("image is not added")
+		return fmt.Errorf("image is not added")
 	}
 	return nil
 }

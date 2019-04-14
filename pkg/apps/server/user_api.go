@@ -3,13 +3,14 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/user/2019_1_newTeam2/filesystem"
-	"github.com/user/2019_1_newTeam2/models"
-	"github.com/user/2019_1_newTeam2/pkg/responses"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"regexp"
+
+	"github.com/user/2019_1_newTeam2/filesystem"
+	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/pkg/responses"
 )
 
 func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
@@ -156,7 +157,8 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	server.DB.UpdateUserById(userId, user.Username, user.Email, user.Password, user.LangID, user.PronounceON)
+
+	server.DB.UpdateUserById(userId, user.Username, user.Email /*user.Password, */, user.LangID, user.PronounceON)
 	w.WriteHeader(http.StatusOK)
 }
 

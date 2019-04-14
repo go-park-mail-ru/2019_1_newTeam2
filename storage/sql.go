@@ -12,7 +12,7 @@ const (
 	GetUserByUsernameQuery   = "SELECT ID, Username, Email, Password, LangID, PronounceON, Score, AvatarPath FROM wordtrainer.user WHERE Username = ?"
 	GetUserByIDQuery         = "SELECT ID, Username, Email, LangID, PronounceON, Score, AvatarPath FROM wordtrainer.user WHERE ID = ?"
 	AddUserQuery             = "INSERT INTO user (Username, Email, Password, LangId, PronounceON, Score, AvatarPath) VALUES (?, ?, ?, ?, ?, ?, ?)"
-	UpdateUserQuery          = "UPDATE user SET Username = ?, Email = ?, Password = ?, LangId = ?, PronounceON = ?, WHERE ID = ?"
+	UpdateUserQuery          = "UPDATE user SET Username = ?, Email = ?, LangId = ?, PronounceON = ? WHERE ID = ?"
 	DeleteUserQuery          = "DELETE FROM user WHERE ID = ?"
 	UpdateImagePathUserQuery = "UPDATE user SET AvatarPath = ? WHERE ID = ?"
 	UsersPaginate            = "SELECT u.Username, u.Score " +
