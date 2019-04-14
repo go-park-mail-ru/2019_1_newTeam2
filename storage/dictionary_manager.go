@@ -36,7 +36,7 @@ func (db *Database) DictionaryUpdate(DictID int, Name string, Description string
 	return nil
 }
 
-func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) error {
+func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfo, error) {
 	result, CreateErr := db.Conn.Exec(
 		CreateEmptyDictionary,
 		Name,
@@ -45,21 +45,25 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	)
 	if CreateErr != nil {
 		db.Logger.Log(CreateErr)
-		return fmt.Errorf("CreateErr: user not create")
+		return models.DictionaryInfo{}, fmt.Errorf("CreateErr: user not create")
 	}
-
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
 		db.Logger.Log(GetIDErr)
-		return fmt.Errorf("GetIDErr: can`t get last dict id")
+		return models.DictionaryInfo{}, fmt.Errorf("GetIDErr: can`t get last dict id")
 	}
 	for _, it := range Cards {
 		err := db.SetCardToDictionary(int(lastID), it)
 		if err != nil {
-			return err
+			return models.DictionaryInfo{}, err
 		}
 	}
-	return nil
+	dict, _, err := db.GetDict(int(lastID))
+	if err != nil {
+		db.Logger.Log(err)
+		return models.DictionaryInfo{}, err
+	}
+	return dict, nil
 }
 
 func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error) {
@@ -92,7 +96,7 @@ func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.Dictio
 func (db *Database) GetDict(dictId int) (models.DictionaryInfo, bool, error) {
 	dict := models.DictionaryInfo{}
 	row := db.Conn.QueryRow(GetDictById, dictId)
-	err := row.Scan(&dict.ID, &dict.Name, &dict.Description /*, &dict.UserId*/)
+	err := row.Scan(&dict.ID, &dict.Name, &dict.Description)
 	if err != nil {
 		return models.DictionaryInfo{}, false, err
 	}
