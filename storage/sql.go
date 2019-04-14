@@ -37,11 +37,11 @@ const (
 	//  card
 	CreateCard    = "INSERT INTO wordtrainer.card (word, translation) VALUES (?, ?)"
 	GetCard       = "SELECT ID FROM wordtrainer.card WHERE word = ? AND translation = ?"
-	CardsPaginate = "SELECT c_l.id, w1.LangID, w1.name, w2.LangID, w2.name, c_l.frequency FROM card c " +
+	CardsPaginate = "SELECT c_l.id, w1.LangID, w1.name, w2.LangID, w2.name, c_l.frequency FROM wordtrainer.card c " +
 		"JOIN (SELECT wordtrainer.card.id " +
 		"FROM wordtrainer.dictionary_to_library d_l " +
 		"JOIN wordtrainer.cards_library c_l ON (d_l.library_id = c_l.id) " +
-		"JOIN wordtrainer.card wordtrainer.card ON(card.id = c_l.card_id) " +
+		"JOIN wordtrainer.card card ON(card.id = c_l.card_id) " +
 		"WHERE d_l.dictionary_id = ? " +
 		"ORDER BY card_id LIMIT ? OFFSET ?) l " +
 		"ON (c.id = l.id) " +
