@@ -28,7 +28,6 @@ func (db *Database) DictionaryDelete(DictID int) error {
 		DictID,
 	)
 	if DeleteErr != nil {
-		fmt.Println("Тут косяк")
 		db.Logger.Log(DeleteErr)
 		return fmt.Errorf("DeleteErr: dictionary not deleted")
 	}

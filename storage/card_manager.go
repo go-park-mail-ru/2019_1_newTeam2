@@ -9,10 +9,10 @@ import (
 )
 
 func (db *Database) CreateCard(WordID int, TranslationID int) (int, error) {
-	Query := "INSERT INTO card (word, translation) SELECT * FROM (SELECT \"" +
+	Query := "INSERT INTO wordtrainer.card (word, translation) SELECT * FROM (SELECT \"" +
 		strconv.Itoa(WordID) + "\", " + strconv.Itoa(TranslationID) +
 		") AS tmp WHERE NOT EXISTS " +
-		"(SELECT word, translation FROM card WHERE word = ? AND translation = ?) LIMIT 1"
+		"(SELECT word, translation FROM wordtrainer.card WHERE word = ? AND translation = ?) LIMIT 1"
 	result, CreateErr := db.Conn.Exec(
 		Query,
 		WordID,

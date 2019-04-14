@@ -6,7 +6,7 @@ import (
 
 const (
 	//  utils
-	// UseDB = "USE wordtrainer"
+	UseDB = "USE wordtrainer"
 
 	//  user
 	GetUserByUsernameQuery   = "SELECT ID, Username, Email, Password, LangID, PronounceON, Score, AvatarPath FROM wordtrainer.user WHERE Username = ?"
@@ -35,25 +35,25 @@ const (
 	GetWord = "SELECT ID FROM wordtrainer.word WHERE name = ? AND LangID = ?"
 
 	//  card
-	CreateCard    = "INSERT INTO wordtrainer.card (wordtrainer.word, translation) VALUES (?, ?)"
-	GetCard       = "SELECT ID FROM wordtrainer.card WHERE wordtrainer.word = ? AND translation = ?"
-	CardsPaginate = "SELECT c_l.id, w1.LangID, w1.name, w2.LangID, w2.name, c_l.frequency FROM wordtrainer.card c " +
+	CreateCard    = "INSERT INTO wordtrainer.card (word, translation) VALUES (?, ?)"
+	GetCard       = "SELECT ID FROM wordtrainer.card WHERE word = ? AND translation = ?"
+	CardsPaginate = "SELECT c_l.id, w1.LangID, w1.name, w2.LangID, w2.name, c_l.frequency FROM card c " +
 		"JOIN (SELECT wordtrainer.card.id " +
 		"FROM wordtrainer.dictionary_to_library d_l " +
 		"JOIN wordtrainer.cards_library c_l ON (d_l.library_id = c_l.id) " +
-		"JOIN wordtrainer.card wordtrainer.card ON(wordtrainer.card.id = c_l.card_id) " +
+		"JOIN wordtrainer.card wordtrainer.card ON(card.id = c_l.card_id) " +
 		"WHERE d_l.dictionary_id = ? " +
 		"ORDER BY card_id LIMIT ? OFFSET ?) l " +
 		"ON (c.id = l.id) " +
 		"JOIN wordtrainer.cards_library c_l ON ( c_l.card_id = c.id) " +
-		"JOIN wordtrainer.word w1 on (w1.id = c.wordtrainer.word) " +
+		"JOIN wordtrainer.word w1 on (w1.id = c.word) " +
 		"JOIN wordtrainer.word w2 on (w2.id = c.translation) " +
 		"ORDER BY id"
 	GetCardById = "SELECT c_l.id, w1.name, w1.LangID, " +
 		" w2.name, w2.LangID, c_l.frequency from wordtrainer.cards_library c_l " +
 		"join wordtrainer.card c on c_l.card_id = c.id " +
 		" join wordtrainer.word w1 " +
-		"on (w1.id = c.wordtrainer.word) join wordtrainer.word w2 on " +
+		"on (w1.id = c.word) join wordtrainer.word w2 on " +
 		"(w2.id = c.translation) where c_l.id = ?"
 
 	TriggerDeleteCard = "DELETE FROM wordtrainer.cards_library WHERE ID IN ( SELECT library_id FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ?)"
