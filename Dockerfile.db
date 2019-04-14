@@ -1,3 +1,10 @@
 FROM mysql:latest
 
-COPY ./storage/sql/dump.sql /docker-entrypoint-initdb.d/dump.sql
+ENV MYSQL_DATABASE=wordtrainer \
+	MYSQL_USER=root_use \
+	MYSQL_PASSWORD=Abc123456* \
+    MYSQL_ROOT_PASSWORD=Abc123456*
+
+ADD ./storage/sql/dump.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 3306

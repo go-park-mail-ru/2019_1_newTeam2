@@ -1,12 +1,12 @@
 USE wordtrainer;
 
-DROP TABLE dictionary_to_library;
-DROP TABLE cards_library;
-DROP TABLE dictionary;
-DROP TABLE card;
-DROP TABLE word;
-DROP TABLE user;
-DROP TABLE language;
+DROP TABLE IF EXISTS dictionary_to_library;
+DROP TABLE IF EXISTS cards_library;
+DROP TABLE IF EXISTS dictionary;
+DROP TABLE IF EXISTS card;
+DROP TABLE IF EXISTS word;
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS language;
 
 CREATE TABLE language (
 	ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
