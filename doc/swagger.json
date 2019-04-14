@@ -498,7 +498,7 @@
         }
       }
     },
-    "/cards/{dictionaryID}": {
+    "/cards": {
       "get": {
         "tags": [
           "card"
