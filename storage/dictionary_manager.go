@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/user/2019_1_newTeam2/models"
@@ -118,4 +119,20 @@ func (db *Database) GetDict(dictId int) (models.DictionaryInfoPrivilege, bool, e
 		return models.DictionaryInfoPrivilege{}, false, err
 	}
 	return dict, true, nil
+}
+
+func (db *Database) BorrowDictById(dictId int, thiefId int) (int, models.DictionaryInfo, error) {
+	ownerId := 0
+	row := db.Conn.QueryRow(GetDictOwner, dictId)
+	err := row.Scan(&ownerId)
+	if err == sql.ErrNoRows {
+		return 0, models.DictionaryInfo{}, ErrNotFound
+	}
+	dict := models.DictionaryInfo{}
+	row = db.Conn.QueryRow(DictBorrowProc, dictId, thiefId)
+	err = row.Scan(&dict.ID, &dict.Name, &dict.Description, &dict.UserId)
+	if err != nil {
+		return 0, models.DictionaryInfo{}, DBerror
+	}
+	return ownerId, dict, nil
 }

@@ -27,6 +27,7 @@ type DictionaryManager interface {
 	DictionaryUpdate(DictID int, Name string, Description string) error
 	GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error)
 	GetDict(dictId int) (models.DictionaryInfoPrivilege, bool, error)
+	BorrowDictById(dictId int, thiefId int) (int, models.DictionaryInfo, error)
 }
 
 type LanguageManager interface {

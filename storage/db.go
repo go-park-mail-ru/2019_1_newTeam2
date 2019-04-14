@@ -2,11 +2,17 @@ package storage
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
+)
+
+var (
+	ErrNotFound error = errors.New("not found")
+	DBerror error = errors.New("some db error")
 )
 
 type Database struct {

@@ -30,6 +30,8 @@ const (
 		"FROM wordtrainer.dictionary d JOIN ( SELECT id FROM wordtrainer.dictionary WHERE UserId = ? ORDER BY id " +
 		"LIMIT ? OFFSET ?) l ON (d.id = l.id) " +
 		"ORDER BY id;"
+	GetDictOwner = "SELECT UserId FROM wordtrainer.dictionary WHERE id = ?"
+	DictBorrowProc = "CALL wordtrainer.borrow_dict(?, ?)"
 
 	//  word
 	GetWord = "SELECT ID FROM wordtrainer.word WHERE name = ? AND LangID = ?"
@@ -67,7 +69,7 @@ const (
 	DeleteListCardsLibrary = "DELETE FROM wordtrainer.cards_library WHERE ID in ?"
 	GetIDCardsLibrary      = "SELECT ID FROM wordtrainer.cards_library WHERE card_id = ?"
 	IncrCountCardsLibrary  = "UPDATE wordtrainer.cards_library SET count = count + 1 WHERE ID = ?"
-	DectCountCardsLibrary  = "UPDATE wordtrainer.cards_library SET count = count - 1 WHERE ID = ?"
+	DecrCountCardsLibrary  = "UPDATE wordtrainer.cards_library SET count = count - 1 WHERE ID = ?"
 
 	//  dictionary_to_library
 	CreateDictionaryToLibrary     = "INSERT INTO wordtrainer.dictionary_to_library (dictionary_id, library_id) VALUES (?, ?)"

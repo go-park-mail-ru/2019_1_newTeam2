@@ -59,7 +59,7 @@ func (db *Database) IncrementCount(CardID int) error {
 
 func (db *Database) DecrementCount(CardID int) error {
 	_, err := db.Conn.Exec(
-		DectCountCardsLibrary,
+		DecrCountCardsLibrary,
 		CardID,
 	)
 

@@ -66,3 +66,39 @@ CREATE TABLE dictionary_to_library (
 	FOREIGN KEY (dictionary_id) REFERENCES dictionary (ID) ON DELETE CASCADE,
 	FOREIGN KEY (library_id) REFERENCES cards_library (ID) ON DELETE CASCADE
 );
+
+CREATE PROCEDURE borrow_dict(
+	IN dict_id INT,
+  IN thief_id INT
+)
+BEGIN
+  DECLARE done BOOL DEFAULT FALSE;
+  DECLARE cur_card_id INT;
+  DECLARE cur_c_l_id INT;
+  DECLARE new_dict_id, dict_owner INT;
+  DECLARE dict_name VARCHAR(255);
+  DECLARE dict_desc TEXT;
+	DECLARE c1 CURSOR FOR
+		SELECT card.ID
+		FROM dictionary_to_library d_l
+		JOIN cards_library c_l ON (d_l.library_id = c_l.id)
+		JOIN card card ON(card.id = c_l.card_id)
+		WHERE d_l.dictionary_id = dict_id;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+	SELECT d.name, d.description, d.UserID FROM dictionary d WHERE d.ID = dict_id INTO dict_name, dict_desc, dict_owner;
+	INSERT INTO dictionary (name, description, UserID) VALUES (dict_name, dict_desc, thief_id);
+	SELECT LAST_INSERT_ID() INTO new_dict_id;
+	OPEN c1;
+
+	read_loop: LOOP
+		FETCH c1 INTO cur_card_id;
+		IF done THEN
+			LEAVE read_loop;
+		END IF;
+		INSERT INTO cards_library(frequency, card_id, count) VALUES (0, cur_card_id, 1);
+		SELECT LAST_INSERT_ID() INTO cur_c_l_id;
+		INSERT INTO dictionary_to_library(dictionary_id, library_id) VALUES (new_dict_id, cur_c_l_id);
+	END LOOP;
+	CLOSE c1;
+	SELECT new_dict_id, dict_name, dict_desc, dict_owner;
+END;

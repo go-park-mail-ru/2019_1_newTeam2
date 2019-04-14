@@ -78,6 +78,8 @@ func NewServer(pathToConfig string) (*Server, error) {
 	needLogin.HandleFunc("/dictionary/", server.DeleteDictionaryAPI).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/dictionary/", server.CreateDictionaryAPI).Methods(http.MethodPost, http.MethodOptions)
 
+	needLogin.HandleFunc("/dictionary/{id:[0-9]+}", server.BorrowDictById).Methods(http.MethodPatch)
+
 	needLogin.HandleFunc("/cards", server.CardsPaginate).Queries("dict", "{dictId}", "rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/card/{id:[0-9]+}", server.GetCardById).Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPut, http.MethodOptions)

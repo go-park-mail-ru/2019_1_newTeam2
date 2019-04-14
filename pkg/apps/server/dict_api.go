@@ -2,6 +2,8 @@ package server
 
 import (
 	"encoding/json"
+	"github.com/user/2019_1_newTeam2/pkg/wshub"
+	"github.com/user/2019_1_newTeam2/storage"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -55,7 +57,7 @@ func (server *Server) UpdateDictionaryAPI(w http.ResponseWriter, r *http.Request
 	}
 
 	if err = server.DB.DictionaryUpdate(dictionary.ID, dictionary.Name, dictionary.Description); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -85,7 +87,7 @@ func (server *Server) DeleteDictionaryAPI(w http.ResponseWriter, r *http.Request
 	}
 
 	if err = server.DB.DictionaryDelete(delete.ID); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -97,7 +99,7 @@ func (server *Server) GetDictionaryById(w http.ResponseWriter, r *http.Request) 
 	idStr := vars["id"]
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	result, found, err := server.DB.GetDict(id)
@@ -139,4 +141,27 @@ func (server *Server) DictsPaginate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	responses.WriteToResponse(w, http.StatusOK, result)
+}
+
+func (server *Server) BorrowDictById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	dictId, err := strconv.Atoi(idStr)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	ownerId, createdDict, err := server.DB.BorrowDictById(dictId, userId)
+	if err == storage.ErrNotFound {
+		responses.WriteToResponse(w, http.StatusNotFound, nil)
+	}
+
+	if err != nil {
+		responses.WriteToResponse(w, http.StatusInternalServerError, nil)
+	}
+	responses.WriteToResponse(w, http.StatusOK, createdDict)
+	//ownerId = 0		// TODO(sergeychur): REMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	mes := wshub.Message{ID:ownerId, Data: models.DictionaryNote{BorrowerId:userId, DictionaryName:createdDict.Name}}
+	server.hub.SendToClient(&mes)
 }
