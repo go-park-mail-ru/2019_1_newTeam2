@@ -29,12 +29,13 @@ func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err = server.DB.DictionaryCreate(userId, dictionary.Name, dictionary.Description, dictionary.Cards); err != nil {
+	result, err := server.DB.DictionaryCreate(userId, dictionary.Name, dictionary.Description, dictionary.Cards)
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	responses.WriteToResponse(w, http.StatusOK, result)
 }
 
 func (server *Server) UpdateDictionaryAPI(w http.ResponseWriter, r *http.Request) {
@@ -58,7 +59,13 @@ func (server *Server) UpdateDictionaryAPI(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	result, _, err := server.DB.GetDict(dictionary.ID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	responses.WriteToResponse(w, http.StatusOK, result)
 }
 
 func (server *Server) DeleteDictionaryAPI(w http.ResponseWriter, r *http.Request) {
@@ -104,6 +111,12 @@ func (server *Server) GetDictionaryById(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	if result.ID == userId {
+		result.Privilege = true
+	} else {
+		result.Privilege = false
+	}
 	responses.WriteToResponse(w, http.StatusOK, result)
 }
 
@@ -117,11 +130,12 @@ func (server *Server) DictsPaginate(w http.ResponseWriter, r *http.Request) {
 	}
 	result, found, err := server.DB.GetDicts(userId, page, rowsNum)
 	if err != nil {
+		server.Logger.Log(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	if !found {
-		server.Logger.Log("No suitable dicts")
+		server.Logger.Log(err)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}

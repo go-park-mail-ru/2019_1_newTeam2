@@ -36,7 +36,7 @@ func (db *Database) DictionaryUpdate(DictID int, Name string, Description string
 	return nil
 }
 
-func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) error {
+func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfoPrivilege, error) {
 	result, CreateErr := db.Conn.Exec(
 		CreateEmptyDictionary,
 		Name,
@@ -45,21 +45,25 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	)
 	if CreateErr != nil {
 		db.Logger.Log(CreateErr)
-		return fmt.Errorf("CreateErr: user not create")
+		return models.DictionaryInfoPrivilege{}, fmt.Errorf("CreateErr: user not create")
 	}
-
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
 		db.Logger.Log(GetIDErr)
-		return fmt.Errorf("GetIDErr: can`t get last dict id")
+		return models.DictionaryInfoPrivilege{}, fmt.Errorf("GetIDErr: can`t get last dict id")
 	}
 	for _, it := range Cards {
 		err := db.SetCardToDictionary(int(lastID), it)
 		if err != nil {
-			return err
+			return models.DictionaryInfoPrivilege{}, err
 		}
 	}
-	return nil
+	dict, _, err := db.GetDict(int(lastID))
+	if err != nil {
+		db.Logger.Log(err)
+		return models.DictionaryInfoPrivilege{}, err
+	}
+	return dict, nil
 }
 
 func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error) {
@@ -67,33 +71,38 @@ func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.Dictio
 	db.Logger.Log(page, rowsNum)
 	offset := (page - 1) * rowsNum
 	db.Logger.Log(offset)
+
 	rows, err := db.Conn.Query(DictsPaginate, userId, rowsNum, offset)
 	if err != nil {
+		db.Logger.Log(err)
 		return dicts, false, err
 	}
 	defer rows.Close()
 	i := 0
+
 	for rows.Next() {
 		i++
 		dict := models.DictionaryInfo{}
-		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description)
+		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description, &dict.UserId)
 		if err != nil {
+			db.Logger.Log(err)
 			return dicts, false, err
 		}
 		dicts = append(dicts, dict)
 	}
+
 	if i == 0 {
 		return dicts, false, nil
 	}
 	return dicts, true, nil
 }
 
-func (db *Database) GetDict(dictId int) (models.DictionaryInfo, bool, error) {
-	dict := models.DictionaryInfo{}
+func (db *Database) GetDict(dictId int) (models.DictionaryInfoPrivilege, bool, error) {
+	dict := models.DictionaryInfoPrivilege{}
 	row := db.Conn.QueryRow(GetDictById, dictId)
-	err := row.Scan(&dict.ID, &dict.Name, &dict.Description /*, &dict.UserId*/)
+	err := row.Scan(&dict.ID, &dict.Name, &dict.Description, &dict.UserId)
 	if err != nil {
-		return models.DictionaryInfo{}, false, err
+		return models.DictionaryInfoPrivilege{}, false, err
 	}
 	return dict, true, nil
 }
