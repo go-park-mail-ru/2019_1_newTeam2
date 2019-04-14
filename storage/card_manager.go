@@ -9,10 +9,10 @@ import (
 )
 
 func (db *Database) CreateCard(WordID int, TranslationID int) (int, error) {
-	Query := "INSERT INTO card (word, translation) SELECT * FROM (SELECT \"" +
+	Query := "INSERT INTO wordtrainer.card (word, translation) SELECT * FROM (SELECT \"" +
 		strconv.Itoa(WordID) + "\", " + strconv.Itoa(TranslationID) +
 		") AS tmp WHERE NOT EXISTS " +
-		"(SELECT word, translation FROM card WHERE word = ? AND translation = ?) LIMIT 1"
+		"(SELECT word, translation FROM wordtrainer.card WHERE word = ? AND translation = ?) LIMIT 1"
 	result, CreateErr := db.Conn.Exec(
 		Query,
 		WordID,
@@ -49,6 +49,7 @@ func (db *Database) GetCards(dictId int, page int, rowsNum int) ([]models.Card, 
 	rows, err := db.Conn.Query(CardsPaginate, dictId, rowsNum, offset)
 	// TODO(sergeychur): implement query
 	if err != nil {
+		db.Logger.Log(err)
 		return cards, false, err
 	}
 	defer rows.Close()
@@ -62,6 +63,7 @@ func (db *Database) GetCards(dictId int, page int, rowsNum int) ([]models.Card, 
 			&card.Translation.LanguageId, &card.Translation.Name, &card.Frequency)
 		if err != nil {
 			return cards, false, err
+			db.Logger.Log(err)
 		}
 		cards = append(cards, card)
 	}

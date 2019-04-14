@@ -7,17 +7,30 @@ import (
 )
 
 func (db *Database) DictionaryDelete(DictID int) error {
-	cards_id := []int{}
-	rows, _ := db.Conn.Query("SELECT library_id FROM dictionary_to_library WHERE dictionary_id = ?", DictID)
-	for rows.Next() {
-		var card_id int
-		err := rows.Scan(card_id)
-		if err != nil {
-			return err
-		}
-		cards_id = append(cards_id, card_id)
+	rows, err := db.Conn.Query(GetLibraryIDByDictionaryID, DictID)
+	if err != nil {
+		db.Logger.Log(err)
+		return err
 	}
 
+	for rows.Next() {
+		var card_id int
+		err := rows.Scan(&card_id)
+		if err != nil {
+			db.Logger.Log(err)
+			return err
+		}
+		db.DecrementCount(card_id)
+	}
+
+	_, DeleteErr := db.Conn.Exec(
+		DeleteDictionary,
+		DictID,
+	)
+	if DeleteErr != nil {
+		db.Logger.Log(DeleteErr)
+		return fmt.Errorf("DeleteErr: dictionary not deleted")
+	}
 	return nil
 }
 

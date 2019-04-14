@@ -8,10 +8,10 @@ import (
 )
 
 func CreateWord(db *Database, word *models.Word) (int, error) {
-	Query := "INSERT INTO word (name, LangID) SELECT * FROM (SELECT \"" +
+	Query := "INSERT INTO wordtrainer.word (name, LangID) SELECT * FROM (SELECT \"" +
 		word.Name + "\", " + strconv.Itoa(word.LanguageId) +
 		") AS tmp WHERE NOT EXISTS " +
-		"(SELECT name, LangID FROM word WHERE name = ? AND LangID = ?) LIMIT 1"
+		"(SELECT name, LangID FROM wordtrainer.word WHERE name = ? AND LangID = ?) LIMIT 1"
 	result, CreateErr := db.Conn.Exec(
 		Query,
 		word.Name,
