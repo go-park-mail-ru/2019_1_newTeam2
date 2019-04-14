@@ -30,7 +30,7 @@ type DictionaryManager interface {
 }
 
 type LanguageManager interface {
-	GetLangs() (models.Language, bool, error)
+	GetLangs() ([]models.Language, bool, error)
 }
 
 type UserManager interface {
