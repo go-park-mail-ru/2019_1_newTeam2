@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/responses"
+	"github.com/user/2019_1_newTeam2/pkg/wshub"
 	"net/http"
 )
 
@@ -19,4 +20,9 @@ func (server *Server) WSUnsubscribe(w http.ResponseWriter, r *http.Request) {
 	id, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
 	server.hub.DeleteClient(id)
 	responses.WriteToResponse(w, http.StatusOK, nil)
+}
+
+func (server *Server) TestConnection(data interface{}) {
+	mes  := wshub.Message{ID: 0, Data: data}
+	server.hub.SendToClient(&mes)
 }

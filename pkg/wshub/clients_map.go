@@ -6,7 +6,7 @@ import (
 
 type ClientsMap struct {
 	clients map[int]*Client
-	mx sync.RWMutex
+	mx sync.RWMutex		// dunno if need
 }
 
 func (m *ClientsMap) Load(key int) (*Client, bool){

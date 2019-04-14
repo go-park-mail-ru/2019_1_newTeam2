@@ -84,6 +84,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	needLogin.HandleFunc("/card/", server.DeleteCardInDictionary).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.CreateCardInDictionary).Methods(http.MethodPost, http.MethodOptions)
 
+	// set needLogin in future, when front is ready
 	router.HandleFunc("/subscribe/", server.WSSubscribe).Methods(http.MethodGet)
 	needLogin.HandleFunc("/unsubscribe/", server.WSUnsubscribe).Methods(http.MethodGet)
 
