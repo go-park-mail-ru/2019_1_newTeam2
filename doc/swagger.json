@@ -310,28 +310,12 @@
         }
       }
     },
-    "/languages": {
+    "/languages/": {
       "get": {
         "tags": [
           "language"
         ],
         "summary": "Gets languages list",
-        "parameters": [
-          {
-            "name": "rows",
-            "in": "query",
-            "required": true,
-            "type": "integer",
-            "description": "rows per page"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": true,
-            "type": "integer",
-            "description": "page sequence number"
-          }
-        ],
         "produces": [
           "application/json"
         ],
@@ -436,20 +420,20 @@
         ],
         "parameters": [
           {
-            "name": "dictionaryId",
-            "in": "path",
+            "in": "body",
+            "name": "body",
+            "description": "user object to register",
             "required": true,
-            "type": "integer"
+            "schema": {
+              "$ref": "#/definitions/DictionaryUpdate"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/DictionaryInfo"
-              }
+              "$ref": "#/definitions/DictionaryInfo"
             }
           },
           "400": {
@@ -500,10 +484,7 @@
             "description": "user object to register",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Dictionary"
-              }
+              "$ref": "#/definitions/Dictionary"
             }
           }
         ],
@@ -511,16 +492,13 @@
           "201": {
             "description": "successful operation",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Dictionary"
-              }
+              "$ref": "#/definitions/DictionaryInfo"
             }
           }
         }
       }
     },
-    "/cards/{dictionaryID}": {
+    "/cards": {
       "get": {
         "tags": [
           "card"
@@ -617,10 +595,7 @@
             "description": "user object to register",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Card"
-              }
+              "$ref": "#/definitions/Card"
             }
           }
         ],
@@ -628,10 +603,7 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Card"
-              }
+              "$ref": "#/definitions/Card"
             }
           },
           "404": {
@@ -651,10 +623,7 @@
             "description": "user object to register",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/CardDelete"
-              }
+              "$ref": "#/definitions/CardDelete"
             }
           }
         ],
@@ -691,10 +660,7 @@
             "description": "user object to register",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Card"
-              }
+              "$ref": "#/definitions/Card"
             }
           }
         ],
@@ -702,10 +668,7 @@
           "201": {
             "description": "successful operation",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Card"
-              }
+              "$ref": "#/definitions/Card"
             }
           },
           "404": {
@@ -716,6 +679,21 @@
     }
   },
   "definitions": {
+    "DictionaryUpdate": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "omitempty"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
     "Language": {
       "type": "object",
       "properties": {
@@ -780,6 +758,9 @@
         },
         "description": {
           "type": "string"
+        },
+        "userId": {
+          "type": "integer"
         }
       }
     },

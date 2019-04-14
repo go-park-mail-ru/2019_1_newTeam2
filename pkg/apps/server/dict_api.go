@@ -124,11 +124,12 @@ func (server *Server) DictsPaginate(w http.ResponseWriter, r *http.Request) {
 	}
 	result, found, err := server.DB.GetDicts(userId, page, rowsNum)
 	if err != nil {
+		server.Logger.Log(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	if !found {
-		server.Logger.Log("No suitable dicts")
+		server.Logger.Log(err)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}

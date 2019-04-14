@@ -71,22 +71,26 @@ func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.Dictio
 	db.Logger.Log(page, rowsNum)
 	offset := (page - 1) * rowsNum
 	db.Logger.Log(offset)
+
 	rows, err := db.Conn.Query(DictsPaginate, userId, rowsNum, offset)
 	if err != nil {
+		db.Logger.Log(err)
 		return dicts, false, err
 	}
 	defer rows.Close()
 	i := 0
+
 	for rows.Next() {
 		i++
 		dict := models.DictionaryInfo{}
-		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description /*, &dict.UserId*/)
-		// TODO(sergeychur): say about userId, may be useful, if no delete
+		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description, &dict.UserId)
 		if err != nil {
+			db.Logger.Log(err)
 			return dicts, false, err
 		}
 		dicts = append(dicts, dict)
 	}
+
 	if i == 0 {
 		return dicts, false, nil
 	}
@@ -96,7 +100,7 @@ func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.Dictio
 func (db *Database) GetDict(dictId int) (models.DictionaryInfo, bool, error) {
 	dict := models.DictionaryInfo{}
 	row := db.Conn.QueryRow(GetDictById, dictId)
-	err := row.Scan(&dict.ID, &dict.Name, &dict.Description)
+	err := row.Scan(&dict.ID, &dict.Name, &dict.Description, &dict.UserId)
 	if err != nil {
 		return models.DictionaryInfo{}, false, err
 	}

@@ -24,7 +24,7 @@ const (
 	CreateEmptyDictionary = "INSERT INTO dictionary (name, description, UserID) VALUES (?, ?, ?)"
 	UpdateDictionary      = "UPDATE dictionary SET name = ?, description = ? WHERE ID = ?"
 	DeleteDictionary      = "DELETE FROM dictionary_to_library WHERE dictionary_id = ?"
-	GetDictById           = "SELECT id, name, description FROM dictionary " +
+	GetDictById           = "SELECT id, name, description, UserId FROM dictionary " +
 		"WHERE id = ?"
 	DictsPaginate = "SELECT d.ID, d.name, d.description, d.UserId " +
 		"FROM dictionary d JOIN ( SELECT id FROM dictionary WHERE UserId = ? ORDER BY id " +
