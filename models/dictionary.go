@@ -13,3 +13,11 @@ type DictionaryInfo struct {
 	Description string `json:"description"`
 	UserId      int    `json:"userId,omitempty"`
 }
+
+type DictionaryInfoPrivilege struct {
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	UserId      int    `json:"userId"`
+	Privilege   bool   `json:"privilege,omitempty"`
+}

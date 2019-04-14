@@ -111,6 +111,12 @@ func (server *Server) GetDictionaryById(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	if result.ID == userId {
+		result.Privilege = true
+	} else {
+		result.Privilege = false
+	}
 	responses.WriteToResponse(w, http.StatusOK, result)
 }
 
