@@ -23,7 +23,7 @@ type CardManager interface {
 
 type DictionaryManager interface {
 	DictionaryDelete(DictID int) error
-	DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) error
+	DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfo, error)
 	DictionaryUpdate(DictID int, Name string, Description string) error
 	GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error)
 	GetDict(dictId int) (models.DictionaryInfo, bool, error)
