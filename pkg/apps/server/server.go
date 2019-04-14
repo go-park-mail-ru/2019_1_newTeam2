@@ -75,7 +75,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	needLogin.HandleFunc("/dictionary", server.DictsPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/dictionary/{id:[0-9]+}", server.GetDictionaryById).Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/dictionary/", server.UpdateDictionaryAPI).Methods(http.MethodPut, http.MethodOptions)
-	needLogin.HandleFunc("/dictionary/", server.DeleteDictionaryAPI).Methods(http.MethodDelete, http.MethodOptions)
+	needLogin.HandleFunc("/dictionary/{id:[0-9]+}", server.DeleteDictionaryAPI).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/dictionary/", server.CreateDictionaryAPI).Methods(http.MethodPost, http.MethodOptions)
 
 	needLogin.HandleFunc("/dictionary/{id:[0-9]+}", server.BorrowDictById).Methods(http.MethodPatch)

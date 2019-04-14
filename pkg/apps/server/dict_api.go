@@ -72,8 +72,8 @@ func (server *Server) UpdateDictionaryAPI(w http.ResponseWriter, r *http.Request
 
 func (server *Server) DeleteDictionaryAPI(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("DeleteDictionaryAPI")
-	var delete models.ParametersId
-	jsonStr, err := ioutil.ReadAll(r.Body)
+	// var delete models.ParametersId
+	/*jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		textError := models.Error{""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
@@ -84,9 +84,15 @@ func (server *Server) DeleteDictionaryAPI(w http.ResponseWriter, r *http.Request
 		textError := models.Error{""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
+	}*/
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-
-	if err = server.DB.DictionaryDelete(delete.ID); err != nil {
+	if err = server.DB.DictionaryDelete(id); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
