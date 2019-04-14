@@ -76,8 +76,7 @@ func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.Dictio
 	for rows.Next() {
 		i++
 		dict := models.DictionaryInfo{}
-		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description /*, &dict.UserId*/)
-		// TODO(sergeychur): say about userId, may be useful, if no delete
+		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description)
 		if err != nil {
 			return dicts, false, err
 		}
