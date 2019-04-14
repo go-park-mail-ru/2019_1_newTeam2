@@ -6,71 +6,71 @@ import (
 
 const (
 	//  utils
-	UseDB = "USE wordtrainer"
+	// UseDB = "USE wordtrainer"
 
 	//  user
 	GetUserByUsernameQuery   = "SELECT ID, Username, Email, Password, LangID, PronounceON, Score, AvatarPath FROM wordtrainer.user WHERE Username = ?"
 	GetUserByIDQuery         = "SELECT ID, Username, Email, LangID, PronounceON, Score, AvatarPath FROM wordtrainer.user WHERE ID = ?"
-	AddUserQuery             = "INSERT INTO user (Username, Email, Password, LangId, PronounceON, Score, AvatarPath) VALUES (?, ?, ?, ?, ?, ?, ?)"
-	UpdateUserQuery          = "UPDATE user SET Username = ?, Email = ?, LangId = ?, PronounceON = ? WHERE ID = ?"
-	DeleteUserQuery          = "DELETE FROM user WHERE ID = ?"
-	UpdateImagePathUserQuery = "UPDATE user SET AvatarPath = ? WHERE ID = ?"
+	AddUserQuery             = "INSERT INTO wordtrainer.user (Username, Email, Password, LangId, PronounceON, Score, AvatarPath) VALUES (?, ?, ?, ?, ?, ?, ?)"
+	UpdateUserQuery          = "UPDATE wordtrainer.user SET Username = ?, Email = ?, LangId = ?, PronounceON = ? WHERE ID = ?"
+	DeleteUserQuery          = "DELETE FROM wordtrainer.user WHERE ID = ?"
+	UpdateImagePathUserQuery = "UPDATE wordtrainer.user SET AvatarPath = ? WHERE ID = ?"
 	UsersPaginate            = "SELECT u.Username, u.Score " +
-		"FROM user u JOIN ( SELECT id FROM user ORDER BY score " +
+		"FROM wordtrainer.user u JOIN ( SELECT id FROM wordtrainer.user ORDER BY score " +
 		"LIMIT ? OFFSET ?) l ON (u.id = l.id) " +
 		"ORDER BY score;"
 
 	// dictionary
-	CreateEmptyDictionary = "INSERT INTO dictionary (name, description, UserID) VALUES (?, ?, ?)"
-	UpdateDictionary      = "UPDATE dictionary SET name = ?, description = ? WHERE ID = ?"
-	DeleteDictionary      = "DELETE FROM dictionary WHERE ID = ?"
-	GetDictById           = "SELECT id, name, description, UserId FROM dictionary " +
+	CreateEmptyDictionary = "INSERT INTO wordtrainer.dictionary (name, description, UserID) VALUES (?, ?, ?)"
+	UpdateDictionary      = "UPDATE wordtrainer.dictionary SET name = ?, description = ? WHERE ID = ?"
+	DeleteDictionary      = "DELETE FROM wordtrainer.dictionary WHERE ID = ?"
+	GetDictById           = "SELECT id, name, description, UserId FROM wordtrainer.dictionary " +
 		"WHERE id = ?"
 	DictsPaginate = "SELECT d.ID, d.name, d.description, d.UserId " +
-		"FROM dictionary d JOIN ( SELECT id FROM dictionary WHERE UserId = ? ORDER BY id " +
+		"FROM wordtrainer.dictionary d JOIN ( SELECT id FROM wordtrainer.dictionary WHERE UserId = ? ORDER BY id " +
 		"LIMIT ? OFFSET ?) l ON (d.id = l.id) " +
 		"ORDER BY id;"
 
 	//  word
-	GetWord = "SELECT ID FROM word WHERE name = ? AND LangID = ?"
+	GetWord = "SELECT ID FROM wordtrainer.word WHERE name = ? AND LangID = ?"
 
 	//  card
-	CreateCard    = "INSERT INTO card (word, translation) VALUES (?, ?)"
-	GetCard       = "SELECT ID FROM card WHERE word = ? AND translation = ?"
-	CardsPaginate = "SELECT c_l.id, w1.LangID, w1.name, w2.LangID, w2.name, c_l.frequency FROM card c " +
-		"JOIN (SELECT card.id " +
-		"FROM dictionary_to_library d_l " +
-		"JOIN cards_library c_l ON (d_l.library_id = c_l.id) " +
-		"JOIN card card ON(card.id = c_l.card_id) " +
+	CreateCard    = "INSERT INTO wordtrainer.card (wordtrainer.word, translation) VALUES (?, ?)"
+	GetCard       = "SELECT ID FROM wordtrainer.card WHERE wordtrainer.word = ? AND translation = ?"
+	CardsPaginate = "SELECT c_l.id, w1.LangID, w1.name, w2.LangID, w2.name, c_l.frequency FROM wordtrainer.card c " +
+		"JOIN (SELECT wordtrainer.card.id " +
+		"FROM wordtrainer.dictionary_to_library d_l " +
+		"JOIN wordtrainer.cards_library c_l ON (d_l.library_id = c_l.id) " +
+		"JOIN wordtrainer.card wordtrainer.card ON(wordtrainer.card.id = c_l.card_id) " +
 		"WHERE d_l.dictionary_id = ? " +
 		"ORDER BY card_id LIMIT ? OFFSET ?) l " +
 		"ON (c.id = l.id) " +
-		"JOIN cards_library c_l ON ( c_l.card_id = c.id) " +
-		"JOIN word w1 on (w1.id = c.word) " +
-		"JOIN word w2 on (w2.id = c.translation) " +
+		"JOIN wordtrainer.cards_library c_l ON ( c_l.card_id = c.id) " +
+		"JOIN wordtrainer.word w1 on (w1.id = c.wordtrainer.word) " +
+		"JOIN wordtrainer.word w2 on (w2.id = c.translation) " +
 		"ORDER BY id"
 	GetCardById = "SELECT c_l.id, w1.name, w1.LangID, " +
-		" w2.name, w2.LangID, c_l.frequency from cards_library c_l " +
-		"join card c on c_l.card_id = c.id " +
-		" join word w1 " +
-		"on (w1.id = c.word) join word w2 on " +
+		" w2.name, w2.LangID, c_l.frequency from wordtrainer.cards_library c_l " +
+		"join wordtrainer.card c on c_l.card_id = c.id " +
+		" join wordtrainer.word w1 " +
+		"on (w1.id = c.wordtrainer.word) join wordtrainer.word w2 on " +
 		"(w2.id = c.translation) where c_l.id = ?"
 
-	TriggerDeleteCard = "DELETE FROM cards_library WHERE ID IN ( SELECT library_id FROM dictionary_to_library WHERE dictionary_id = ?)"
+	TriggerDeleteCard = "DELETE FROM wordtrainer.cards_library WHERE ID IN ( SELECT library_id FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ?)"
 
 	//  language
-	CreateLanguage = "INSERT INTO language (name) VALUES (?)"
-	GetLangs       = "SELECT * FROM language"
+	CreateLanguage = "INSERT INTO wordtrainer.language (name) VALUES (?)"
+	GetLangs       = "SELECT * FROM wordtrainer.language"
 
 	//  cards_library
-	CreateCardsLibrary     = "INSERT INTO cards_library (frequency, card_id, count) VALUES (?, ?, ?)"
-	DeleteListCardsLibrary = "DELETE FROM cards_library WHERE ID in ?"
-	GetIDCardsLibrary      = "SELECT ID FROM cards_library WHERE card_id = ?"
-	IncrCountCardsLibrary  = "UPDATE cards_library SET count = count + 1 WHERE ID = ?"
-	DectCountCardsLibrary  = "UPDATE cards_library SET count = count - 1 WHERE ID = ?"
+	CreateCardsLibrary     = "INSERT INTO wordtrainer.cards_library (frequency, card_id, count) VALUES (?, ?, ?)"
+	DeleteListCardsLibrary = "DELETE FROM wordtrainer.cards_library WHERE ID in ?"
+	GetIDCardsLibrary      = "SELECT ID FROM wordtrainer.cards_library WHERE card_id = ?"
+	IncrCountCardsLibrary  = "UPDATE wordtrainer.cards_library SET count = count + 1 WHERE ID = ?"
+	DectCountCardsLibrary  = "UPDATE wordtrainer.cards_library SET count = count - 1 WHERE ID = ?"
 
 	//  dictionary_to_library
-	CreateDictionaryToLibrary     = "INSERT INTO dictionary_to_library (dictionary_id, library_id) VALUES (?, ?)"
-	DeleteDictionaryToLibraryByID = "DELETE FROM dictionary_to_library WHERE dictionary_id = ? AND library_id = ?"
-	GetLibraryIDByDictionaryID    = "SELECT library_id FROM dictionary_to_library WHERE dictionary_id = ?"
+	CreateDictionaryToLibrary     = "INSERT INTO wordtrainer.dictionary_to_library (dictionary_id, library_id) VALUES (?, ?)"
+	DeleteDictionaryToLibraryByID = "DELETE FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ? AND library_id = ?"
+	GetLibraryIDByDictionaryID    = "SELECT library_id FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ?"
 )

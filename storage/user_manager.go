@@ -117,6 +117,7 @@ func (db *Database) AddImage(path string, userID int) error {
 		return fmt.Errorf("Такого пользователя не существует")
 	}
 
+	_, _ = db.Conn.Exec("USE wordtrainer")
 	_, CreateErr := db.Conn.Exec(
 		UpdateImagePathUserQuery,
 		path,
