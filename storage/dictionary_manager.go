@@ -36,7 +36,7 @@ func (db *Database) DictionaryUpdate(DictID int, Name string, Description string
 	return nil
 }
 
-func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfo, error) {
+func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfoPrivilege, error) {
 	result, CreateErr := db.Conn.Exec(
 		CreateEmptyDictionary,
 		Name,
@@ -45,23 +45,23 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	)
 	if CreateErr != nil {
 		db.Logger.Log(CreateErr)
-		return models.DictionaryInfo{}, fmt.Errorf("CreateErr: user not create")
+		return models.DictionaryInfoPrivilege{}, fmt.Errorf("CreateErr: user not create")
 	}
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
 		db.Logger.Log(GetIDErr)
-		return models.DictionaryInfo{}, fmt.Errorf("GetIDErr: can`t get last dict id")
+		return models.DictionaryInfoPrivilege{}, fmt.Errorf("GetIDErr: can`t get last dict id")
 	}
 	for _, it := range Cards {
 		err := db.SetCardToDictionary(int(lastID), it)
 		if err != nil {
-			return models.DictionaryInfo{}, err
+			return models.DictionaryInfoPrivilege{}, err
 		}
 	}
 	dict, _, err := db.GetDict(int(lastID))
 	if err != nil {
 		db.Logger.Log(err)
-		return models.DictionaryInfo{}, err
+		return models.DictionaryInfoPrivilege{}, err
 	}
 	return dict, nil
 }
@@ -97,12 +97,12 @@ func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.Dictio
 	return dicts, true, nil
 }
 
-func (db *Database) GetDict(dictId int) (models.DictionaryInfo, bool, error) {
-	dict := models.DictionaryInfo{}
+func (db *Database) GetDict(dictId int) (models.DictionaryInfoPrivilege, bool, error) {
+	dict := models.DictionaryInfoPrivilege{}
 	row := db.Conn.QueryRow(GetDictById, dictId)
 	err := row.Scan(&dict.ID, &dict.Name, &dict.Description, &dict.UserId)
 	if err != nil {
-		return models.DictionaryInfo{}, false, err
+		return models.DictionaryInfoPrivilege{}, false, err
 	}
 	return dict, true, nil
 }
