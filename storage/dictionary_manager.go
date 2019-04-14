@@ -73,6 +73,7 @@ func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.Dictio
 	db.Logger.Log(offset)
 	rows, err := db.Conn.Query(DictsPaginate, userId, rowsNum, offset)
 	if err != nil {
+		db.Logger.Log(err)
 		return dicts, false, err
 	}
 	defer rows.Close()
@@ -83,11 +84,13 @@ func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.Dictio
 		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description, &dict.UserId)
 		// TODO(sergeychur): say about userId, may be useful, if no delete
 		if err != nil {
+			db.Logger.Log(err)
 			return dicts, false, err
 		}
 		dicts = append(dicts, dict)
 	}
 	if i == 0 {
+		db.Logger.Log("[false]\n")
 		return dicts, false, nil
 	}
 	return dicts, true, nil
