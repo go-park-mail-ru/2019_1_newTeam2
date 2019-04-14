@@ -70,24 +70,24 @@ func (server *Server) UpdateDictionaryAPI(w http.ResponseWriter, r *http.Request
 
 func (server *Server) DeleteDictionaryAPI(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("DeleteDictionaryAPI")
-	var dictionary models.CreateDictionary
+	var delete models.ParametersId
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		textError := models.Error{""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
-	err = json.Unmarshal(jsonStr, &dictionary)
+	err = json.Unmarshal(jsonStr, &delete)
 	if err != nil {
 		textError := models.Error{""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 
-	// if err = server.DB.DictionaryUpdate(dictionary.ID, dictionary.Name, dictionary.Description); err != nil {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	return
-	// }
+	if err = server.DB.DictionaryDelete(delete.ID); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 }

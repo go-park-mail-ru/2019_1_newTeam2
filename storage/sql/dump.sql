@@ -63,6 +63,6 @@ CREATE TABLE dictionary_to_library (
 	ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 	dictionary_id INT UNSIGNED NOT NULL,
 	library_id INT UNSIGNED NOT NULL,
-	FOREIGN KEY (dictionary_id) REFERENCES dictionary (ID),
-	FOREIGN KEY (library_id) REFERENCES cards_library (ID)
+	FOREIGN KEY (dictionary_id) REFERENCES dictionary (ID) ON DELETE CASCADE,
+	FOREIGN KEY (library_id) REFERENCES cards_library (ID) ON DELETE CASCADE
 );

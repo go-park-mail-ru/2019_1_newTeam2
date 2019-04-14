@@ -21,3 +21,7 @@ type DictionaryInfoPrivilege struct {
 	UserId      int    `json:"userId"`
 	Privilege   bool   `json:"privilege,omitempty"`
 }
+
+type ParametersId struct {
+	ID int `json:"id"`
+}

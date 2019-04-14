@@ -23,7 +23,7 @@ const (
 	// dictionary
 	CreateEmptyDictionary = "INSERT INTO dictionary (name, description, UserID) VALUES (?, ?, ?)"
 	UpdateDictionary      = "UPDATE dictionary SET name = ?, description = ? WHERE ID = ?"
-	DeleteDictionary      = "DELETE FROM dictionary_to_library WHERE dictionary_id = ?"
+	DeleteDictionary      = "DELETE FROM dictionary WHERE ID = ?"
 	GetDictById           = "SELECT id, name, description, UserId FROM dictionary " +
 		"WHERE id = ?"
 	DictsPaginate = "SELECT d.ID, d.name, d.description, d.UserId " +
@@ -35,9 +35,8 @@ const (
 	GetWord = "SELECT ID FROM word WHERE name = ? AND LangID = ?"
 
 	//  card
-	CreateCard = "INSERT INTO card (word, translation) VALUES (?, ?)"
-	GetCard    = "SELECT ID FROM card WHERE word = ? AND translation = ?"
-
+	CreateCard    = "INSERT INTO card (word, translation) VALUES (?, ?)"
+	GetCard       = "SELECT ID FROM card WHERE word = ? AND translation = ?"
 	CardsPaginate = "SELECT c_l.id, w1.LangID, w1.name, w2.LangID, w2.name, c_l.frequency FROM card c " +
 		"JOIN (SELECT card.id " +
 		"FROM dictionary_to_library d_l " +
@@ -57,6 +56,8 @@ const (
 		"on (w1.id = c.word) join word w2 on " +
 		"(w2.id = c.translation) where c_l.id = ?"
 
+	TriggerDeleteCard = "DELETE FROM cards_library WHERE ID IN ( SELECT library_id FROM dictionary_to_library WHERE dictionary_id = ?)"
+
 	//  language
 	CreateLanguage = "INSERT INTO language (name) VALUES (?)"
 	GetLangs       = "SELECT * FROM language"
@@ -71,4 +72,5 @@ const (
 	//  dictionary_to_library
 	CreateDictionaryToLibrary     = "INSERT INTO dictionary_to_library (dictionary_id, library_id) VALUES (?, ?)"
 	DeleteDictionaryToLibraryByID = "DELETE FROM dictionary_to_library WHERE dictionary_id = ? AND library_id = ?"
+	GetLibraryIDByDictionaryID    = "SELECT library_id FROM dictionary_to_library WHERE dictionary_id = ?"
 )
