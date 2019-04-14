@@ -80,7 +80,7 @@ func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.Dictio
 	for rows.Next() {
 		i++
 		dict := models.DictionaryInfo{}
-		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description /*, &dict.UserId*/)
+		err := rows.Scan(&dict.ID, &dict.Name, &dict.Description, &dict.UserId)
 		// TODO(sergeychur): say about userId, may be useful, if no delete
 		if err != nil {
 			return dicts, false, err
@@ -96,7 +96,7 @@ func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.Dictio
 func (db *Database) GetDict(dictId int) (models.DictionaryInfo, bool, error) {
 	dict := models.DictionaryInfo{}
 	row := db.Conn.QueryRow(GetDictById, dictId)
-	err := row.Scan(&dict.ID, &dict.Name, &dict.Description)
+	err := row.Scan(&dict.ID, &dict.Name, &dict.Description, &dict.UserId)
 	if err != nil {
 		return models.DictionaryInfo{}, false, err
 	}
