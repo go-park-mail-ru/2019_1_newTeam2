@@ -6,6 +6,7 @@ require (
 	github.com/golang/mock v1.2.0
 	github.com/gorilla/handlers v1.4.0
 	github.com/gorilla/mux v1.7.0
+	github.com/gorilla/websocket v1.4.0
 	github.com/rs/cors v1.6.0
 	github.com/stretchr/testify v1.3.0
 	golang.org/x/crypto v0.0.0-20190403202508-8e1b8d32e692

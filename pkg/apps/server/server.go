@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/user/2019_1_newTeam2/pkg/wshub"
 	"log"
 	"net/http"
 	"os"
@@ -25,6 +26,7 @@ type Server struct {
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
 	CookieField  string
+	hub wshub.IWSCommunicator
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
@@ -53,6 +55,9 @@ func NewServer(pathToConfig string) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	server.hub = wshub.NewWSCommunicator()
+
 	router := mux.NewRouter()
 
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
@@ -73,12 +78,15 @@ func NewServer(pathToConfig string) (*Server, error) {
 	needLogin.HandleFunc("/dictionary/", server.DeleteDictionaryAPI).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/dictionary/", server.CreateDictionaryAPI).Methods(http.MethodPost, http.MethodOptions)
 
-	// mb to need login?
 	needLogin.HandleFunc("/cards", server.CardsPaginate).Queries("dict", "{dictId}", "rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/card/{id:[0-9]+}", server.GetCardById).Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPut, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.DeleteCardInDictionary).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.CreateCardInDictionary).Methods(http.MethodPost, http.MethodOptions)
+
+	// set needLogin in future, when front is ready
+	router.HandleFunc("/subscribe/", server.WSSubscribe).Methods(http.MethodGet)
+	needLogin.HandleFunc("/unsubscribe/", server.WSUnsubscribe).Methods(http.MethodGet)
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
