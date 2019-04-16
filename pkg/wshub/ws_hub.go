@@ -1,11 +1,10 @@
 package wshub
 
-
 type WSHub struct {
-	clients *ClientsMap
-	register chan *Client
+	clients    *ClientsMap
+	register   chan *Client
 	unregister chan int
-	sendTo chan *Message
+	sendTo     chan *Message
 }
 
 func (h *WSHub) SendToCl(mes *Message) {

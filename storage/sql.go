@@ -30,7 +30,7 @@ const (
 		"FROM wordtrainer.dictionary d JOIN ( SELECT id FROM wordtrainer.dictionary WHERE UserId = ? ORDER BY id " +
 		"LIMIT ? OFFSET ?) l ON (d.id = l.id) " +
 		"ORDER BY id;"
-	GetDictOwner = "SELECT UserId FROM wordtrainer.dictionary WHERE id = ?"
+	GetDictOwner   = "SELECT UserId FROM wordtrainer.dictionary WHERE id = ?"
 	DictBorrowProc = "CALL wordtrainer.borrow_dict(?, ?)"
 
 	//  word

@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"bufio"
+	"fmt"
 	"net"
 	"net/http"
 )
@@ -21,6 +22,10 @@ func (w *logResWriter) WriteHeader(code int) {
 }
 
 func (w *logResWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
-	h, _ := w.ResponseWriter.(http.Hijacker)
+
+	h, ok := w.ResponseWriter.(http.Hijacker)
+	if !ok {
+		return nil, nil, fmt.Errorf("cannot Highjack")
+	}
 	return h.Hijack()
 }

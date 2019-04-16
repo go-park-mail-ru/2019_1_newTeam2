@@ -12,7 +12,7 @@ import (
 
 var (
 	ErrNotFound error = errors.New("not found")
-	DBerror error = errors.New("some db error")
+	DBerror     error = errors.New("some db error")
 )
 
 type Database struct {

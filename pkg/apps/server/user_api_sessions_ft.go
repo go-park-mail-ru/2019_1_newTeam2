@@ -1,6 +1,5 @@
 package server
 
-
 import (
 	"crypto/sha256"
 	"fmt"
@@ -119,7 +118,7 @@ func (db *TestDatabase) GetDict(dictId int) (models.DictionaryInfoPrivilege, boo
 	return models.DictionaryInfoPrivilege{}, true, nil
 }
 
-func (db *TestDatabase)GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error) {
+func (db *TestDatabase) GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error) {
 	a := make([]models.DictionaryInfo, 0)
 	return a, true, nil
 }
@@ -136,11 +135,11 @@ func (db *TestDatabase) DeleteCardInDictionary(cardID int, dictionaryID int) err
 	return nil
 }
 
-func (db *TestDatabase)DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfoPrivilege, error) {
+func (db *TestDatabase) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfoPrivilege, error) {
 	return models.DictionaryInfoPrivilege{}, nil
 }
 
-func (db *TestDatabase)DictionaryUpdate(DictID int, Name string, Description string) error {
+func (db *TestDatabase) DictionaryUpdate(DictID int, Name string, Description string) error {
 	return nil
 }
 

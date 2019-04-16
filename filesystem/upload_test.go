@@ -1,8 +1,9 @@
-package filesystem
+package filesystem_test
 
 import (
 	"bytes"
 	"fmt"
+	"github.com/user/2019_1_newTeam2/filesystem"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -45,7 +46,7 @@ var (
 func TestUploadFileSuccess(t *testing.T) {
 	w := httptest.NewRecorder()
 	req := NewSuccessRequest("hello", "text.txt")
-	path, err := UploadFile(w, req, SuccessCallback, "/", "/tmp/")
+	path, err := filesystem.UploadFile(w, req, SuccessCallback, "/", "/tmp/")
 	if err != nil {
 		t.Error(err)
 	}
@@ -58,7 +59,7 @@ func TestUploadFileSuccess(t *testing.T) {
 func TestUploadFileWrongReq(t *testing.T) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodPut, httptest.DefaultRemoteAddr, nil)
-	_, err := UploadFile(w, req, SuccessCallback, "/", "/")
+	_, err := filesystem.UploadFile(w, req, SuccessCallback, "/", "/")
 	if err == nil {
 		t.Error("Unhandled error")
 	}
@@ -71,7 +72,7 @@ func TestUploadFileWrongReq(t *testing.T) {
 func TestUploadFileCallBack(t *testing.T) {
 	w := httptest.NewRecorder()
 	req := NewSuccessRequest("hello", "text.txt")
-	_, err := UploadFile(w, req, FailCallback, "/", "/tmp/")
+	_, err := filesystem.UploadFile(w, req, FailCallback, "/", "/tmp/")
 	if err == nil {
 		t.Error("Unhandled error")
 	}
