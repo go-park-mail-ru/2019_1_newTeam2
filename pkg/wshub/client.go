@@ -5,11 +5,11 @@ import (
 	"time"
 )
 
-const  writeWait = 10 * time.Second
+const writeWait = 10 * time.Second
 
 type Client struct {
 	Conn *websocket.Conn
-	ID int
+	ID   int
 }
 
 func (cl *Client) SendMes(mes *Message, unsubscribe chan int) {

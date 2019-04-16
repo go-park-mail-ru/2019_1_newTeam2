@@ -1,6 +1,6 @@
 package wshub
 
 type Message struct {
-	ID int
+	ID   int
 	Data interface{}
 }

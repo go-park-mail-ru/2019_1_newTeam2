@@ -4,12 +4,12 @@ type ClientsMap struct {
 	clients map[int]*Client
 }
 
-func (m *ClientsMap) Load(key int) (*Client, bool){
+func (m *ClientsMap) Load(key int) (*Client, bool) {
 	val, ok := m.clients[key]
 	return val, ok
 }
 
-func (m * ClientsMap) Store(client *Client) {
+func (m *ClientsMap) Store(client *Client) {
 	m.clients[client.ID] = client
 }
 

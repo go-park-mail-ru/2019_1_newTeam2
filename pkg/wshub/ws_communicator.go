@@ -32,10 +32,10 @@ func (com *WSCommunicator) AddClient(w http.ResponseWriter, r *http.Request, id 
 	return nil
 }
 
-func (com * WSCommunicator) SendToClient(mes *Message) {
+func (com *WSCommunicator) SendToClient(mes *Message) {
 	com.hub.sendTo <- mes
 }
-func (com * WSCommunicator) DeleteClient(ID int) {
+func (com *WSCommunicator) DeleteClient(ID int) {
 	com.hub.unregister <- ID
 }
 

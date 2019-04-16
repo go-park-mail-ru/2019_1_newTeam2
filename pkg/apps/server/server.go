@@ -26,7 +26,7 @@ type Server struct {
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
 	CookieField  string
-	hub wshub.IWSCommunicator
+	hub          wshub.IWSCommunicator
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
