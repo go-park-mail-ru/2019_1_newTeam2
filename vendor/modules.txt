@@ -10,6 +10,8 @@ github.com/golang/mock/gomock
 github.com/gorilla/handlers
 # github.com/gorilla/mux v1.7.0
 github.com/gorilla/mux
+# github.com/gorilla/websocket v1.4.0
+github.com/gorilla/websocket
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
 # github.com/rs/cors v1.6.0
