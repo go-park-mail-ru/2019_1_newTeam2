@@ -126,25 +126,25 @@ func (mr *MockDBInterfaceMockRecorder) AddImage(path, userID interface{}) *gomoc
 }
 
 // UpdateUserById mocks base method
-func (m *MockDBInterface) UpdateUserById(userID int, username, email, password string, langid, pronounceOn int) (bool, error) {
+func (m *MockDBInterface) UpdateUserById(userID int, username, email string, langid, pronounceOn int) (bool, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUserById", userID, username, email, password, langid, pronounceOn)
+	ret := m.ctrl.Call(m, "UpdateUserById", userID, username, email, langid, pronounceOn)
 	ret0, _ := ret[0].(bool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateUserById indicates an expected call of UpdateUserById
-func (mr *MockDBInterfaceMockRecorder) UpdateUserById(userID, username, email, password, langid, pronounceOn interface{}) *gomock.Call {
+func (mr *MockDBInterfaceMockRecorder) UpdateUserById(userID, username, email, langid, pronounceOn interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserById", reflect.TypeOf((*MockDBInterface)(nil).UpdateUserById), userID, username, email, password, langid, pronounceOn)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserById", reflect.TypeOf((*MockDBInterface)(nil).UpdateUserById), userID, username, email, langid, pronounceOn)
 }
 
 // GetLangs mocks base method
-func (m *MockDBInterface) GetLangs() (models.Language, bool, error) {
+func (m *MockDBInterface) GetLangs() ([]models.Language, bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetLangs")
-	ret0, _ := ret[0].(models.Language)
+	ret0, _ := ret[0].([]models.Language)
 	ret1, _ := ret[1].(bool)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
@@ -188,6 +188,34 @@ func (mr *MockDBInterfaceMockRecorder) GetCard(cardId interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCard", reflect.TypeOf((*MockDBInterface)(nil).GetCard), cardId)
 }
 
+// SetCardToDictionary mocks base method
+func (m *MockDBInterface) SetCardToDictionary(dictID int, card models.Card) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetCardToDictionary", dictID, card)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetCardToDictionary indicates an expected call of SetCardToDictionary
+func (mr *MockDBInterfaceMockRecorder) SetCardToDictionary(dictID, card interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetCardToDictionary", reflect.TypeOf((*MockDBInterface)(nil).SetCardToDictionary), dictID, card)
+}
+
+// DeleteCardInDictionary mocks base method
+func (m *MockDBInterface) DeleteCardInDictionary(cardID, dictionaryID int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCardInDictionary", cardID, dictionaryID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteCardInDictionary indicates an expected call of DeleteCardInDictionary
+func (mr *MockDBInterfaceMockRecorder) DeleteCardInDictionary(cardID, dictionaryID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCardInDictionary", reflect.TypeOf((*MockDBInterface)(nil).DeleteCardInDictionary), cardID, dictionaryID)
+}
+
 // DictionaryDelete mocks base method
 func (m *MockDBInterface) DictionaryDelete(DictID int) error {
 	m.ctrl.T.Helper()
@@ -203,11 +231,12 @@ func (mr *MockDBInterfaceMockRecorder) DictionaryDelete(DictID interface{}) *gom
 }
 
 // DictionaryCreate mocks base method
-func (m *MockDBInterface) DictionaryCreate(UserID int, Name, Description string, Cards []models.Card) error {
+func (m *MockDBInterface) DictionaryCreate(UserID int, Name, Description string, Cards []models.Card) (models.DictionaryInfoPrivilege, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DictionaryCreate", UserID, Name, Description, Cards)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(models.DictionaryInfoPrivilege)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // DictionaryCreate indicates an expected call of DictionaryCreate
@@ -247,10 +276,10 @@ func (mr *MockDBInterfaceMockRecorder) GetDicts(userId, page, rowsNum interface{
 }
 
 // GetDict mocks base method
-func (m *MockDBInterface) GetDict(dictId int) (models.DictionaryInfo, bool, error) {
+func (m *MockDBInterface) GetDict(dictId int) (models.DictionaryInfoPrivilege, bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetDict", dictId)
-	ret0, _ := ret[0].(models.DictionaryInfo)
+	ret0, _ := ret[0].(models.DictionaryInfoPrivilege)
 	ret1, _ := ret[1].(bool)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
@@ -260,6 +289,22 @@ func (m *MockDBInterface) GetDict(dictId int) (models.DictionaryInfo, bool, erro
 func (mr *MockDBInterfaceMockRecorder) GetDict(dictId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDict", reflect.TypeOf((*MockDBInterface)(nil).GetDict), dictId)
+}
+
+// BorrowDictById mocks base method
+func (m *MockDBInterface) BorrowDictById(dictId, thiefId int) (int, models.DictionaryInfo, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BorrowDictById", dictId, thiefId)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(models.DictionaryInfo)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// BorrowDictById indicates an expected call of BorrowDictById
+func (mr *MockDBInterfaceMockRecorder) BorrowDictById(dictId, thiefId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BorrowDictById", reflect.TypeOf((*MockDBInterface)(nil).BorrowDictById), dictId, thiefId)
 }
 
 // MockCardManager is a mock of CardManager interface
@@ -317,6 +362,34 @@ func (mr *MockCardManagerMockRecorder) GetCard(cardId interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCard", reflect.TypeOf((*MockCardManager)(nil).GetCard), cardId)
 }
 
+// SetCardToDictionary mocks base method
+func (m *MockCardManager) SetCardToDictionary(dictID int, card models.Card) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetCardToDictionary", dictID, card)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetCardToDictionary indicates an expected call of SetCardToDictionary
+func (mr *MockCardManagerMockRecorder) SetCardToDictionary(dictID, card interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetCardToDictionary", reflect.TypeOf((*MockCardManager)(nil).SetCardToDictionary), dictID, card)
+}
+
+// DeleteCardInDictionary mocks base method
+func (m *MockCardManager) DeleteCardInDictionary(cardID, dictionaryID int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCardInDictionary", cardID, dictionaryID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteCardInDictionary indicates an expected call of DeleteCardInDictionary
+func (mr *MockCardManagerMockRecorder) DeleteCardInDictionary(cardID, dictionaryID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCardInDictionary", reflect.TypeOf((*MockCardManager)(nil).DeleteCardInDictionary), cardID, dictionaryID)
+}
+
 // MockDictionaryManager is a mock of DictionaryManager interface
 type MockDictionaryManager struct {
 	ctrl     *gomock.Controller
@@ -355,11 +428,12 @@ func (mr *MockDictionaryManagerMockRecorder) DictionaryDelete(DictID interface{}
 }
 
 // DictionaryCreate mocks base method
-func (m *MockDictionaryManager) DictionaryCreate(UserID int, Name, Description string, Cards []models.Card) error {
+func (m *MockDictionaryManager) DictionaryCreate(UserID int, Name, Description string, Cards []models.Card) (models.DictionaryInfoPrivilege, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DictionaryCreate", UserID, Name, Description, Cards)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(models.DictionaryInfoPrivilege)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // DictionaryCreate indicates an expected call of DictionaryCreate
@@ -399,10 +473,10 @@ func (mr *MockDictionaryManagerMockRecorder) GetDicts(userId, page, rowsNum inte
 }
 
 // GetDict mocks base method
-func (m *MockDictionaryManager) GetDict(dictId int) (models.DictionaryInfo, bool, error) {
+func (m *MockDictionaryManager) GetDict(dictId int) (models.DictionaryInfoPrivilege, bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetDict", dictId)
-	ret0, _ := ret[0].(models.DictionaryInfo)
+	ret0, _ := ret[0].(models.DictionaryInfoPrivilege)
 	ret1, _ := ret[1].(bool)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
@@ -412,6 +486,22 @@ func (m *MockDictionaryManager) GetDict(dictId int) (models.DictionaryInfo, bool
 func (mr *MockDictionaryManagerMockRecorder) GetDict(dictId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDict", reflect.TypeOf((*MockDictionaryManager)(nil).GetDict), dictId)
+}
+
+// BorrowDictById mocks base method
+func (m *MockDictionaryManager) BorrowDictById(dictId, thiefId int) (int, models.DictionaryInfo, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BorrowDictById", dictId, thiefId)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(models.DictionaryInfo)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// BorrowDictById indicates an expected call of BorrowDictById
+func (mr *MockDictionaryManagerMockRecorder) BorrowDictById(dictId, thiefId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BorrowDictById", reflect.TypeOf((*MockDictionaryManager)(nil).BorrowDictById), dictId, thiefId)
 }
 
 // MockLanguageManager is a mock of LanguageManager interface
@@ -438,10 +528,10 @@ func (m *MockLanguageManager) EXPECT() *MockLanguageManagerMockRecorder {
 }
 
 // GetLangs mocks base method
-func (m *MockLanguageManager) GetLangs() (models.Language, bool, error) {
+func (m *MockLanguageManager) GetLangs() ([]models.Language, bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetLangs")
-	ret0, _ := ret[0].(models.Language)
+	ret0, _ := ret[0].([]models.Language)
 	ret1, _ := ret[1].(bool)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
@@ -569,16 +659,16 @@ func (mr *MockUserManagerMockRecorder) AddImage(path, userID interface{}) *gomoc
 }
 
 // UpdateUserById mocks base method
-func (m *MockUserManager) UpdateUserById(userID int, username, email, password string, langid, pronounceOn int) (bool, error) {
+func (m *MockUserManager) UpdateUserById(userID int, username, email string, langid, pronounceOn int) (bool, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUserById", userID, username, email, password, langid, pronounceOn)
+	ret := m.ctrl.Call(m, "UpdateUserById", userID, username, email, langid, pronounceOn)
 	ret0, _ := ret[0].(bool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateUserById indicates an expected call of UpdateUserById
-func (mr *MockUserManagerMockRecorder) UpdateUserById(userID, username, email, password, langid, pronounceOn interface{}) *gomock.Call {
+func (mr *MockUserManagerMockRecorder) UpdateUserById(userID, username, email, langid, pronounceOn interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserById", reflect.TypeOf((*MockUserManager)(nil).UpdateUserById), userID, username, email, password, langid, pronounceOn)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserById", reflect.TypeOf((*MockUserManager)(nil).UpdateUserById), userID, username, email, langid, pronounceOn)
 }

@@ -1,6 +1,6 @@
 package server
 
-/*
+
 import (
 	"crypto/sha256"
 	"fmt"
@@ -96,15 +96,15 @@ func (db *TestDatabase) GetUsers(page int, rowsNum int) ([]models.UserTableElem,
 func (db *TestDatabase) AddImage(path string, userID int) error {
 	return nil
 }
-func (db *TestDatabase) UpdateUserById(userID int, username string, email string, password string, langid int, pronounceOn int) (bool, error) {
+func (db *TestDatabase) UpdateUserById(userID int, username string, email string, langid int, pronounceOn int) (bool, error) {
 	return true, nil
 }
 func (db *TestDatabase) IncUserLastID() {
 	return
 }
 
-func (db *TestDatabase) GetLangs() (models.Language, bool, error) {
-	return models.Language{}, true, nil
+func (db *TestDatabase) GetLangs() ([]models.Language, bool, error) {
+	return []models.Language{}, true, nil
 }
 
 func (db *TestDatabase) GetCards(userId int, page int, rowsNum int) ([]models.Card, bool, error) {
@@ -115,11 +115,35 @@ func (db *TestDatabase) GetCard(cardId int) (models.Card, bool, error) {
 	return models.Card{}, true, nil
 }
 
-func (db *TestDatabase) GetDict(dictId int) (models.DictReduced, bool, error) {
-	return models.DictReduced{}, true, nil
+func (db *TestDatabase) GetDict(dictId int) (models.DictionaryInfoPrivilege, bool, error) {
+	return models.DictionaryInfoPrivilege{}, true, nil
 }
 
-func (db *TestDatabase)GetDicts(userId int, page int, rowsNum int) ([]models.DictReduced, bool, error) {
-	a := make([]models.DictReduced, 0)
+func (db *TestDatabase)GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error) {
+	a := make([]models.DictionaryInfo, 0)
 	return a, true, nil
-}*/
+}
+
+func (db *TestDatabase) SetCardToDictionary(dictID int, card models.Card) error {
+	return nil
+}
+
+func (db *TestDatabase) DictionaryDelete(DictID int) error {
+	return nil
+}
+
+func (db *TestDatabase) DeleteCardInDictionary(cardID int, dictionaryID int) error {
+	return nil
+}
+
+func (db *TestDatabase)DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfoPrivilege, error) {
+	return models.DictionaryInfoPrivilege{}, nil
+}
+
+func (db *TestDatabase)DictionaryUpdate(DictID int, Name string, Description string) error {
+	return nil
+}
+
+func (db *TestDatabase) BorrowDictById(dictId int, thiefId int) (int, models.DictionaryInfo, error) {
+	return 0, models.DictionaryInfo{}, nil
+}

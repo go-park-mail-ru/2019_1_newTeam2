@@ -379,7 +379,7 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 		suite.dataBase.EXPECT().GetUserByID(item.id).Return(item.t, item.exists, item.err)
 		if item.exists {
 			suite.dataBase.EXPECT().UpdateUserById(item.t.ID, item.t.Username, item.t.Email,
-				item.t.Password, item.t.LangID, item.t.PronounceON)
+				item.t.LangID, item.t.PronounceON)
 		}
 		body, _ := json.Marshal(item.t)
 		r, _ := http.NewRequest(item.method, "/users/", bytes.NewBuffer(body))
@@ -447,7 +447,7 @@ func (suite *UserHandlerTestSuite) TestDeleteUser() {
 	for _, item := range cases {
 		suite.dataBase.EXPECT().GetUserByID(item.id).Return(item.t, item.exists, item.err)
 		suite.dataBase.EXPECT().UpdateUserById(item.t.ID, item.t.Username, item.t.Email,
-			item.t.Password, item.t.LangID, item.t.PronounceON)
+			item.t.LangID, item.t.PronounceON)
 		body, _ := json.Marshal(item.t)
 		r, _ := http.NewRequest(item.method, "/users/", bytes.NewBuffer(body))
 		token := correctToken
