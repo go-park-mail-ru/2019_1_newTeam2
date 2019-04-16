@@ -67,6 +67,10 @@ CREATE TABLE dictionary_to_library (
 	FOREIGN KEY (library_id) REFERENCES cards_library (ID) ON DELETE CASCADE
 );
 
+
+DROP PROCEDURE IF EXISTS borrow_dict;
+
+DELIMITER $$
 CREATE PROCEDURE borrow_dict(
 	IN dict_id INT,
   IN thief_id INT
@@ -101,4 +105,5 @@ BEGIN
 	END LOOP;
 	CLOSE c1;
 	SELECT new_dict_id, dict_name, dict_desc, thief_id;
-END;
+END $$
+DELIMITER ;
