@@ -1,0 +1,37 @@
+LANGUAGE
+
+Get languages
+curl -X GET --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.KGisCdKujxlsZtXRPO_VFuWv8ZiX7QjcTJERwe-35Ug" http://localhost:8090/languages/
+
+DICTIONARY
+
+Get dictionary list
+in browser: http://localhost:8090/dictionary?rows=3&page=1
+
+Get dictionary
+curl -X GET --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.KGisCdKujxlsZtXRPO_VFuWv8ZiX7QjcTJERwe-35Ug" http://localhost:8090/dictionary/1
+
+Create dictionary
+curl -d '{"name": "test_dict", "description": "new test dictionary", "cards": [{ "id": 0, "word": {"name": "word1", "langID": 1}, "translation": { "name": "word2", "langID": 2}}, { "id": 0, "word": {"name": "word10", "langID": 1}, "translation": { "name": "word20", "langID": 2}}]}' -H "Content-Type: application/json" -X POST --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.KGisCdKujxlsZtXRPO_VFuWv8ZiX7QjcTJERwe-35Ug" http://localhost:8090/dictionary/
+curl -d '{"name": "словарь", "description": "описание"}' -H "Content-Type: application/json" -X POST --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.KGisCdKujxlsZtXRPO_VFuWv8ZiX7QjcTJERwe-35Ug" http://localhost:8090/dictionary/
+
+Update dictionary
+curl -d '{"id": 1, "name": "new name", "description": "update dictionary name"}' -H "Content-Type: application/json" -X PUT --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.zx74_EaDbjCYgF15bvWTfU6fHPvBCBROe_gZNWns5Cw" http://localhost:8090/dictionary/
+
+Delete dictionary
+curl -d '{"id": 2}' -H "Content-Type: application/json" -X DELETE --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.KGisCdKujxlsZtXRPO_VFuWv8ZiX7QjcTJERwe-35Ug" http://localhost:8090/dictionary/
+
+
+CARD
+
+Get cards
+in browser: http://localhost:8090/cards?dict=1&rows=3&page=1
+
+Set Card To Dictionary
+curl -d '{ "id": 0, "word": {"name": "add_me_please", "langID": 1}, "translation": { "name": "add_me_please_tr", "langID": 2}}' -X POST --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJ0c2FhbnN0aSJ9.avqxqLTh9pCv6QPtf--jqvg1W-QLmDxVpi_GOmmYwek" http://localhost:8090/card/?dictionaryId=1
+
+GET Card
+curl -X GET --cookie "session_id=O_VFuWv8ZiX7QjcTJERwe-35Ug" http://localhost:8090/card/1
+
+Delete Card in Dictionary
+curl -X DELETE -d '{ "dictionaryId": 1, "cardId": 2}' --cookie "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0c2FhbnN0dSJ9.KGisCdKujxlsZtXRPO_VFuWv8ZiX7QjcTJERwe-35Ug" http://localhost:8090/card/

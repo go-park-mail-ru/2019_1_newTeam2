@@ -1,9 +1,13 @@
-FROM golang:1.11.4
+FROM serega753/goproj:latest
 
 ADD . /home/app/
 
-WORKDIR /home/app
+WORKDIR /home/app/
 
-RUN go build -o main .
+RUN go build --mod=vendor -o 2019_1_newTeam2 ./cmd/api/main.go
 
-CMD ["/home/app/main", "/home/app/config/config.json"]
+RUN cp /config/config.json /home/app/
+
+RUN service mysql start && mysql < storage/sql/dump.sql
+
+CMD service mysql start && /home/app/2019_1_newTeam2 /home/app/config.json
