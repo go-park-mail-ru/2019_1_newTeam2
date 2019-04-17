@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	maxMessageSize = 1024 * 1024
+	maxWSMessageSize = 1024 * 1024
 )
 
 type WSCommunicator struct {
@@ -14,8 +14,8 @@ type WSCommunicator struct {
 }
 
 var upgrader = websocket.Upgrader{
-	ReadBufferSize:  maxMessageSize,
-	WriteBufferSize: maxMessageSize,
+	ReadBufferSize:  maxWSMessageSize,
+	WriteBufferSize: maxWSMessageSize,
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
@@ -29,6 +29,8 @@ func (com *WSCommunicator) AddClient(w http.ResponseWriter, r *http.Request, id 
 	}
 	cl := &Client{ID: id, Conn: ws}
 	com.hub.register <- cl
+	go cl.ReadFromInet()
+	go cl.WriteToInet()
 	return nil
 }
 

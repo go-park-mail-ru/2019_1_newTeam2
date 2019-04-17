@@ -91,13 +91,3 @@ func (suite *WSHandlerTestSuite) TestWSSubscribe() {
 		}
 	}
 }
-
-func (suite *WSHandlerTestSuite) TestWSUnSubscribe() {
-	r, _ := http.NewRequest(http.MethodGet, "/unsubscribe", nil)
-	w := httptest.NewRecorder()
-	PlaceTokenToRequest(correctToken, r)
-	suite.wsHub.EXPECT().DeleteClient(1)
-	suite.underTest.WSUnsubscribe(w, r)
-	response := w.Result()
-	suite.Equal(200, response.StatusCode)
-}

@@ -10,7 +10,7 @@ type WSHub struct {
 func (h *WSHub) SendToCl(mes *Message) {
 	cl, ok := h.clients.Load(mes.ID)
 	if ok {
-		go cl.SendMes(mes, h.unregister)
+		cl.sendChan <- mes
 	}
 }
 
