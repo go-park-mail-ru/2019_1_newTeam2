@@ -13,7 +13,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/user/2019_1_newTeam2/mocks"
+	"github.com/user/2019_1_newTeam2/mocks/mock_interfaces"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/server"
 	"github.com/user/2019_1_newTeam2/pkg/config"

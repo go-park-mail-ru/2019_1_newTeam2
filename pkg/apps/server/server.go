@@ -26,7 +26,7 @@ type Server struct {
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
 	CookieField  string
-	hub          wshub.IWSCommunicator
+	Hub          wshub.IWSCommunicator
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
@@ -56,7 +56,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 		return nil, err
 	}
 
-	server.hub = wshub.NewWSCommunicator()
+	server.Hub = wshub.NewWSCommunicator()
 
 	router := mux.NewRouter()
 

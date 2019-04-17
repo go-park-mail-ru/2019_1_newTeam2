@@ -169,5 +169,5 @@ func (server *Server) BorrowDictById(w http.ResponseWriter, r *http.Request) {
 	responses.WriteToResponse(w, http.StatusOK, createdDict)
 	//ownerId = 0		// TODO(sergeychur): REMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	mes := wshub.Message{ID: ownerId, Data: models.DictionaryNote{BorrowerId: userId, DictionaryName: createdDict.Name}}
-	server.hub.SendToClient(&mes)
+	server.Hub.SendToClient(&mes)
 }
