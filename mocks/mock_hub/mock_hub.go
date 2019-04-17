@@ -5,10 +5,10 @@
 package mock_hub
 
 import (
-	x "../../../../../../../usr/local/go/src"
-	gomock "github.com/golang/mock/gomock"
-	http "net/http"
-	reflect "reflect"
+	"github.com/golang/mock/gomock"
+	"github.com/user/2019_1_newTeam2/pkg/wshub"
+	"net/http"
+	"reflect"
 )
 
 // MockIWSCommunicator is a mock of IWSCommunicator interface
@@ -49,13 +49,13 @@ func (mr *MockIWSCommunicatorMockRecorder) AddClient(w, r, id interface{}) *gomo
 }
 
 // SendToClient mocks base method
-func (m *MockIWSCommunicator) SendToClient(mes *x.Message) {
+func (m *MockIWSCommunicator) SendToClient(mes *wshub.Message) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "SendToClient", mes)
 }
 
 // SendToClient indicates an expected call of SendToClient
-func (mr *MockIWSCommunicatorMockRecorder) SendToClient(mes interface{}) *gomock.Call {
+func (mr *MockIWSCommunicatorMockRecorder) SendToClient(mes *wshub.Message) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendToClient", reflect.TypeOf((*MockIWSCommunicator)(nil).SendToClient), mes)
 }
