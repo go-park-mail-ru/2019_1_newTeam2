@@ -3,6 +3,7 @@ package server_test
 import (
 	"bytes"
 	"encoding/json"
+
 	"net/http"
 	"net/http/httptest"
 	"os"
