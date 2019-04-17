@@ -15,8 +15,3 @@ func (server *Server) WSSubscribe(w http.ResponseWriter, r *http.Request) {
 	responses.WriteToResponse(w, http.StatusOK, nil)
 }
 
-func (server *Server) WSUnsubscribe(w http.ResponseWriter, r *http.Request) {
-	id, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
-	server.Hub.DeleteClient(id)
-	responses.WriteToResponse(w, http.StatusOK, nil)
-}
