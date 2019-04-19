@@ -1,6 +1,6 @@
 package server
 
-import (
+/*import (
 	"crypto/sha256"
 	"fmt"
 	"os"
@@ -146,3 +146,4 @@ func (db *TestDatabase) DictionaryUpdate(DictID int, Name string, Description st
 func (db *TestDatabase) BorrowDictById(dictId int, thiefId int) (int, models.DictionaryInfo, error) {
 	return 0, models.DictionaryInfo{}, nil
 }
+*/

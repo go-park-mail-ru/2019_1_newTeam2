@@ -7,11 +7,7 @@ type DBInterface interface {
 	LanguageManager
 	CardManager
 	DictionaryManager
-	// interface for other managers
-	// method to connect to db
-	// method to query sql
-	// method to exec sql
-	// ..
+	GameManager
 }
 
 type CardManager interface {
@@ -19,6 +15,7 @@ type CardManager interface {
 	GetCard(cardId int) (models.Card, bool, error)
 	SetCardToDictionary(dictID int, card models.Card) error
 	DeleteCardInDictionary(cardID int, dictionaryID int) error
+	GetCardsForGame(dictId int, cardsNum int) ([]models.GameWord, bool, error)
 }
 
 type DictionaryManager interface {
@@ -43,5 +40,9 @@ type UserManager interface {
 	GetUsers(page int, rowsNum int) ([]models.UserTableElem, bool, error)
 	AddImage(path string, userID int) error
 	UpdateUserById(userID int, username string, email string,
-		/*password string,*/ langid int, pronounceOn int) (bool, error)
+		langid int, pronounceOn int) (bool, error)
+}
+
+type GameManager interface {
+	UpdateFrequencies (results models.GameResults) (error, bool)
 }

@@ -3,9 +3,15 @@ package storage
 import (
 	"database/sql"
 	"fmt"
+	"math/rand"
 	"strconv"
+	"github.com/bxcodec/faker/v3"
 
 	"github.com/user/2019_1_newTeam2/models"
+)
+
+const (
+	wordsNum = 4
 )
 
 func (db *Database) CreateCard(WordID int, TranslationID int) (int, error) {
@@ -61,8 +67,8 @@ func (db *Database) GetCards(dictId int, page int, rowsNum int) ([]models.Card, 
 		err := rows.Scan(&card.ID, &card.Word.LanguageId, &card.Word.Name,
 			&card.Translation.LanguageId, &card.Translation.Name, &card.Frequency)
 		if err != nil {
-			return cards, false, err
 			db.Logger.Log(err)
+			return cards, false, err
 		}
 		cards = append(cards, card)
 	}
@@ -86,4 +92,51 @@ func (db *Database) GetCard(cardId int) (models.Card, bool, error) {
 		return models.Card{}, false, err
 	}
 	return card, true, nil
+}
+
+
+func (db *Database) GetCardsForGame(dictId int, cardsNum int) ([]models.GameWord, bool, error) {
+	cards := make([]models.GameWord, 0)
+	rows, err := db.Conn.Query(CardsForGame, dictId, cardsNum)
+	if err != nil {
+		db.Logger.Log(err)
+		return cards, false, err
+	}
+	i := 0
+	for rows.Next() {
+		i++
+		card := models.GameWord{}
+		card.Variants = make([]string, 4)
+		rightIndex := rand.Int() % 4
+		card.Correct = rightIndex
+		err := rows.Scan(&card.CardId, &card.Word, &card.Variants[rightIndex])
+		if err != nil {
+			db.Logger.Log(err)
+			_ = rows.Close()
+			return cards, false, err
+		}
+		cards = append(cards, card)
+	}
+	_ = rows.Close()
+	if i == 0 {
+		return cards, false, nil
+	}
+	for _, card := range cards {
+		for i := range card.Variants {
+			if i != card.Correct {
+				card.Variants[i] = faker.Word()
+			}
+		}
+	}
+	/*stmt, err := db.Conn.Prepare(GetWordsFromDict)
+	for _, card := range cards {
+		row := stmt.QueryRow(GetWordsFromDict, dictId, card.Variants[card.Correct])
+		strings := make([]string, wordsNum - 1)
+		dest := make([]interface{}, wordsNum -1)
+		for _, {
+			
+		}
+		row.Scan(dest...)
+	}*/
+	return cards, true, nil
 }

@@ -57,6 +57,14 @@ const (
 		" join wordtrainer.word w1 " +
 		"on (w1.id = c.word) join wordtrainer.word w2 on " +
 		"(w2.id = c.translation) where c_l.id = ?"
+	CardsForGame = "SELECT c_l.id, w1.name, w2.name FROM wordtrainer.dictionary_to_library d_l " +
+		"JOIN wordtrainer.cards_library c_l ON (c_l.id = d_l.library_id )" +
+		"JOIN wordtrainer.card card ON(card.id = c_l.card_id) " +
+		"JOIN wordtrainer.word w1 on (w1.id = card.word) " +
+		"JOIN wordtrainer.word w2 on (w2.id = card.translation) " +
+		"WHERE d_l.dictionary_id = ? " +
+		"ORDER BY c_l.frequency ASC LIMIT ?"		//// TODO(sergeychur): finish up
+	GetWordsFromDict = "SELECT"	///// TODO(sergeychur): finish up
 
 	TriggerDeleteCard = "DELETE FROM wordtrainer.cards_library WHERE ID IN ( SELECT library_id FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ?)"
 
