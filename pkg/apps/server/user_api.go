@@ -51,7 +51,7 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 		responses.WriteToResponse(w, http.StatusUnauthorized, textError)
 		return
 	} else {
-		server.CreateCookie(token, 20, w, r)
+		server.CreateCookie(token, 60, w, r)
 		w.Write([]byte(token))
 		w.WriteHeader(http.StatusOK)
 	}
@@ -69,7 +69,7 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 	if token, _, err := server.DB.Login(user.Username, user.Password, []byte(server.ServerConfig.Secret)); err != nil {
 		server.Logger.Log(err.Error())
 	} else {
-		server.CreateCookie(token, 20, w, r)
+		server.CreateCookie(token, 60, w, r)
 		w.Write([]byte(token))
 	}
 	w.WriteHeader(http.StatusOK)

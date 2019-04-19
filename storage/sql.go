@@ -76,8 +76,12 @@ const (
 	CreateCardsLibrary     = "INSERT INTO wordtrainer.cards_library (frequency, card_id, count) VALUES (?, ?, ?)"
 	DeleteListCardsLibrary = "DELETE FROM wordtrainer.cards_library WHERE ID in ?"
 	GetIDCardsLibrary      = "SELECT ID FROM wordtrainer.cards_library WHERE card_id = ?"
-	IncrCountCardsLibrary  = "UPDATE wordtrainer.cards_library SET count = count + 1 WHERE ID = ?"
+	IncrCountCardsLibrary  = "UPDATE wordtrainer.cards_library SET count = count + 1 WHERE ID = ?"		// useless a bit
 	DecrCountCardsLibrary  = "UPDATE wordtrainer.cards_library SET count = count - 1 WHERE ID = ?"
+
+	// mb change, talk about it
+	UpdateFrequency = "UPDATE wordtrainer.card_library SET count = "
+
 
 	//  dictionary_to_library
 	CreateDictionaryToLibrary     = "INSERT INTO wordtrainer.dictionary_to_library (dictionary_id, library_id) VALUES (?, ?)"
