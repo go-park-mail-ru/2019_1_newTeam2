@@ -39,7 +39,7 @@ const (
 	//  card
 	CreateCard    = "INSERT INTO wordtrainer.card (word, translation) VALUES (?, ?)"
 	GetCard       = "SELECT ID FROM wordtrainer.card WHERE word = ? AND translation = ?"
-	CardsPaginate = "SELECT c_l.id, w1.LangID, w1.name, w2.LangID, w2.name, c_l.frequency FROM wordtrainer.card c " +
+	CardsPaginate = "SELECT c_l.id, w1.LangID, w1.name, w2.LangID, w2.name, c_l.guessed / c_l.seen FROM wordtrainer.card c " +
 		"JOIN (SELECT wordtrainer.card.id " +
 		"FROM wordtrainer.dictionary_to_library d_l " +
 		"JOIN wordtrainer.cards_library c_l ON (d_l.library_id = c_l.id) " +
@@ -52,7 +52,7 @@ const (
 		"JOIN wordtrainer.word w2 on (w2.id = c.translation) " +
 		"ORDER BY id"
 	GetCardById = "SELECT c_l.id, w1.name, w1.LangID, " +
-		" w2.name, w2.LangID, c_l.frequency from wordtrainer.cards_library c_l " +
+		" w2.name, w2.LangID, c_l.guessed / c_l.seen from wordtrainer.cards_library c_l " +
 		"join wordtrainer.card c on c_l.card_id = c.id " +
 		" join wordtrainer.word w1 " +
 		"on (w1.id = c.word) join wordtrainer.word w2 on " +
@@ -63,7 +63,7 @@ const (
 		"JOIN wordtrainer.word w1 on (w1.id = card.word) " +
 		"JOIN wordtrainer.word w2 on (w2.id = card.translation) " +
 		"WHERE d_l.dictionary_id = ? " +
-		"ORDER BY c_l.frequency ASC LIMIT ?"		//// TODO(sergeychur): finish up
+		"ORDER BY c_l.guessed / c_l.seen ASC LIMIT ?"		//// TODO(sergeychur): finish up
 	GetWordsFromDict = "SELECT"	///// TODO(sergeychur): finish up
 
 	TriggerDeleteCard = "DELETE FROM wordtrainer.cards_library WHERE ID IN ( SELECT library_id FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ?)"
@@ -73,14 +73,14 @@ const (
 	GetLangs       = "SELECT * FROM wordtrainer.language"
 
 	//  cards_library
-	CreateCardsLibrary     = "INSERT INTO wordtrainer.cards_library (frequency, card_id, count) VALUES (?, ?, ?)"
+	CreateCardsLibrary     = "INSERT INTO wordtrainer.cards_library (card_id, count) VALUES (?, ?)"
 	DeleteListCardsLibrary = "DELETE FROM wordtrainer.cards_library WHERE ID in ?"
 	GetIDCardsLibrary      = "SELECT ID FROM wordtrainer.cards_library WHERE card_id = ?"
-	IncrCountCardsLibrary  = "UPDATE wordtrainer.cards_library SET count = count + 1 WHERE ID = ?"		// useless a bit
+	IncrCountCardsLibrary  = "UPDATE wordtrainer.cards_library SET count = count + 1 WHERE ID = ?"
 	DecrCountCardsLibrary  = "UPDATE wordtrainer.cards_library SET count = count - 1 WHERE ID = ?"
 
 	// mb change, talk about it
-	UpdateFrequency = "UPDATE wordtrainer.card_library SET count = "
+	UpdateFrequency = "UPDATE wordtrainer.cards_library SET seen = if(if_seen, seen + 1, seen), if_seen = true, guessed = guessed + ? where id = ?"
 
 
 	//  dictionary_to_library

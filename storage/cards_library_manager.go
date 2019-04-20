@@ -21,7 +21,6 @@ func (db *Database) DeleteCardInDictionary(dictionaryID int, cardID int) error {
 func (db *Database) CreateCardsLibrary(CardID int) (int, error) {
 	result, CreateErr := db.Conn.Exec(
 		CreateCardsLibrary,
-		0,
 		CardID,
 		1,
 	)

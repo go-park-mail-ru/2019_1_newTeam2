@@ -53,9 +53,11 @@ CREATE TABLE card (
 
 CREATE TABLE cards_library (
 	ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-	frequency DOUBLE NOT NULL,
 	card_id INT UNSIGNED NOT NULL,
 	count INT UNSIGNED NOT NULL,
+	guessed INT UNSIGNED NOT NULL DEFAULT 0,
+	seen INT UNSIGNED NOT NULL DEFAULT 1,
+	if_seen BOOL NOT NULL DEFAULT FALSE,
 	FOREIGN KEY (card_id) REFERENCES card (ID)
 );
 
@@ -99,7 +101,7 @@ BEGIN
 		IF done THEN
 			LEAVE read_loop;
 		END IF;
-		INSERT INTO cards_library(frequency, card_id, count) VALUES (0, cur_card_id, 1);
+		INSERT INTO cards_library(card_id, count) VALUES (cur_card_id, 1);
 		SELECT LAST_INSERT_ID() INTO cur_c_l_id;
 		INSERT INTO dictionary_to_library(dictionary_id, library_id) VALUES (new_dict_id, cur_c_l_id);
 	END LOOP;
