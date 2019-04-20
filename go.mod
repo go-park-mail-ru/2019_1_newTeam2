@@ -1,7 +1,7 @@
 module github.com/user/2019_1_newTeam2
 
 require (
-	github.com/bxcodec/faker v2.0.1+incompatible
+	github.com/bxcodec/faker v2.0.1+incompatible // indirect
 	github.com/bxcodec/faker/v3 v3.0.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
