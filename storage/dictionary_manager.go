@@ -36,7 +36,12 @@ func (db *Database) DictionaryDelete(DictID int) error {
 }
 
 func (db *Database) DictionaryUpdate(DictID int, Name string, Description string) error {
-	_, UpdateErr := db.Conn.Exec(
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		db.Logger.Log("DictionaryUpdate: transaction error - ", err)
+		return fmt.Errorf("DictionaryUpdate: transaction error")
+	}
+	_, UpdateErr := tx.Exec(
 		UpdateDictionary,
 		Name,
 		Description,
@@ -44,9 +49,10 @@ func (db *Database) DictionaryUpdate(DictID int, Name string, Description string
 	)
 	if UpdateErr != nil {
 		db.Logger.Log(UpdateErr)
-		return fmt.Errorf("UpdateErr: user not update")
+		tx.Rollback()
+		return fmt.Errorf("DictionaryUpdate: user not update")
 	}
-
+	tx.Commit()
 	return nil
 }
 
