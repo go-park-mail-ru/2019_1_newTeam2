@@ -19,31 +19,39 @@ func (db *Database) CreateCard(WordID int, TranslationID int) (int, error) {
 		strconv.Itoa(WordID) + "\", " + strconv.Itoa(TranslationID) +
 		") AS tmp WHERE NOT EXISTS " +
 		"(SELECT word, translation FROM wordtrainer.card WHERE word = ? AND translation = ?) LIMIT 1"
-	result, CreateErr := db.Conn.Exec(
+
+	tx, err := db.Conn.Begin()
+	result, CreateErr := tx.Exec(
 		Query,
 		WordID,
 		TranslationID,
 	)
 
 	if CreateErr != nil {
+		tx.Rollback()
 		return 0, fmt.Errorf("Err: card not create and not found")
 	}
 
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
+		tx.Rollback()
 		return 0, fmt.Errorf("GetIDErr: can`t get last card id")
 	}
 
+	tx.Commit()
 	if lastID != 0 {
 		return int(lastID), nil
 	}
 
 	var ID int64
-	row := db.Conn.QueryRow(GetCard, WordID, TranslationID)
-	err := row.Scan(&ID)
+	tx, err = db.Conn.Begin()
+	row := tx.QueryRow(GetCard, WordID, TranslationID)
+	err = row.Scan(&ID)
 	if err != nil {
+		tx.Rollback()
 		return 0, fmt.Errorf("Err: card not create and not found")
 	}
+	tx.Commit()
 	return int(ID), nil
 }
 

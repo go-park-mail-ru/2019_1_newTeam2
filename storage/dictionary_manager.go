@@ -51,7 +51,9 @@ func (db *Database) DictionaryUpdate(DictID int, Name string, Description string
 }
 
 func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfoPrivilege, error) {
-	result, CreateErr := db.Conn.Exec(
+	tx, err := db.Conn.Begin()
+
+	result, CreateErr := tx.Exec(
 		CreateEmptyDictionary,
 		Name,
 		Description,
@@ -59,8 +61,10 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	)
 	if CreateErr != nil {
 		db.Logger.Log(CreateErr)
+		tx.Rollback()
 		return models.DictionaryInfoPrivilege{}, fmt.Errorf("CreateErr: user not create")
 	}
+	tx.Commit()
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
 		db.Logger.Log(GetIDErr)

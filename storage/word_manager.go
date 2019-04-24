@@ -12,29 +12,41 @@ func CreateWord(db *Database, word *models.Word) (int, error) {
 		word.Name + "\", " + strconv.Itoa(word.LanguageId) +
 		") AS tmp WHERE NOT EXISTS " +
 		"(SELECT name, LangID FROM wordtrainer.word WHERE name = ? AND LangID = ?) LIMIT 1"
-	result, CreateErr := db.Conn.Exec(
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return 0, fmt.Errorf("transaction errpr")
+	}
+	result, CreateErr := tx.Exec(
 		Query,
 		word.Name,
 		word.LanguageId,
 	)
 	if CreateErr != nil {
+		tx.Rollback()
+		fmt.Println("Error: ", err)
 		return 0, fmt.Errorf("Err: word not create and not found")
 	}
 
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
+		tx.Rollback()
 		return 0, fmt.Errorf("GetIDErr: can`t get last word id")
 	}
 
+	tx.Commit()
 	if lastID != 0 {
 		return int(lastID), nil
 	}
 
+	tx, err = db.Conn.Begin()
 	var ID int64
-	row := db.Conn.QueryRow(GetWord, word.Name, word.LanguageId)
-	err := row.Scan(&ID)
+	row := tx.QueryRow(GetWord, word.Name, word.LanguageId)
+	err = row.Scan(&ID)
 	if err != nil {
+		tx.Rollback()
+		fmt.Println("Error: ", err)
 		return 0, fmt.Errorf("Err: word not create and not found")
 	}
+	tx.Commit()
 	return int(ID), nil
 }
