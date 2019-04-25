@@ -19,3 +19,14 @@ func (db *Database) GetLangs() ([]models.Language, bool, error) {
 	}
 	return langs, true, nil
 }
+
+func (db *Database) GetLangByName(LangName string) (models.Language, error) {
+	lang := models.Language{}
+	result := db.Conn.QueryRow(GetLangById, LangName)
+	err := result.Scan(&lang.ID, &lang.Name)
+	if err != nil {
+		db.Logger.Log("GetLangById: ", err)
+		return models.Language{}, err
+	}
+	return lang, nil
+}

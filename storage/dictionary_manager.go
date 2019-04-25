@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/tealeg/xlsx"
 	"github.com/user/2019_1_newTeam2/models"
 )
 
@@ -145,4 +146,40 @@ func (db *Database) BorrowDictById(dictId int, thiefId int) (int, models.Diction
 		return 0, models.DictionaryInfo{}, DBerror
 	}
 	return ownerId, dict, nil
+}
+
+func (db *Database) FillDictionaryFromXLSX(dictId int, pathToFile string) error {
+	xlsDict, err := xlsx.OpenFile(pathToFile)
+	if err != nil {
+		db.Logger.Log("file not found: ", err)
+		return err
+	}
+	for _, sheet := range xlsDict.Sheets {
+		for _, row := range sheet.Rows {
+			var data []string
+			for _, cell := range row.Cells {
+				data = append(data, cell.String())
+			}
+			if (len(data) == 4) {
+				lang1, err := db.GetLangByName(data[2])
+				if err != nil {
+					db.Logger.Log("FillDictionaryFromXLSX: language", data[2], "not found")
+					return err
+				}
+				lang2, err := db.GetLangByName(data[3])
+				if err != nil {
+					db.Logger.Log("FillDictionaryFromXLSX: language", data[3], "not found")
+					return err
+				}
+				word1 := models.Word{data[0], lang1.ID}
+				word2 := models.Word{data[1], lang2.ID}
+				card := models.Card{0, &word1, &word2, 0,}
+				err = db.SetCardToDictionary(int(dictId), card)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return nil
 }

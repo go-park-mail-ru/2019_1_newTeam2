@@ -25,10 +25,12 @@ type DictionaryManager interface {
 	GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error)
 	GetDict(dictId int) (models.DictionaryInfoPrivilege, bool, error)
 	BorrowDictById(dictId int, thiefId int) (int, models.DictionaryInfo, error)
+	FillDictionaryFromXLSX(dictId int, pathToFile string) error
 }
 
 type LanguageManager interface {
 	GetLangs() ([]models.Language, bool, error)
+	GetLangByName(LangName string) (models.Language, error)
 }
 
 type UserManager interface {

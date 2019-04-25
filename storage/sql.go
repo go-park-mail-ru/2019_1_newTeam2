@@ -71,6 +71,7 @@ const (
 	//  language
 	CreateLanguage = "INSERT INTO wordtrainer.language (name) VALUES (?)"
 	GetLangs       = "SELECT * FROM wordtrainer.language"
+	GetLangById    = "SELECT * FROM wordtrainer.language WHERE name = ?"
 
 	//  cards_library
 	CreateCardsLibrary     = "INSERT INTO wordtrainer.cards_library (card_id, count) VALUES (?, ?)"
