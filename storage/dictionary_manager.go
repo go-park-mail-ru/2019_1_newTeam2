@@ -154,31 +154,42 @@ func (db *Database) FillDictionaryFromXLSX(dictId int, pathToFile string) error 
 		db.Logger.Log("file not found: ", err)
 		return err
 	}
-	for _, sheet := range xlsDict.Sheets {
-		for _, row := range sheet.Rows {
-			var data []string
-			for _, cell := range row.Cells {
-				data = append(data, cell.String())
-			}
-			if (len(data) == 4) {
-				lang1, err := db.GetLangByName(data[2])
-				if err != nil {
-					db.Logger.Log("FillDictionaryFromXLSX: language", data[2], "not found")
-					return err
-				}
-				lang2, err := db.GetLangByName(data[3])
-				if err != nil {
-					db.Logger.Log("FillDictionaryFromXLSX: language", data[3], "not found")
-					return err
-				}
-				word1 := models.Word{data[0], lang1.ID}
-				word2 := models.Word{data[1], lang2.ID}
-				card := models.Card{0, &word1, &word2, 0,}
-				err = db.SetCardToDictionary(int(dictId), card)
-				if err != nil {
-					return err
-				}
-			}
+
+
+	var language []string
+	for _, cell := range xlsDict.Sheets[0].Rows[0].Cells {
+		language = append(language, cell.String())
+	}
+
+	if (len(language) != 2) {
+		return fmt.Errorf("bad file")
+	}
+
+	lang1, err := db.GetLangByName(language[0])
+	if err != nil {
+		db.Logger.Log("FillDictionaryFromXLSX: language", language[0], "not found")
+		return err
+	}
+	lang2, err := db.GetLangByName(language[1])
+	if err != nil {
+		db.Logger.Log("FillDictionaryFromXLSX: language", language[1], "not found")
+		return err
+	}
+
+	for _, row := range xlsDict.Sheets[0].Rows[1:] {
+		var data []string
+		for _, cell := range row.Cells {
+			data = append(data, cell.String())
+		}
+		if (len(data) != 2) {
+			return fmt.Errorf("bad file")
+		}
+		word1 := models.Word{data[0], lang1.ID}
+		word2 := models.Word{data[1], lang2.ID}
+		card := models.Card{0, &word1, &word2, 0,}
+		err = db.SetCardToDictionary(int(dictId), card)
+		if err != nil {
+			return err
 		}
 	}
 	return nil
