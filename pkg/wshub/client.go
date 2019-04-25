@@ -33,6 +33,7 @@ func (cl *Client) ReadFromInet() {
 		cl.hub.unregister <- cl.ID
 		_  = cl.Conn.Close()
 	}()
+
 	cl.Conn.SetReadLimit(maxMessageSize)
 	_ = cl.Conn.SetReadDeadline(time.Now().Add(pongWait))
 	cl.Conn.SetPongHandler(func(appData string) error {
@@ -76,5 +77,4 @@ func (cl *Client) WriteToInet() {
 			}
 		}
 	}
-
 }

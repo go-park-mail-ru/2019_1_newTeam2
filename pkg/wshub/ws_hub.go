@@ -18,16 +18,16 @@ func (h *WSHub) Run() {
 	for {
 		select {
 		case client := <-h.register:
-			h.clients.Store(client)
-			break
+			h.clients.Store(client)  //  Add to ClientsMap
+			// break
 
 		case clID := <-h.unregister:
 			h.clients.Delete(clID)
-			break
+			// break
 
 		case mes := <-h.sendTo:
 			h.SendToCl(mes)
-			break
+			// break
 		}
 	}
 }
