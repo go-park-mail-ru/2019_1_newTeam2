@@ -36,7 +36,12 @@ func (db *Database) DictionaryDelete(DictID int) error {
 }
 
 func (db *Database) DictionaryUpdate(DictID int, Name string, Description string) error {
-	_, UpdateErr := db.Conn.Exec(
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		db.Logger.Log("DictionaryUpdate: transaction error - ", err)
+		return fmt.Errorf("DictionaryUpdate: transaction error")
+	}
+	_, UpdateErr := tx.Exec(
 		UpdateDictionary,
 		Name,
 		Description,
@@ -44,14 +49,17 @@ func (db *Database) DictionaryUpdate(DictID int, Name string, Description string
 	)
 	if UpdateErr != nil {
 		db.Logger.Log(UpdateErr)
-		return fmt.Errorf("UpdateErr: user not update")
+		tx.Rollback()
+		return fmt.Errorf("DictionaryUpdate: user not update")
 	}
-
+	tx.Commit()
 	return nil
 }
 
 func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfoPrivilege, error) {
-	result, CreateErr := db.Conn.Exec(
+	tx, err := db.Conn.Begin()
+
+	result, CreateErr := tx.Exec(
 		CreateEmptyDictionary,
 		Name,
 		Description,
@@ -59,8 +67,10 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	)
 	if CreateErr != nil {
 		db.Logger.Log(CreateErr)
+		tx.Rollback()
 		return models.DictionaryInfoPrivilege{}, fmt.Errorf("CreateErr: user not create")
 	}
+	tx.Commit()
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
 		db.Logger.Log(GetIDErr)

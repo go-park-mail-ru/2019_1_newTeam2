@@ -3,16 +3,21 @@ package storage
 import "fmt"
 
 func (db *Database) AddToDictionaryToLibrary(lastID int, CardsLibraryID int) error {
-	_, CreateErr := db.Conn.Exec(
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return fmt.Errorf("AddToDictionaryToLibrary: transaction err")
+	}
+	_, CreateErr := tx.Exec(
 		CreateDictionaryToLibrary,
 		lastID,
 		CardsLibraryID,
 	)
 
 	if CreateErr != nil {
-		return fmt.Errorf("CreateErr: word not create")
+		tx.Rollback()
+		return fmt.Errorf("AddToDictionaryToLibrary: word not create")
 	}
-
+	tx.Commit()
 	return nil
 }
 
