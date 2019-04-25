@@ -28,7 +28,7 @@ func (server *Server) UploadWordsFileAPI(w http.ResponseWriter, r *http.Request)
 	server.Logger.Log("UploadWordsFileAPI")
 	dictionaryIdString, parseErr := r.URL.Query()["dictionaryId"]
 	if !parseErr {
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	dictionaryId, ConvErr := strconv.Atoi(dictionaryIdString[0])
