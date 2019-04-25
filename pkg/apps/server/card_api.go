@@ -25,6 +25,17 @@ func (server *Server) UploadWordsFileAPI(w http.ResponseWriter, r *http.Request)
 		return nil
 	}
 
+	server.Logger.Log("UploadWordsFileAPI")
+	dictionaryIdString, parseErr := r.URL.Query()["dictionaryId"]
+	if !parseErr {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	dictionaryId, ConvErr := strconv.Atoi(dictionaryIdString[0])
+	if ConvErr != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
 	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
 	os.Mkdir(server.ServerConfig.UploadPath + "temp_docs/" + strconv.Itoa(userId), 0777)
 	pathToFile, err := filesystem.UploadFile(w, r, function,
@@ -38,7 +49,7 @@ func (server *Server) UploadWordsFileAPI(w http.ResponseWriter, r *http.Request)
 
 	_, pathToFile = TypeRequest(pathToFile)
 	pathToFile = server.ServerConfig.UploadPath[:len(server.ServerConfig.UploadPath)-1] + pathToFile
-	err = server.DB.FillDictionaryFromXLSX(1, pathToFile)  //  TODO (tsaanstu): real dictionary id
+	err = server.DB.FillDictionaryFromXLSX(dictionaryId, pathToFile)
 	os.RemoveAll(server.ServerConfig.UploadPath + "temp_docs/" + strconv.Itoa(userId))
 	if (err != nil) {
 		w.WriteHeader(http.StatusInternalServerError)
