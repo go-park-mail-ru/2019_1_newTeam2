@@ -85,6 +85,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPut, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.DeleteCardInDictionary).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.CreateCardInDictionary).Methods(http.MethodPost, http.MethodOptions)
+	needLogin.HandleFunc("/cards/", server.UploadWordsFileAPI).Methods(http.MethodPost, http.MethodOptions)
 
 	needLogin.HandleFunc("/single", server.GetSingleGame).Queries("dict", "{dictId}", "words", "{wordsNum}").Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/single", server.SetGameResults).Methods(http.MethodPost, http.MethodOptions)
