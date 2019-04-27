@@ -17,6 +17,9 @@ func (h *WSHub) SendToCl(mes *Message) {
 
 func (h *WSHub) SendAll(mes *Message) {
 	for clientID := range h.clients {
+		if clientID == mes.ID{
+			continue
+		}
 		client := h.clients[clientID]
 		select {
 		case client.sendChan <- mes:
@@ -31,10 +34,10 @@ func (h *WSHub) Run() {
 	for {
 		select {
 		case client := <-h.register:
-			_, ok := h.clients[client.ID]
+			/*_, ok := h.clients[client.ID]
 			if !ok {
 				h.clients[client.ID] = client	// possible bugs
-			}
+			}*/
 			h.clients[client.ID] = client
 
 		case clID := <-h.unregister:

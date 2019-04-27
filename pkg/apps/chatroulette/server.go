@@ -40,7 +40,7 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
 	chatRouter := router.PathPrefix("/chat/").Subrouter()
-	chatRouter.HandleFunc("/enter/", server.CreateChat)
+	chatRouter.HandleFunc("/enter/{id:[0-9]+}", server.CreateChat)
 	chatRouter.HandleFunc("/history/", server.GetHistory)
 	server.Router = router
 	return server, nil
