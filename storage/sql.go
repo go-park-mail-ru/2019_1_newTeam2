@@ -88,4 +88,9 @@ const (
 	CreateDictionaryToLibrary     = "INSERT INTO wordtrainer.dictionary_to_library (dictionary_id, library_id) VALUES (?, ?)"
 	DeleteDictionaryToLibraryByID = "DELETE FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ? AND library_id = ?"
 	GetLibraryIDByDictionaryID    = "SELECT library_id FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ?"
+
+	//  chat
+	GetMessages = "SELECT m.UserId, m.data FROM chat_wordtrainer.broadcast_dialog JOIN chat_wordtrainer.message m ON (MessageId = m.ID) LIMIT ? OFFSET ?";
+	AddMessage = "INSERT INTO chat_wordtrainer.message (data, UserId) VALUES (?, ?)";
+	AddMessageToBroadcastDialog = "INSERT INTO chat_wordtrainer.broadcast_dialog (MessageId, UserId) VALUES(?, ?)"
 )
