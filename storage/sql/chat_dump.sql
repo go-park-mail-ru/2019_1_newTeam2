@@ -1,5 +1,6 @@
 USE chat_wordtrainer;
 
+DROP TABLE IF EXISTS message_in_dialog;
 DROP TABLE IF EXISTS dialog;
 DROP TABLE IF EXISTS broadcast_dialog;
 DROP TABLE IF EXISTS message;
@@ -13,17 +14,23 @@ CREATE TABLE user (
 
 CREATE TABLE message (
     ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    data TEXT
+    data TEXT,
+    UserId INT UNSIGNED NOT NULL
+    FOREIGN KEY (UserId) REFERENCES message (ID)
 );
 
 CREATE TABLE dialog (
     ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     MessageID INT UNSIGNED NOT NULL,
-    User1 INT UNSIGNED NOT NULL,
-    User2 INT UNSIGNED NOT NULL,
-    FOREIGN KEY (MessageID) REFERENCES message (ID),
-    FOREIGN KEY (User1) REFERENCES user (ID),
-    FOREIGN KEY (User2) REFERENCES user (ID)
+    FOREIGN KEY (MessageID) REFERENCES message (ID)
+);
+
+CREATE TABLE message_in_dialog (
+    ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    DialogID INT UNSIGNED NOT NULL,
+    MessageID INT UNSIGNED NOT NULL,
+    FOREIGN KEY (DialogID) REFERENCES dialog (ID),
+    FOREIGN KEY (MessageID) REFERENCES message (ID)
 );
 
 CREATE TABLE broadcast_dialog (
