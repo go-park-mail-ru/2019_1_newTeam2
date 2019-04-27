@@ -1,16 +1,29 @@
 package wshub
 
 type WSHub struct {
-	clients    *ClientsMap
+	clients    map[int]*Client
 	register   chan *Client
 	unregister chan int
 	sendTo     chan *Message
+	broadcast  chan *Message
 }
 
 func (h *WSHub) SendToCl(mes *Message) {
-	cl, ok := h.clients.Load(mes.ID)
+	cl, ok := h.clients[mes.ID]
 	if ok {
 		cl.sendChan <- mes
+	}
+}
+
+func (h *WSHub) SendAll(mes *Message) {
+	for clientID := range h.clients {
+		client := h.clients[clientID]
+		select {
+		case client.sendChan <- mes:
+		default:
+			close(client.sendChan)
+			delete(h.clients, clientID)
+		}
 	}
 }
 
@@ -18,16 +31,19 @@ func (h *WSHub) Run() {
 	for {
 		select {
 		case client := <-h.register:
-			h.clients.Store(client)  //  Add to ClientsMap
-			// break
+			h.clients[client.ID] = client
 
 		case clID := <-h.unregister:
-			h.clients.Delete(clID)
-			// break
+			_, ok := h.clients[clID]
+			if ok {
+				delete(h.clients, clID)
+			}
 
 		case mes := <-h.sendTo:
 			h.SendToCl(mes)
-			// break
+
+		case mes := <-h.broadcast:
+			h.SendAll(mes)
 		}
 	}
 }
@@ -37,6 +53,6 @@ func NewWSHub() *WSHub {
 	hub.unregister = make(chan int)
 	hub.register = make(chan *Client)
 	hub.sendTo = make(chan *Message)
-	hub.clients = NewClientsMap()
+	hub.clients = make(map[int]*Client)
 	return hub
 }

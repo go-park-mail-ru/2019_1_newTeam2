@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/user/2019_1_newTeam2/pkg/apps/common"
 	"github.com/user/2019_1_newTeam2/pkg/wshub"
 	"log"
 	"net/http"
@@ -67,7 +68,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
 
 	needLogin := router.PathPrefix("/").Subrouter()
-	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, IsLogined))
+	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, common.IsLogined))
 	needLogin.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)

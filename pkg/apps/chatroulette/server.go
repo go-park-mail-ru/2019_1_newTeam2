@@ -1,6 +1,7 @@
 package chatroulette
 
 import (
+	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 	"github.com/user/2019_1_newTeam2/pkg/wshub"
 	"log"
 	"net/http"
@@ -19,12 +20,25 @@ type ChatServer struct {
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
 	Hub          wshub.IWSCommunicator
+	CookieField  string
 }
 
-func NewChatServer() (*ChatServer, error) {
+func NewChatServer(pathToConfig string) (*ChatServer, error) {
 	server := new(ChatServer)
-	router := mux.NewRouter()
 
+	newConfig, err := config.NewConfig(pathToConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	server.CookieField = "session_id"
+
+	server.ServerConfig = newConfig
+	server.Hub = wshub.NewWSCommunicator()
+	router := mux.NewRouter()
+	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
+	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
+	router.Use(middlewares.CreatePanicRecoveryMiddleware())
 	chatRouter := router.PathPrefix("/chat/").Subrouter()
 	chatRouter.HandleFunc("/enter/", server.CreateChat)
 	chatRouter.HandleFunc("/history/", server.GetHistory)
@@ -37,5 +51,6 @@ func (server *ChatServer) Run() {
 	if port == "" {
 		port = "8091"
 	}
+	log.Println("running")
 	log.Fatal(http.ListenAndServe(":" + port, server.Router))
 }

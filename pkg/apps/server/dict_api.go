@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"github.com/user/2019_1_newTeam2/pkg/apps/common"
 	"github.com/user/2019_1_newTeam2/pkg/wshub"
 	"github.com/user/2019_1_newTeam2/storage"
 	"io/ioutil"
@@ -16,7 +17,7 @@ import (
 
 func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("CreateDictionaryAPI")
-	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	userId, _ := common.GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
 	var dictionary models.CreateDictionary
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -118,7 +119,7 @@ func (server *Server) GetDictionaryById(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	userId, _ := common.GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
 	if result.ID == userId {
 		result.Privilege = true
 	} else {
@@ -130,7 +131,7 @@ func (server *Server) GetDictionaryById(w http.ResponseWriter, r *http.Request) 
 func (server *Server) DictsPaginate(w http.ResponseWriter, r *http.Request) {
 	page := 0
 	rowsNum := 0
-	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	userId, _ := common.GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
 	err := ParseParams(w, r, &page, &rowsNum)
 	if err != nil {
 		return
@@ -157,7 +158,7 @@ func (server *Server) BorrowDictById(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	userId, _ := common.GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
 	ownerId, createdDict, err := server.DB.BorrowDictById(dictId, userId)
 	if err == storage.ErrNotFound {
 		responses.WriteToResponse(w, http.StatusNotFound, nil)

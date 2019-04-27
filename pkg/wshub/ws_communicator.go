@@ -27,7 +27,7 @@ func (com *WSCommunicator) AddClient(w http.ResponseWriter, r *http.Request, id 
 	if err != nil {
 		return err
 	}
-	cl := &Client{ID: id, Conn: ws}
+	cl := &Client{ID: id, Conn: ws, sendChan: make(chan interface{})}
 	com.hub.register <- cl
 	go cl.ReadFromInet()
 	go cl.WriteToInet()

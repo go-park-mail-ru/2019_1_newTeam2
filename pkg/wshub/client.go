@@ -20,14 +20,6 @@ type Client struct {
 	sendChan chan interface{}
 }
 
-/*func (cl *Client) SendMes(mes *Message, unsubscribe chan int) {
-	_ = cl.Conn.SetWriteDeadline(time.Now().Add(writeWait))
-	err := cl.Conn.WriteJSON(mes.Data)
-	if err != nil {
-		unsubscribe <- cl.ID
-	}
-}*/
-
 func (cl *Client) ReadFromInet() {
 	defer func() {
 		cl.hub.unregister <- cl.ID
@@ -41,11 +33,12 @@ func (cl *Client) ReadFromInet() {
 		return nil
 	})
 	for {
-		_, _, err := cl.Conn.ReadMessage()
-		// here we can work with message like we want(second arg, add in future)
+		mes := Message{}
+		err := cl.Conn.ReadJSON(&mes)
 		if err != nil {
 			break
 		}
+		cl.hub.broadcast <- &mes
 	}
 }
 
