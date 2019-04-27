@@ -50,7 +50,7 @@ const (
 		"JOIN wordtrainer.cards_library c_l ON ( c_l.card_id = c.id) " +
 		"JOIN wordtrainer.word w1 on (w1.id = c.word) " +
 		"JOIN wordtrainer.word w2 on (w2.id = c.translation) " +
-		"ORDER BY id"
+		"ORDER BY id DESC"
 	GetCardById = "SELECT c_l.id, w1.name, w1.LangID, " +
 		" w2.name, w2.LangID, c_l.guessed / c_l.seen from wordtrainer.cards_library c_l " +
 		"join wordtrainer.card c on c_l.card_id = c.id " +
