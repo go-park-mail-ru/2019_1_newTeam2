@@ -12,9 +12,7 @@ import (
 	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 	"github.com/user/2019_1_newTeam2/pkg/apps/chatroulette"
 
-	//"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	//"github.com/rs/cors"
 
 	"github.com/user/2019_1_newTeam2/filesystem"
 	"github.com/user/2019_1_newTeam2/pkg/config"
