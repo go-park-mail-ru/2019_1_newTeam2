@@ -9,9 +9,11 @@ import (
 )
 
 func (server *ChatServer) CreateChat(w http.ResponseWriter, r *http.Request) {
-	id, _ := common.GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
-	id = 1
-	err := server.Hub.AddClient(w, r, id)
+	id, err := common.GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	if err != nil {
+		responses.WriteToResponse(w, http.StatusInternalServerError, models.Error{Message: "cannot subscribe"})
+	}
+	err = server.Hub.AddClient(w, r, id)
 	if err != nil {
 		responses.WriteToResponse(w, http.StatusBadRequest, models.Error{Message: "cannot subscribe"})
 	}

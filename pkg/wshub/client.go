@@ -16,7 +16,7 @@ const (
 type Client struct {
 	Conn *websocket.Conn
 	ID   int
-	hub WSHub
+	hub *WSHub
 	sendChan chan interface{}
 }
 
@@ -70,4 +70,14 @@ func (cl *Client) WriteToInet() {
 			}
 		}
 	}
+}
+
+
+func NewClient(id int , ws *websocket.Conn, hub *WSHub) *Client {
+	cl := new(Client)
+	cl.ID = id
+	cl.hub = hub
+	cl.sendChan = make(chan interface{})
+	cl.Conn = ws
+	return cl
 }

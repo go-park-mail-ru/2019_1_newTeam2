@@ -54,5 +54,6 @@ func NewWSHub() *WSHub {
 	hub.register = make(chan *Client)
 	hub.sendTo = make(chan *Message)
 	hub.clients = make(map[int]*Client)
+	hub.broadcast = make(chan *Message)
 	return hub
 }
