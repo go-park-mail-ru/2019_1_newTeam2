@@ -2,7 +2,7 @@ package models
 
 type Message struct {
 	ID          int       `json:"id,omitempty"`
-	Data        string	  `json:"word"`
+	Data        string	  `json:"message"`
 }
 
 type Dialog struct {
