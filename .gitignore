@@ -6,3 +6,4 @@ form.html
 *.out
 cover.html
 go.sum
+.vscode

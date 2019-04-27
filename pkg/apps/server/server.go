@@ -7,7 +7,10 @@ import (
 	"os"
 	"path/filepath"
 
+	"google.golang.org/grpc"
+
 	"github.com/user/2019_1_newTeam2/pkg/middlewares"
+	"github.com/user/2019_1_newTeam2/pkg/apps/chatroulette"
 
 	//"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -27,6 +30,7 @@ type Server struct {
 	Logger       logger.LoggerInterface
 	CookieField  string
 	Hub          wshub.IWSCommunicator
+	ChatClient	 chatroulette.ChatrouletteClient
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
@@ -99,6 +103,8 @@ func NewServer(pathToConfig string) (*Server, error) {
 	router.HandleFunc("/session/", server.Logout).Methods(http.MethodPatch, http.MethodOptions)
 	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
 
+	router.HandleFunc("/test/", server.Chat).Methods(http.MethodGet, http.MethodOptions)
+
 	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
 	server.Router = router
@@ -111,6 +117,18 @@ func (server *Server) Run() {
 	if port == "" {
 		port = server.ServerConfig.Port
 	}
+
+	grcpConn, err := grpc.Dial(
+		"127.0.0.1:8091",
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		log.Fatalf("cant connect to grpc")
+	}
+	defer grcpConn.Close()
+
+	server.ChatClient = chatroulette.NewChatrouletteClient(grcpConn)
+
 	server.Logger.Logf("Running app on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, server.Router))
 }
