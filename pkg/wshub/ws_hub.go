@@ -31,6 +31,10 @@ func (h *WSHub) Run() {
 	for {
 		select {
 		case client := <-h.register:
+			_, ok := h.clients[client.ID]
+			if !ok {
+				h.clients[client.ID] = client	// possible bugs
+			}
 			h.clients[client.ID] = client
 
 		case clID := <-h.unregister:
