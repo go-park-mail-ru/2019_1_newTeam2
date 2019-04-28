@@ -1,21 +1,18 @@
 package authorization
 
 import (
-	//"github.com/user/2019_1_newTeam2/pkg/apps/common"
-	//"github.com/user/2019_1_newTeam2/pkg/wshub"
 	"log"
+	"net"
 	"net/http"
 	"os"
-	//"path/filepath"
 
 	"github.com/gorilla/mux"
-	grpc "github.com/gorilla/rpc"
-	"github.com/gorilla/rpc/json"
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
 	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 	"github.com/user/2019_1_newTeam2/storage"
 	"github.com/user/2019_1_newTeam2/storage/interfaces"
+	"google.golang.org/grpc"
 )
 
 type AuthServer struct {
@@ -24,6 +21,8 @@ type AuthServer struct {
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
 	CookieField  string
+	rpcServer	 *grpc.Server
+	AuthClient	 AuthCheckerClient
 }
 
 func NewServer(pathToConfig string) (*AuthServer, error) {
@@ -52,9 +51,8 @@ func NewServer(pathToConfig string) (*AuthServer, error) {
 
 	router := mux.NewRouter()
 
-	muxServer := grpc.NewServer()
-	muxServer.RegisterCodec(json.NewCodec(), "application/json")
-	//muxServer.RegisterService(new(GorillaStringService), "")
+	server.rpcServer = grpc.NewServer()
+	RegisterAuthCheckerServer(server.rpcServer, NewAuthManager())
 
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
@@ -71,6 +69,26 @@ func NewServer(pathToConfig string) (*AuthServer, error) {
 }
 
 func (server *AuthServer) Run() {
+	lis, err := net.Listen("tcp", ":8092")
+	if err != nil {
+		server.Logger.Logf("Can`t listen port %s", "8092")
+		return
+	}
+	go server.rpcServer.Serve(lis)
+	server.Logger.Logf("Running AuthMS(grps) on port %s", "8092")
+
+	grcpAuthConn, err := grpc.Dial(
+		"127.0.0.1:8092",
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		server.Logger.Log("Can`t connect ro grpc (auth ms)")
+		return
+	}
+
+	defer grcpAuthConn.Close()
+	server.AuthClient = NewAuthCheckerClient(grcpAuthConn)
+
 	port := server.ServerConfig.Port
 	server.Logger.Logf("Running app on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, server.Router))

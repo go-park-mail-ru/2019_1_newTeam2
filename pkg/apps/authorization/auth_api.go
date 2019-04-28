@@ -19,8 +19,7 @@ func (server *AuthServer) Logout(w http.ResponseWriter, r *http.Request) {
 func (server *AuthServer) IsLogin(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("IsLogin")
 
-	if value := server.IsLogined(r, []byte(server.ServerConfig.Secret), server.CookieField); !value {
-
+	if value := server.IsLogined(r); !value {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusNoContent)
 		_, _ = w.Write([]byte("{}"))

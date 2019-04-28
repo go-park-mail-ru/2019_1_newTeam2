@@ -21,9 +21,15 @@ func (server *Server) GetUserIdFromCookie(r *http.Request) (int, error){
 		return 0, err
 	}
 	ctx := context.Background()
-	StrUserId, err := server.AuthClient.GetIdFromCookie(ctx, &authorization.AuthCookie{
+	StrUserId, err := server.AuthClient.GetIdFromCookie(ctx,
+		&authorization.AuthCookie {
 		Data: cookie.Value,
+		Secret: server.ServerConfig.Secret,
 	})
+	if err != nil {
+		server.Logger.Log("GetUserIdFromCookie ", err)
+		return int(0), err
+	}
 	return int(StrUserId.UserId), nil
 }
 

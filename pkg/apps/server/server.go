@@ -10,7 +10,6 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
-	"github.com/user/2019_1_newTeam2/pkg/apps/chatroulette"
 	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 
 	"github.com/gorilla/mux"
@@ -29,8 +28,7 @@ type Server struct {
 	Logger       logger.LoggerInterface
 	CookieField  string
 	Hub          wshub.IWSCommunicator
-	ChatClient	 chatroulette.ChatrouletteClient
-	AuthClient	 authorization.AuthorizationClient
+	AuthClient	 authorization.AuthCheckerClient
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
@@ -111,25 +109,15 @@ func (server *Server) Run() {
 		port = server.ServerConfig.Port
 	}
 
-	grcpChatConn, err := grpc.Dial(
-		"127.0.0.1:8091",
-		grpc.WithInsecure(),
-	)
-	if err != nil {
-		log.Fatalf("cant connect to grpc")
-	}
-	defer grcpChatConn.Close()
-	server.ChatClient = chatroulette.NewChatrouletteClient(grcpChatConn)
-
 	grcpAuthConn, err := grpc.Dial(
-		"127.0.0.1:8091",
+		"127.0.0.1:8092",
 		grpc.WithInsecure(),
 	)
 	if err != nil {
-		log.Fatalf("cant connect to grpc")
+		server.Logger.Log("Can`t connect ro grpc (auth ms)")
 	}
 	defer grcpAuthConn.Close()
-	server.AuthClient = authorization.NewAuthorizationClient(grcpAuthConn)
+	server.AuthClient = authorization.NewAuthCheckerClient(grcpAuthConn)
 
 	server.Logger.Logf("Running app on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, server.Router))

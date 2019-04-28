@@ -3,12 +3,10 @@ package authorization
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/responses"
 )
@@ -37,36 +35,17 @@ func (server *AuthServer) CreateUser(w http.ResponseWriter, r *http.Request) []b
 	return jsonStr
 }
 
-func (server *AuthServer) IsLogined(r *http.Request, secret []byte, cookieField string) bool {
-	cookie, err := r.Cookie(cookieField)
+func (server *AuthServer) IsLogined(r *http.Request) bool {
+	cookie, err := r.Cookie(server.CookieField)
 	if err != nil {
 		return false
 	}
 	ctx := context.Background()
-	_, err = server.GetIdFromCookie(ctx, &AuthCookie{
+	_, err = server.AuthClient.GetIdFromCookie(ctx, &AuthCookie{
 		Data: cookie.Value,
+		Secret: server.ServerConfig.Secret,
 	})
 	return err == nil
-}
-
-
-func (server *AuthServer) GetIdFromCookie(ctx context.Context, in *AuthCookie) (*Id, error) {
-	token, err := jwt.Parse(in.Data, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(server.ServerConfig.Secret), nil
-	})
-
-	if err != nil {
-		server.Logger.Log("GetIdFromCookie ", err)
-		return &Id{UserId: 0}, err
-	}
-
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return &Id{UserId: int64(claims["id"].(float64))}, nil
-	}
-	return &Id{UserId: 0}, fmt.Errorf("token invalid")
 }
 
 func (server *AuthServer) CreateCookie(token string, minutes int, w http.ResponseWriter, r *http.Request) {

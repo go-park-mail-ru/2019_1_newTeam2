@@ -24,6 +24,7 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type AuthCookie struct {
 	Data                 string   `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	Secret               string   `protobuf:"bytes,2,opt,name=secret,proto3" json:"secret,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -57,6 +58,13 @@ var xxx_messageInfo_AuthCookie proto.InternalMessageInfo
 func (m *AuthCookie) GetData() string {
 	if m != nil {
 		return m.Data
+	}
+	return ""
+}
+
+func (m *AuthCookie) GetSecret() string {
+	if m != nil {
+		return m.Secret
 	}
 	return ""
 }
@@ -108,17 +116,18 @@ func init() {
 func init() { proto.RegisterFile("authorization.proto", fileDescriptor_1dbbe58d1e51a797) }
 
 var fileDescriptor_1dbbe58d1e51a797 = []byte{
-	// 148 bytes of a gzipped FileDescriptorProto
+	// 168 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4e, 0x2c, 0x2d, 0xc9,
 	0xc8, 0x2f, 0xca, 0xac, 0x4a, 0x2c, 0xc9, 0xcc, 0xcf, 0xd3, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17,
-	0xe2, 0x45, 0x11, 0x54, 0x52, 0xe0, 0xe2, 0x72, 0x2c, 0x2d, 0xc9, 0x70, 0xce, 0xcf, 0xcf, 0xce,
+	0xe2, 0x45, 0x11, 0x54, 0xb2, 0xe0, 0xe2, 0x72, 0x2c, 0x2d, 0xc9, 0x70, 0xce, 0xcf, 0xcf, 0xce,
 	0x4c, 0x15, 0x12, 0xe2, 0x62, 0x49, 0x49, 0x2c, 0x49, 0x94, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c,
-	0x02, 0xb3, 0x95, 0x64, 0xb9, 0x98, 0x3c, 0x53, 0x84, 0xc4, 0xb9, 0xd8, 0x4b, 0x8b, 0x53, 0x8b,
-	0xe2, 0x33, 0x53, 0xc0, 0x92, 0xcc, 0x41, 0x6c, 0x20, 0xae, 0x67, 0x8a, 0x51, 0x10, 0x17, 0xaf,
-	0x23, 0xb2, 0x89, 0x42, 0x8e, 0x5c, 0xfc, 0xee, 0xa9, 0x25, 0x9e, 0x29, 0x6e, 0x45, 0xf9, 0xb9,
-	0x50, 0x63, 0x25, 0xf5, 0x50, 0x5d, 0x82, 0xb0, 0x51, 0x4a, 0x10, 0x4d, 0xca, 0x33, 0x45, 0x89,
-	0x21, 0x89, 0x0d, 0xec, 0x54, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x92, 0xc5, 0xff, 0x7d,
-	0xc1, 0x00, 0x00, 0x00,
+	0x02, 0xb3, 0x85, 0xc4, 0xb8, 0xd8, 0x8a, 0x53, 0x93, 0x8b, 0x52, 0x4b, 0x24, 0x98, 0xc0, 0xa2,
+	0x50, 0x9e, 0x92, 0x2c, 0x17, 0x93, 0x67, 0x8a, 0x90, 0x38, 0x17, 0x7b, 0x69, 0x71, 0x6a, 0x51,
+	0x7c, 0x66, 0x0a, 0x58, 0x13, 0x73, 0x10, 0x1b, 0x88, 0xeb, 0x99, 0x62, 0x14, 0xc0, 0xc5, 0x0d,
+	0x36, 0x38, 0x23, 0x35, 0x39, 0x3b, 0xb5, 0x48, 0xc8, 0x91, 0x8b, 0xdf, 0x3d, 0xb5, 0xc4, 0x33,
+	0xc5, 0xad, 0x28, 0x3f, 0x17, 0x6a, 0x99, 0xa4, 0x1e, 0xaa, 0xfb, 0x10, 0xee, 0x90, 0x12, 0x44,
+	0x93, 0xf2, 0x4c, 0x51, 0x62, 0x48, 0x62, 0x03, 0x7b, 0xc0, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff,
+	0x8a, 0x73, 0x8c, 0xc6, 0xd7, 0x00, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -129,64 +138,64 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// AuthorizationClient is the client API for Authorization service.
+// AuthCheckerClient is the client API for AuthChecker service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type AuthorizationClient interface {
+type AuthCheckerClient interface {
 	GetIdFromCookie(ctx context.Context, in *AuthCookie, opts ...grpc.CallOption) (*Id, error)
 }
 
-type authorizationClient struct {
+type authCheckerClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewAuthorizationClient(cc *grpc.ClientConn) AuthorizationClient {
-	return &authorizationClient{cc}
+func NewAuthCheckerClient(cc *grpc.ClientConn) AuthCheckerClient {
+	return &authCheckerClient{cc}
 }
 
-func (c *authorizationClient) GetIdFromCookie(ctx context.Context, in *AuthCookie, opts ...grpc.CallOption) (*Id, error) {
+func (c *authCheckerClient) GetIdFromCookie(ctx context.Context, in *AuthCookie, opts ...grpc.CallOption) (*Id, error) {
 	out := new(Id)
-	err := c.cc.Invoke(ctx, "/authorization.Authorization/GetIdFromCookie", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/authorization.AuthChecker/GetIdFromCookie", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// AuthorizationServer is the server API for Authorization service.
-type AuthorizationServer interface {
+// AuthCheckerServer is the server API for AuthChecker service.
+type AuthCheckerServer interface {
 	GetIdFromCookie(context.Context, *AuthCookie) (*Id, error)
 }
 
-func RegisterAuthorizationServer(s *grpc.Server, srv AuthorizationServer) {
-	s.RegisterService(&_Authorization_serviceDesc, srv)
+func RegisterAuthCheckerServer(s *grpc.Server, srv AuthCheckerServer) {
+	s.RegisterService(&_AuthChecker_serviceDesc, srv)
 }
 
-func _Authorization_GetIdFromCookie_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AuthChecker_GetIdFromCookie_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AuthCookie)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthorizationServer).GetIdFromCookie(ctx, in)
+		return srv.(AuthCheckerServer).GetIdFromCookie(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/authorization.Authorization/GetIdFromCookie",
+		FullMethod: "/authorization.AuthChecker/GetIdFromCookie",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthorizationServer).GetIdFromCookie(ctx, req.(*AuthCookie))
+		return srv.(AuthCheckerServer).GetIdFromCookie(ctx, req.(*AuthCookie))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _Authorization_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "authorization.Authorization",
-	HandlerType: (*AuthorizationServer)(nil),
+var _AuthChecker_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "authorization.AuthChecker",
+	HandlerType: (*AuthCheckerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetIdFromCookie",
-			Handler:    _Authorization_GetIdFromCookie_Handler,
+			Handler:    _AuthChecker_GetIdFromCookie_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
