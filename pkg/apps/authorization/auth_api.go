@@ -18,7 +18,9 @@ func (server *AuthServer) Logout(w http.ResponseWriter, r *http.Request) {
 
 func (server *AuthServer) IsLogin(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("IsLogin")
+
 	if value := server.IsLogined(r, []byte(server.ServerConfig.Secret), server.CookieField); !value {
+
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusNoContent)
 		_, _ = w.Write([]byte("{}"))
@@ -28,6 +30,7 @@ func (server *AuthServer) IsLogin(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("User is logined")
 	w.WriteHeader(http.StatusOK)
 }
+
 
 func (server *AuthServer) LoginAPI(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("LoginAPI")

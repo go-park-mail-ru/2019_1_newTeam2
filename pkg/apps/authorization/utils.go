@@ -49,17 +49,14 @@ func (server *AuthServer) IsLogined(r *http.Request, secret []byte, cookieField 
 	return err == nil
 }
 
-//func GetIdFromCookie(r *http.Request, secret []byte, cookieField string) (int, error) {
+
 func (server *AuthServer) GetIdFromCookie(ctx context.Context, in *AuthCookie) (*Id, error) {
-	fmt.Println(in.Data)
 	token, err := jwt.Parse(in.Data, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return server.ServerConfig.Secret, nil
+		return []byte(server.ServerConfig.Secret), nil
 	})
-
-	fmt.Println("token: ", token.Raw)
 
 	if err != nil {
 		server.Logger.Log("GetIdFromCookie ", err)
