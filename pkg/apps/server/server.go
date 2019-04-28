@@ -1,7 +1,6 @@
 package server
 
 import (
-	"github.com/user/2019_1_newTeam2/pkg/apps/common"
 	"github.com/user/2019_1_newTeam2/pkg/wshub"
 	"log"
 	"net/http"
@@ -10,8 +9,9 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/user/2019_1_newTeam2/pkg/middlewares"
+	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
 	"github.com/user/2019_1_newTeam2/pkg/apps/chatroulette"
+	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 
 	"github.com/gorilla/mux"
 
@@ -30,6 +30,7 @@ type Server struct {
 	CookieField  string
 	Hub          wshub.IWSCommunicator
 	ChatClient	 chatroulette.ChatrouletteClient
+	AuthClient	 authorization.AuthorizationClient
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
@@ -68,7 +69,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
 
 	needLogin := router.PathPrefix("/").Subrouter()
-	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, common.IsLogined))
+	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, server.IsLogined))
 	needLogin.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
@@ -85,7 +86,6 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	needLogin.HandleFunc("/cards", server.CardsPaginate).Queries("dict", "{dictId}", "rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/card/{id:[0-9]+}", server.GetCardById).Methods(http.MethodGet, http.MethodOptions)
-	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPut, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.DeleteCardInDictionary).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.CreateCardInDictionary).Methods(http.MethodPost, http.MethodOptions)
 	needLogin.HandleFunc("/cards/", server.UploadWordsFileAPI).Methods(http.MethodPost, http.MethodOptions)
@@ -97,10 +97,6 @@ func NewServer(pathToConfig string) (*Server, error) {
 	needLogin.HandleFunc("/subscribe/", server.WSSubscribe).Methods(http.MethodGet)
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
-	router.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/session/", server.Logout).Methods(http.MethodPatch, http.MethodOptions)
-	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
 
 	router.HandleFunc("/test/", server.Chat).Methods(http.MethodGet, http.MethodOptions)
 
@@ -117,16 +113,25 @@ func (server *Server) Run() {
 		port = server.ServerConfig.Port
 	}
 
-	grcpConn, err := grpc.Dial(
+	grcpChatConn, err := grpc.Dial(
 		"127.0.0.1:8091",
 		grpc.WithInsecure(),
 	)
 	if err != nil {
 		log.Fatalf("cant connect to grpc")
 	}
-	defer grcpConn.Close()
+	defer grcpChatConn.Close()
+	server.ChatClient = chatroulette.NewChatrouletteClient(grcpChatConn)
 
-	server.ChatClient = chatroulette.NewChatrouletteClient(grcpConn)
+	grcpAuthConn, err := grpc.Dial(
+		"127.0.0.1:8091",
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		log.Fatalf("cant connect to grpc")
+	}
+	defer grcpAuthConn.Close()
+	server.AuthClient = authorization.NewAuthorizationClient(grcpAuthConn)
 
 	server.Logger.Logf("Running app on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, server.Router))

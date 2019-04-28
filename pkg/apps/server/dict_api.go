@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"github.com/user/2019_1_newTeam2/pkg/apps/common"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -15,7 +14,11 @@ import (
 
 func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("CreateDictionaryAPI")
-	userId, _ := common.GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	userId, err := server.GetUserIdFromCookie(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	var dictionary models.CreateDictionary
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -117,7 +120,11 @@ func (server *Server) GetDictionaryById(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	userId, _ := common.GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	userId, err := server.GetUserIdFromCookie(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	if result.ID == userId {
 		result.Privilege = true
 	} else {
@@ -129,8 +136,12 @@ func (server *Server) GetDictionaryById(w http.ResponseWriter, r *http.Request) 
 func (server *Server) DictsPaginate(w http.ResponseWriter, r *http.Request) {
 	page := 0
 	rowsNum := 0
-	userId, _ := common.GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
-	err := ParseParams(w, r, &page, &rowsNum)
+	userId, err := server.GetUserIdFromCookie(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	err = ParseParams(w, r, &page, &rowsNum)
 	if err != nil {
 		return
 	}

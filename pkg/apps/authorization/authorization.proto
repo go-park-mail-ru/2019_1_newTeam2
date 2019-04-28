@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+// protoc --go_out=plugins=grpc:. *.proto
+
+package authorization;
+
+message AuthCookie {
+  string data = 1;
+}
+
+message Id {
+  int64 user_id = 1;
+}
+
+
+service Authorization {
+    rpc GetIdFromCookie (AuthCookie) returns (Id) {}
+}

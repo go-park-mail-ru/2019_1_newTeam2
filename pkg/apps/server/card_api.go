@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/user/2019_1_newTeam2/filesystem"
 	"github.com/user/2019_1_newTeam2/models"
-	"github.com/user/2019_1_newTeam2/pkg/apps/common"
 	"github.com/user/2019_1_newTeam2/pkg/responses"
 	"io/ioutil"
 	"mime/multipart"
@@ -37,7 +36,12 @@ func (server *Server) UploadWordsFileAPI(w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	userId, _ := common.GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	userId, err := server.GetUserIdFromCookie(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	os.Mkdir(server.ServerConfig.UploadPath + "temp_docs/" + strconv.Itoa(userId), 0777)
 	pathToFile, err := filesystem.UploadFile(w, r, function,
 		server.ServerConfig.UploadPath, "temp_docs/" + strconv.Itoa(userId))
