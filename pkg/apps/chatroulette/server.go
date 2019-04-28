@@ -11,6 +11,7 @@ import (
 
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
+	"github.com/user/2019_1_newTeam2/storage"
 	"github.com/user/2019_1_newTeam2/storage/interfaces"
 )
 
@@ -25,20 +26,27 @@ type ChatServer struct {
 
 func NewChatServer(pathToConfig string) (*ChatServer, error) {
 	server := new(ChatServer)
-
+	logger := new(logger.GoLogger)
+	logger.SetOutput(os.Stderr)
+	logger.SetPrefix("WORLDCHAT LOG: ")
+	server.Logger = logger
 	newConfig, err := config.NewConfig(pathToConfig)
 	if err != nil {
 		return nil, err
 	}
-
 	server.CookieField = "session_id"
-
 	server.ServerConfig = newConfig
+	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
+	if err != nil {
+		return nil, err
+	}
+	server.DB = newDB
 	server.Hub = wshub.NewWSCommunicator()
 	router := mux.NewRouter()
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
+
 	chatRouter := router.PathPrefix("/chat/").Subrouter()
 	chatRouter.HandleFunc("/enter/{id:[0-9]+}", server.CreateChat)
 	chatRouter.HandleFunc("/history/", server.GetHistory)
@@ -47,10 +55,7 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 }
 
 func (server *ChatServer) Run() {
-	port := os.Getenv("PORT")		// change for necessary port
-	if port == "" {
-		port = "8091"
-	}
-	log.Println("running")
+	port := server.ServerConfig.Port
+	server.Logger.Logf("Running app on port %s", port)
 	log.Fatal(http.ListenAndServe(":" + port, server.Router))
 }

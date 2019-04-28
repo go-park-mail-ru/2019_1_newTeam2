@@ -7,3 +7,4 @@ form.html
 cover.html
 go.sum
 .vscode
+*.proto

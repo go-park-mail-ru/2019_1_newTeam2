@@ -98,8 +98,6 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 
-	router.HandleFunc("/test/", server.Chat).Methods(http.MethodGet, http.MethodOptions)
-
 	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
 	server.Router = router

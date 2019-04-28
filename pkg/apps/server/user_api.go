@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -12,17 +11,7 @@ import (
 	"github.com/user/2019_1_newTeam2/filesystem"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/responses"
-	"github.com/user/2019_1_newTeam2/pkg/apps/chatroulette"
 )
-
-func (server *Server) Chat(w http.ResponseWriter, r *http.Request) {
-	server.Logger.Log("ChatTest")
-	ctx := context.Background()
-	server.ChatClient.Check(ctx, &chatroulette.Username{
-		Username: "new_username_1",
-	})
-	fmt.Println("...end...")
-}
 
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	userId, err := server.GetUserIdFromCookie(r)
