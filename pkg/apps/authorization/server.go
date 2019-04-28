@@ -36,6 +36,7 @@ func NewServer(pathToConfig string) (*AuthServer, error) {
 
 	newConfig, err := config.NewConfig(pathToConfig)
 	if err != nil {
+		server.Logger.Log(err)
 		return nil, err
 	}
 
@@ -44,6 +45,7 @@ func NewServer(pathToConfig string) (*AuthServer, error) {
 	server.ServerConfig = newConfig
 	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
 	if err != nil {
+		server.Logger.Log(err)
 		return nil, err
 	}
 	server.DB = newDB

@@ -17,17 +17,19 @@ func (server *AuthServer) CreateUser(w http.ResponseWriter, r *http.Request) []b
 	var user models.User
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		server.Logger.Log("CreateUser ", err)
 		responses.WriteToResponse(w, http.StatusBadRequest, "")
 		return jsonStr
 	}
 	err = json.Unmarshal(jsonStr, &user)
 	if err != nil {
+		server.Logger.Log("CreateUser ", err)
 		textError := models.Error{""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
 	}
 	if br, err_r := server.DB.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON); br != true {
-		server.Logger.Log(err_r.Error())
+		server.Logger.Log("CreateUser ", err_r.Error())
 		textError := models.Error{err_r.Error()}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
@@ -49,6 +51,7 @@ func (server *AuthServer) IsLogined(r *http.Request, secret []byte, cookieField 
 
 //func GetIdFromCookie(r *http.Request, secret []byte, cookieField string) (int, error) {
 func (server *AuthServer) GetIdFromCookie(ctx context.Context, in *AuthCookie) (*Id, error) {
+	fmt.Println(in.Data)
 	token, err := jwt.Parse(in.Data, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -56,7 +59,10 @@ func (server *AuthServer) GetIdFromCookie(ctx context.Context, in *AuthCookie) (
 		return server.ServerConfig.Secret, nil
 	})
 
+	fmt.Println("token: ", token.Raw)
+
 	if err != nil {
+		server.Logger.Log("GetIdFromCookie ", err)
 		return &Id{UserId: 0}, err
 	}
 
