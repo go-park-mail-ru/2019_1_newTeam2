@@ -17,6 +17,7 @@ require (
 	github.com/gorilla/websocket v1.4.0
 	github.com/hashicorp/golang-lru v0.5.1 // indirect
 	github.com/rs/cors v1.6.0
+	github.com/satori/go.uuid v1.2.0
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/stretchr/testify v1.3.0
 	github.com/tealeg/xlsx v1.0.3
