@@ -16,7 +16,8 @@ func main() {
 
 	serv, err := authorization.NewServer(pathToConfig)
 	if err != nil {
-		panic(err.Error())
+		serv.Logger.Log(err)
+		return
 	}
 	serv.Run()
 }

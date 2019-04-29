@@ -6,13 +6,13 @@ import (
 )
 
 type Config struct {
-	Secret       string   `json:"secret"`
+	Secret       string   `json:"secret,omitempty"`
 	Port         string   `json:"port"`
-	UploadPath   string   `json:"uploadPath"`
-	AvatarsPath  string   `json:"avatarsPath"`
-	AllowedHosts []string `json:"AllowedHosts"`
-	DBUser       string   `json:"dbUser"`
-	DBPassUser   string   `json:"dbPassUser"`
+	UploadPath   string   `json:"uploadPath,omitempty"`
+	AvatarsPath  string   `json:"avatarsPath,omitempty"`
+	AllowedHosts []string `json:"AllowedHosts,omitempty"`
+	DBUser       string   `json:"dbUser,omitempty"`
+	DBPassUser   string   `json:"dbPassUser,omitempty"`
 }
 
 func NewConfig(pathToConfig string) (*Config, error) {

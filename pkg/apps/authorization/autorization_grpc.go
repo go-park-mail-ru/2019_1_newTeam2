@@ -14,7 +14,6 @@ func NewAuthManager() *AuthManager {
 }
 
 func (am *AuthManager) GetIdFromCookie(ctx context.Context, in *AuthCookie) (*Id, error) {
-	fmt.Println("GetIdFromCookie")
 	token, err := jwt.Parse(in.Data, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

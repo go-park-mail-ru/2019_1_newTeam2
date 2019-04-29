@@ -95,6 +95,10 @@ func NewServer(pathToConfig string) (*Server, error) {
 	needLogin.HandleFunc("/subscribe/", server.WSSubscribe).Methods(http.MethodGet)
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc("/session/", server.IsLogin).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/session/", server.Logout).Methods(http.MethodPatch, http.MethodOptions)
+	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
 
 	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
