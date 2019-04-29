@@ -54,7 +54,7 @@ func (server *GameServer) Run() {
 		server.Logger.Log("Can`t connect ro grpc (auth ms)")
 	}
 	defer grcpAuthConn.Close()
-	server.Game.Run()
+	go server.Game.Run()
 	server.AuthClient = authorization.NewAuthCheckerClient(grcpAuthConn)
 	server.Logger.Logf("Running app on port %s", server.ServerConfig.Port)
 	server.Logger.Log(http.ListenAndServe(":" + server.ServerConfig.Port, server.Router))

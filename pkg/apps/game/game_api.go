@@ -23,7 +23,7 @@ func (server *GameServer) OpenConnection(w http.ResponseWriter, r *http.Request)
 	}
 
 	conn.WriteJSON(models.GameMessage{"CONNECTED" + strconv.Itoa(UserId), nil})
-	// g.Register <- conn
+	server.Game.Register <- conn
 }
 
 func (server *GameServer) GetUserIdFromCookie(r *http.Request) (int, error){
