@@ -1,8 +1,8 @@
-package chatroulette
+package chat
 
 import (
 	"github.com/user/2019_1_newTeam2/pkg/middlewares"
-	"github.com/user/2019_1_newTeam2/pkg/wshub"
+	"github.com/user/2019_1_newTeam2/pkg/apps/chat/wshub"
 	"log"
 	"net/http"
 	"os"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/user/2019_1_newTeam2/pkg/apps/chatroulette"
+	"github.com/user/2019_1_newTeam2/pkg/apps/chat"
 	"os"
 )
 
@@ -14,7 +14,7 @@ func main() {
 		pathToConfig = os.Args[1]
 	}
 
-	server, err := chatroulette.NewChatServer(pathToConfig)
+	server, err := chat.NewChatServer(pathToConfig)
 	if err != nil {
 		panic(err)
 	}

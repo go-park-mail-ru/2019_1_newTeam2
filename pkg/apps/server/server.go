@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/user/2019_1_newTeam2/pkg/wshub"
+	// "github.com/user/2019_1_newTeam2/pkg/wshub"
 	"log"
 	"net/http"
 	"os"
@@ -27,7 +27,7 @@ type Server struct {
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
 	CookieField  string
-	Hub          wshub.IWSCommunicator
+	// Hub          wshub.IWSCommunicator
 	AuthClient	 authorization.AuthCheckerClient
 }
 
@@ -58,7 +58,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 		return nil, err
 	}
 
-	server.Hub = wshub.NewWSCommunicator()
+	// server.Hub = wshub.NewWSCommunicator()
 
 	router := mux.NewRouter()
 
@@ -92,7 +92,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	needLogin.HandleFunc("/single", server.SetGameResults).Methods(http.MethodPost, http.MethodOptions)
 
 	// set needLogin in future, when front is ready
-	needLogin.HandleFunc("/subscribe/", server.WSSubscribe).Methods(http.MethodGet)
+	// needLogin.HandleFunc("/subscribe/", server.WSSubscribe).Methods(http.MethodGet)
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)

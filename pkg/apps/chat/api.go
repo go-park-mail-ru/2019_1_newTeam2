@@ -1,4 +1,4 @@
-package chatroulette
+package chat
 
 import (
 	"github.com/gorilla/mux"
