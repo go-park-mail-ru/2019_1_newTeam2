@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
-	"github.com/user/2019_1_newTeam2/storage"
+	// "github.com/user/2019_1_newTeam2/storage"
 	"github.com/user/2019_1_newTeam2/storage/interfaces"
 	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
 )
@@ -37,11 +37,11 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 	if err != nil {
 		return nil, err
 	}
-	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
-	if err != nil {
-		return nil, err
-	}
-	server.DB = newDB
+	// newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// server.DB = newDB
 	server.CookieField = "session_id"
 	server.ServerConfig = newConfig
 	server.Hub = wshub.NewWSCommunicator(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
