@@ -1,21 +1,28 @@
 package wshub
 
+import (
+	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/storage"
+	"github.com/user/2019_1_newTeam2/storage/interfaces"
+)
+
 type WSHub struct {
 	clients    map[int]*Client
 	register   chan *Client
 	unregister chan int
-	sendTo     chan *Message
-	broadcast  chan *Message
+	sendTo     chan *models.Message
+	broadcast  chan *models.Message
+	DB         interfaces.DBChatInterface
 }
 
-func (h *WSHub) SendToCl(mes *Message) {
+func (h *WSHub) SendToCl(mes *models.Message) {
 	cl, ok := h.clients[mes.ID]
 	if ok {
 		cl.sendChan <- mes
 	}
 }
 
-func (h *WSHub) SendAll(mes *Message) {
+func (h *WSHub) SendAll(mes *models.Message) {
 	for clientID := range h.clients {
 		if clientID == mes.ID{
 			continue
@@ -39,6 +46,7 @@ func (h *WSHub) Run() {
 				h.clients[client.ID] = client	// possible bugs
 			}*/
 			h.clients[client.ID] = client
+			h.SendToCl(&models.Message{client.ID, "Welcome to Word chat!)"})
 
 		case clID := <-h.unregister:
 			_, ok := h.clients[clID]
@@ -50,17 +58,23 @@ func (h *WSHub) Run() {
 			h.SendToCl(mes)
 
 		case mes := <-h.broadcast:
+			h.DB.AddMessage(mes.ID, mes.Data)
 			h.SendAll(mes)
 		}
 	}
 }
 
-func NewWSHub() *WSHub {
+func NewWSHub(username string, pass string) *WSHub {
 	hub := new(WSHub)
 	hub.unregister = make(chan int)
 	hub.register = make(chan *Client)
-	hub.sendTo = make(chan *Message)
+	hub.sendTo = make(chan *models.Message)
 	hub.clients = make(map[int]*Client)
-	hub.broadcast = make(chan *Message)
+	hub.broadcast = make(chan *models.Message)
+	newDB, err := storage.NewDataBase(username, pass)
+	if err != nil {
+		return nil
+	}
+	hub.DB = newDB
 	return hub
 }

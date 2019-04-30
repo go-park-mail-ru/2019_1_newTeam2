@@ -33,7 +33,7 @@ func (cl *Client) ReadFromInet() {
 		return nil
 	})
 	for {
-		mes := Message{}
+		mes := models.Message{}
 		err := cl.Conn.ReadJSON(&mes)
 		if err != nil {
 			break

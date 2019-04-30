@@ -3,6 +3,7 @@ package wshub
 import (
 	"github.com/gorilla/websocket"
 	"net/http"
+	"github.com/user/2019_1_newTeam2/models"
 )
 
 const (
@@ -35,16 +36,16 @@ func (com *WSCommunicator) AddClient(w http.ResponseWriter, r *http.Request, id 
 	return nil
 }
 
-func (com *WSCommunicator) SendToClient(mes *Message) {
+func (com *WSCommunicator) SendToClient(mes *models.Message) {
 	com.hub.sendTo <- mes
 }
 func (com *WSCommunicator) DeleteClient(ID int) {
 	com.hub.unregister <- ID
 }
 
-func NewWSCommunicator() *WSCommunicator {
+func NewWSCommunicator(username string, pass string) *WSCommunicator {
 	com := new(WSCommunicator)
-	com.hub = NewWSHub()
+	com.hub = NewWSHub(username, pass)
 	go com.hub.Run()
 	return com
 }
