@@ -7,6 +7,7 @@ import (
 	"github.com/user/2019_1_newTeam2/filesystem"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/responses"
+	"github.com/user/2019_1_newTeam2/pkg/utils"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -36,7 +37,12 @@ func (server *Server) UploadWordsFileAPI(w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	userId, err := server.GetUserIdFromCookie(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	os.Mkdir(server.ServerConfig.UploadPath + "temp_docs/" + strconv.Itoa(userId), 0777)
 	pathToFile, err := filesystem.UploadFile(w, r, function,
 		server.ServerConfig.UploadPath, "temp_docs/" + strconv.Itoa(userId))
@@ -47,7 +53,7 @@ func (server *Server) UploadWordsFileAPI(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	_, pathToFile = TypeRequest(pathToFile)
+	_, pathToFile = utils.TypeRequest(pathToFile)
 	pathToFile = server.ServerConfig.UploadPath[:len(server.ServerConfig.UploadPath)-1] + pathToFile
 	err = server.DB.FillDictionaryFromXLSX(dictionaryId, pathToFile)
 	os.RemoveAll(server.ServerConfig.UploadPath + "temp_docs/" + strconv.Itoa(userId))
@@ -69,7 +75,7 @@ func (server *Server) CardsPaginate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		responses.WriteToResponse(w, http.StatusBadRequest, fmt.Errorf("dict idincorrect"))
 	}
-	err = ParseParams(w, r, &page, &rowsNum)
+	err = utils.ParseParams(w, r, &page, &rowsNum)
 	if err != nil {
 		return
 	}
