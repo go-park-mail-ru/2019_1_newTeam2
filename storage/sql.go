@@ -90,7 +90,12 @@ const (
 	GetLibraryIDByDictionaryID    = "SELECT library_id FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ?"
 
 	//  chat
-	GetMessages = "SELECT m.UserId, m.data FROM chat_wordtrainer.broadcast_dialog JOIN chat_wordtrainer.message m ON (MessageId = m.ID) LIMIT ? OFFSET ?";
+	GetMessages = "SELECT m.UserId, m.data FROM chat_wordtrainer.broadcast_dialog JOIN chat_wordtrainer.message m ON (MessageId = m.ID) LIMIT ? OFFSET ?"
 	AddMessage = "INSERT INTO chat_wordtrainer.message (data, UserId) VALUES (?, ?)";
 	AddMessageToBroadcastDialog = "INSERT INTO chat_wordtrainer.broadcast_dialog (MessageId, UserId) VALUES(?, ?)"
+
+	//  game
+	GameGetLastId = "SELECT MAX(ID) FROM game_wordtrainer.russian_english_words"
+	GameGetWord = "SELECT Word FROM game_wordtrainer.russian_english_words WHERE ID = ?"
+	GameGetTranslate = "SELECT Translate FROM game_wordtrainer.russian_english_words WHERE ID = ?"
 )

@@ -12,9 +12,11 @@ import (
 )
 
 type Game struct {
-	Rooms    map[string]*room.Room
-	MaxRooms int
-	Register chan *websocket.Conn
+	Rooms    	map[string]*room.Room
+	MaxRooms 	int
+	Register 	chan *websocket.Conn
+	DBUser   	string
+	DBPassUser	string
 }
 
 func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {
@@ -29,16 +31,17 @@ func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {
 	mutex.Unlock()
 }
 
-func NewGame() *Game{
+func NewGame(DBUser string, DBPassUser string) *Game{
 	return &Game{
 		Rooms:    make(map[string]*room.Room),
 		MaxRooms: 2,
 		Register: make(chan *websocket.Conn),
+		DBUser: DBUser,
+		DBPassUser: DBPassUser,
 	}
 }
 
 func (game *Game) Run() {
-	//go game.DeleteEmptyRoom()
 	for {
 		conn := <-game.Register
 		log.Printf("got new connection")
@@ -59,11 +62,13 @@ func (game *Game) FindRoom(player *room.Player) *room.Room {
 		return nil
 	}
 
-	room := room.New()
+	room := room.New(game.DBUser, game.DBPassUser)
 	room.Players[player.ID] = player
 	player.Room = room
 	game.Rooms[room.ID] = room
+
 	go room.ListenToPlayers()
+
 	log.Printf("room %s created", room.ID)
 
 	return room
@@ -80,12 +85,10 @@ func (game *Game) ProcessConn(conn *websocket.Conn) {
 	if room == nil {
 		return
 	}
-	//room.Players[player.ID] = player
-	//player.Room = room
 	log.Printf("player %s joined room %s", player.ID, room.ID)
 	go player.Listen()
 
-	if len(room.Players) == room.MaxPlayers {
+	if len(room.Players) > 0 {
 		go game.RoomRun(room)
 	}
 
@@ -99,15 +102,14 @@ func (game *Game) RoomRun(r *room.Room) {
 	for _, p := range r.Players {
 		players = append(players, p.Data)
 	}
-	state := &models.State{
-		Players: players,
-	}
 
-	r.Broadcast <- &models.GameMessage{Type: "SIGNAL_START_THE_GAME", Payload: state}
+	NewTask := r.CreateTask()
+	r.Answer = NewTask.Answer
+	log.Printf("Answer: %s\n", r.Answer)
+	r.Broadcast <- &models.GameMessage{Type: "Task", Payload: NewTask}
 
 	for {
 		<-r.Ticker.C
-		log.Printf("room %s tick with %d players", r.ID, len(r.Players))
 		if len(r.Players) == 0 {
 			game.DeleteEmptyRoom(r)
 			return
@@ -119,6 +121,6 @@ func (game *Game) RoomRun(r *room.Room) {
 		state := &models.State{
 			Players: players,
 		}
-		r.Broadcast <- &models.GameMessage{Type: "SIGNAL_NEW_GAME_STATE", Payload: state}
+		r.Broadcast <- &models.GameMessage{Type: "Leaderboard", Payload: state}
 	}
 }

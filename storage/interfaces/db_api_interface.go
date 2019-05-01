@@ -44,7 +44,3 @@ type UserManager interface {
 	UpdateUserById(userID int, username string, email string,
 		langid int, pronounceOn int) (bool, error)
 }
-
-type GameManager interface {
-	UpdateFrequencies (results models.GameResults) (error, bool)
-}

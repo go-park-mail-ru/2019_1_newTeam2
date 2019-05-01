@@ -1,9 +1,15 @@
 USE chat_wordtrainer;
 
+DROP TABLE IF EXISTS russian_english_words;
 DROP TABLE IF EXISTS message_in_dialog;
 DROP TABLE IF EXISTS dialog;
 DROP TABLE IF EXISTS broadcast_dialog;
 DROP TABLE IF EXISTS message;
+
+CREATE TABLE russian_english_words (
+    Word VARCHAR(256) PRIMARY KEY,
+    Translate VARCHAR(256)
+);
 
 CREATE TABLE message (
     ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,

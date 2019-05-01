@@ -36,10 +36,6 @@ func NewDataBase(username string, pass string) (*Database, error) {
 		return nil, fmt.Errorf("mysql: could not get a connection: %v", err)
 	}
 	err = database.Ping()
-	// _, err = database.Exec(UseDB)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("mysql: could not choose db: %v", err)
-	// }
 
 	db.Conn = database
 	return db, nil
