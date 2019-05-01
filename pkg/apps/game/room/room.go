@@ -38,37 +38,6 @@ func New() *Room {
 	}
 }
 
-func (r *Room) Run() {
-	r.Ticker = time.NewTicker(time.Second)
-	go r.RunBroadcast()
-
-	players := []models.PlayerData{}
-	for _, p := range r.Players {
-		players = append(players, p.Data)
-	}
-	state := &models.State{
-		Players: players,
-	}
-
-	r.Broadcast <- &models.GameMessage{Type: "SIGNAL_START_THE_GAME", Payload: state}
-
-	for {
-		<-r.Ticker.C
-		log.Printf("room %s tick with %d players", r.ID, len(r.Players))
-		if len(r.Players) == 0 {
-			return
-		}
-		players := []models.PlayerData{}
-		for _, p := range r.Players {
-			players = append(players, p.Data)
-		}
-		state := &models.State{
-			Players: players,
-		}
-		r.Broadcast <- &models.GameMessage{Type: "SIGNAL_NEW_GAME_STATE", Payload: state}
-	}
-}
-
 func (r *Room) ListenToPlayers() {
 	for {
 		select {
