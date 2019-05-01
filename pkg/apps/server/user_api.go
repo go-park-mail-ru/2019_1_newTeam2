@@ -11,6 +11,7 @@ import (
 	"github.com/user/2019_1_newTeam2/filesystem"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/responses"
+	"github.com/user/2019_1_newTeam2/pkg/utils"
 )
 
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +65,7 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
 	page := 0
 	rowsNum := 0
-	err := ParseParams(w, r, &page, &rowsNum)
+	err := utils.ParseParams(w, r, &page, &rowsNum)
 	if err != nil {
 		return
 	}

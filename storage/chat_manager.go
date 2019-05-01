@@ -4,7 +4,7 @@ import (
 	"github.com/user/2019_1_newTeam2/models"
 )
 
-func (db *Database) GetMessagesBroadcast(page int, rowsNum int) ([]models.Message, bool, error) {
+func (db *Database) GetMessagesBroadcast(page int, rowsNum int) ([]models.Message, error) {
 	messages := make([]models.Message, 0)
 	db.Logger.Log(page, rowsNum)
 	offset := (page - 1) * rowsNum
@@ -12,7 +12,7 @@ func (db *Database) GetMessagesBroadcast(page int, rowsNum int) ([]models.Messag
 	rows, err := db.Conn.Query(GetMessages, rowsNum, offset)
 	if err != nil {
 		db.Logger.Log(err)
-		return messages, false, err
+		return messages, err
 	}
 	defer rows.Close()
 	i := 0
@@ -22,14 +22,14 @@ func (db *Database) GetMessagesBroadcast(page int, rowsNum int) ([]models.Messag
 		err := rows.Scan(&message.ID, &message.Data)
 		if err != nil {
 			db.Logger.Log(err)
-			return messages, false, err
+			return messages, err
 		}
 		messages = append(messages, message)
 	}
 	if i == 0 {
-		return messages, false, nil
+		db.Logger.Log("GetMessagesBroadcast: Empty query")
 	}
-	return messages, true, nil
+	return messages, nil
 }
 
 func (db *Database) AddMessage(UserID int, message string) error {

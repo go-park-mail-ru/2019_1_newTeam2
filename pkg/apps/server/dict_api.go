@@ -10,6 +10,7 @@ import (
 
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/responses"
+	"github.com/user/2019_1_newTeam2/pkg/utils"
 )
 
 func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request) {
@@ -141,7 +142,7 @@ func (server *Server) DictsPaginate(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	err = ParseParams(w, r, &page, &rowsNum)
+	err = utils.ParseParams(w, r, &page, &rowsNum)
 	if err != nil {
 		return
 	}

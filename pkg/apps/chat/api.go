@@ -3,6 +3,7 @@ package chat
 import (
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/responses"
+	"github.com/user/2019_1_newTeam2/pkg/utils"
 	"net/http"
 )
 
@@ -22,6 +23,15 @@ func (server *ChatServer) CreateChat(w http.ResponseWriter, r *http.Request) {
 
 func (server *ChatServer) GetHistory(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("GetHistoryAPI")
-
-	responses.WriteToResponse(w, http.StatusOK, nil)
+	var page, rowsNum int
+	err := utils.ParseParams(w, r, &page, &rowsNum)
+	if err != nil {
+		return
+	}
+	result, err := server.DB.GetMessagesBroadcast(page, rowsNum)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	responses.WriteToResponse(w, http.StatusOK, result)
 }

@@ -52,7 +52,7 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 
 	chatRouter := router.PathPrefix("/chat/").Subrouter()
 	chatRouter.HandleFunc("/enter/{id:[0-9]+}", server.CreateChat)
-	chatRouter.HandleFunc("/history/", server.GetHistory)
+	chatRouter.HandleFunc("/history", server.GetHistory).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	server.Router = router
 	return server, nil
 }
