@@ -47,7 +47,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	server.CookieField = "session_id"
 
 	server.ServerConfig = newConfig
-	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
+	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, "wordtrainer")	// mb move last to config
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
-	router.Use(middlewares.CreatePanicRecoveryMiddleware())
+	//router.Use(middlewares.CreatePanicRecoveryMiddleware())	// place back, beat me
 
 	needLogin := router.PathPrefix("/").Subrouter()
 	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, server.IsLogined))

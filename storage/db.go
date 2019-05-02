@@ -16,31 +16,31 @@ var (
 )
 
 type Database struct {
-	// should be sqlx.db etc
-	// now some map, where we can get users from
 	Conn   *sql.DB
 	Logger logger.LoggerInterface
 }
 
-func NewDataBase(username string, pass string) (*Database, error) {
+func NewDataBase(username string, pass string, dbName string) (*Database, error) {
 	// error is possible error from database
 	db := new(Database)
 	logger := new(logger.GoLogger)
 	logger.SetOutput(os.Stderr)
 	db.Logger = logger
 
-	dsn := username + ":" + pass + "@tcp(localhost:3306)/"
+	dsn := username + ":" + pass + "@tcp(localhost:3306)/" + dbName
 	database, err := sql.Open("mysql", dsn)
 
 	if err != nil {
 		return nil, fmt.Errorf("mysql: could not get a connection: %v", err)
 	}
 	err = database.Ping()
-	// _, err = database.Exec(UseDB)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("mysql: could not choose db: %v", err)
-	// }
+	/*_, err = database.Exec(fmt.Sprintf(UseDB, dbName))
+	if err != nil {
+		return nil, fmt.Errorf("mysql: could not choose db: %v", err)
+	}*/
 
 	db.Conn = database
 	return db, nil
 }
+
+
