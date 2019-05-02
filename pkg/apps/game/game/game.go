@@ -86,9 +86,10 @@ func (game *Game) ProcessConn(conn *websocket.Conn) {
 		return
 	}
 	log.Printf("player %s joined room %s", player.ID, room.ID)
+
 	go player.Listen()
 
-	if len(room.Players) > 0 {
+	if len(room.Players) == 1 {
 		go game.RoomRun(room)
 	}
 
@@ -104,7 +105,7 @@ func (game *Game) RoomRun(r *room.Room) {
 	}
 
 	NewTask := r.CreateTask()
-	r.Answer = NewTask.Answer
+	r.Answer = NewTask
 	log.Printf("Answer: %s\n", r.Answer)
 	r.Broadcast <- &models.GameMessage{Type: "Task", Payload: NewTask}
 

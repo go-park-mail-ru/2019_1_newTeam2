@@ -27,7 +27,7 @@ type Room struct {
 	Unregister chan *Player
 	Message    chan *IncomingMessage
 	Broadcast  chan *models.GameMessage
-	Answer	   string
+	Answer	   models.GameQuestion
 }
 
 func New(DBUser string, DBPassUser string) *Room {
@@ -69,11 +69,11 @@ func (r *Room) ListenToPlayers() {
 				//  {"type":"ANSWER","payload":"бык"}
 				case "ANSWER":
 					answer := string(m.Payload)[1:len(string(m.Payload))-1]
-					if answer == r.Answer {
+					if answer == r.Answer.Answer {
 						log.Printf("Right!")
 						m.Player.Data.Score += 1
 						NewTask := r.CreateTask()
-						r.Answer = NewTask.Answer
+						r.Answer = NewTask
 						NewTask.Answer = "LolKek4eburek)"
 						r.Broadcast <- &models.GameMessage{Type: "Task", Payload: NewTask}
 					}
