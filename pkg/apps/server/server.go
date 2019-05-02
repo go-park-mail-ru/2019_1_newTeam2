@@ -64,7 +64,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
-	//router.Use(middlewares.CreatePanicRecoveryMiddleware())	// place back, beat me
+	router.Use(middlewares.CreatePanicRecoveryMiddleware())
 
 	needLogin := router.PathPrefix("/").Subrouter()
 	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, server.IsLogined))
