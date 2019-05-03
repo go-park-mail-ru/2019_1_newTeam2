@@ -24,7 +24,7 @@ func (h *WSHub) SendToCl(mes *models.Message) {
 
 func (h *WSHub) SendAll(mes *models.Message) {
 	for clientID := range h.clients {
-		if clientID == mes.ID{
+		if clientID == mes.ID {
 			continue
 		}
 		client := h.clients[clientID]
@@ -71,7 +71,7 @@ func NewWSHub(username string, pass string) *WSHub {
 	hub.sendTo = make(chan *models.Message)
 	hub.clients = make(map[int]*Client)
 	hub.broadcast = make(chan *models.Message)
-	newDB, err := storage.NewDataBase(username, pass)
+	newDB, err := storage.NewDataBase(username, pass, "wordtrainer")
 	if err != nil {
 		return nil
 	}

@@ -5,7 +5,6 @@ import (
 	"os"
 )
 
-
 func main() {
 	pathToConfig := ""
 	if len(os.Args) != 2 {

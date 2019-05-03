@@ -7,23 +7,23 @@ import (
 )
 
 const (
-	writeWait = 10 * time.Second
-	pongWait = 60 * time.Second
+	writeWait      = 10 * time.Second
+	pongWait       = 60 * time.Second
 	maxMessageSize = 512
-	pingPeriod = (pongWait * 9) / 10
+	pingPeriod     = (pongWait * 9) / 10
 )
 
 type Client struct {
-	Conn *websocket.Conn
-	ID   int
-	hub *WSHub
+	Conn     *websocket.Conn
+	ID       int
+	hub      *WSHub
 	sendChan chan interface{}
 }
 
 func (cl *Client) ReadFromInet() {
 	defer func() {
 		cl.hub.unregister <- cl.ID
-		_  = cl.Conn.Close()
+		_ = cl.Conn.Close()
 	}()
 
 	cl.Conn.SetReadLimit(maxMessageSize)
@@ -51,7 +51,7 @@ func (cl *Client) WriteToInet() {
 	}()
 	for {
 		select {
-		case mes, ok := <- cl.sendChan:
+		case mes, ok := <-cl.sendChan:
 			_ = cl.Conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				err := cl.Conn.WriteJSON(models.Error{"connection was closed"})
@@ -63,7 +63,7 @@ func (cl *Client) WriteToInet() {
 			if err != nil {
 				return
 			}
-		case <- ticker.C:
+		case <-ticker.C:
 			_ = cl.Conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err := cl.Conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				return
@@ -72,8 +72,7 @@ func (cl *Client) WriteToInet() {
 	}
 }
 
-
-func NewClient(id int , ws *websocket.Conn, hub *WSHub) *Client {
+func NewClient(id int, ws *websocket.Conn, hub *WSHub) *Client {
 	cl := new(Client)
 	cl.ID = id
 	cl.hub = hub

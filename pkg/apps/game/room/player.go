@@ -2,6 +2,7 @@ package room
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/gorilla/websocket"
 	"github.com/user/2019_1_newTeam2/models"

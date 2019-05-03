@@ -3,8 +3,7 @@ package game
 import (
 	"context"
 	"net/http"
-	//"strconv"
-
+  
 	"github.com/gorilla/websocket"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
@@ -27,17 +26,17 @@ func (server *GameServer) OpenConnection(w http.ResponseWriter, r *http.Request)
 	server.Game.Register <- &game.GameRegister{conn, Username}
 }
 
-func (server *GameServer) GetUserIdFromCookie(r *http.Request) (int, error){
+func (server *GameServer) GetUserIdFromCookie(r *http.Request) (int, error) {
 	cookie, err := r.Cookie(server.CookieField)
 	if err != nil {
 		return 0, err
 	}
 	ctx := context.Background()
 	StrUserId, err := server.AuthClient.GetIdFromCookie(ctx,
-		&authorization.AuthCookie {
-		Data: cookie.Value,
-		Secret: server.ServerConfig.Secret,
-	})
+		&authorization.AuthCookie{
+			Data:   cookie.Value,
+			Secret: server.ServerConfig.Secret,
+		})
 	if err != nil {
 		server.Logger.Log("GetUserIdFromCookie ", err)
 		return int(0), err

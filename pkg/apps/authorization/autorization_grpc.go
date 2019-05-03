@@ -7,7 +7,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-type AuthManager struct {}
+type AuthManager struct{}
 
 func NewAuthManager() *AuthManager {
 	return &AuthManager{}
