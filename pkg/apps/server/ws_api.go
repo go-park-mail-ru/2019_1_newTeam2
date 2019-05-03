@@ -18,4 +18,3 @@ package server
 // 	// }
 // 	responses.WriteToResponse(w, http.StatusOK, nil)
 // }
-

@@ -18,7 +18,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-
 type TestDatabase struct {
 	UserData   map[int]models.User
 	LastUserId int
@@ -160,7 +159,6 @@ func (db *TestDatabase) GetCardsForGame(dictId int, cardsNum int) ([]models.Game
 func (db *TestDatabase) UpdateFrequencies(results models.GameResults) (error, bool) {
 	return nil, false
 }
-
 
 type cases struct {
 	ExpectedResponse int

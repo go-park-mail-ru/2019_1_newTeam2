@@ -1,8 +1,8 @@
 package chat
 
 import (
-	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 	"github.com/user/2019_1_newTeam2/pkg/apps/chat/wshub"
+	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 	"log"
 	"net/http"
 	"os"
@@ -10,11 +10,11 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/gorilla/mux"
+	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
 	"github.com/user/2019_1_newTeam2/storage"
 	"github.com/user/2019_1_newTeam2/storage/interfaces"
-	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
 )
 
 type ChatServer struct {
@@ -23,8 +23,8 @@ type ChatServer struct {
 	Logger       logger.LoggerInterface
 	Hub          wshub.IWSCommunicator
 	CookieField  string
-	AuthClient	 authorization.AuthCheckerClient
-	DB         interfaces.DBChatInterface
+	AuthClient   authorization.AuthCheckerClient
+	DB           interfaces.DBChatInterface
 }
 
 func NewChatServer(pathToConfig string) (*ChatServer, error) {
@@ -38,7 +38,7 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 		return nil, err
 	}
 	server.ServerConfig = newConfig
-	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, "wordtrainer")
+	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, server.ServerConfig.DBName)
 	if err != nil {
 		return nil, err
 	}
@@ -58,8 +58,12 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 }
 
 func (server *ChatServer) Run() {
-	grcpAuthConn, err := grpc.Dial(
+	/*grcpAuthConn, err := grpc.Dial(
 		"127.0.0.1:8092",
+		grpc.WithInsecure(),
+	)*/
+	grcpAuthConn, err := grpc.Dial(
+		server.ServerConfig.AuthHost+":"+server.ServerConfig.AuthPort,
 		grpc.WithInsecure(),
 	)
 	if err != nil {
@@ -70,5 +74,5 @@ func (server *ChatServer) Run() {
 
 	port := server.ServerConfig.Port
 	server.Logger.Logf("Running app on port %s", port)
-	log.Fatal(http.ListenAndServe(":" + port, server.Router))
+	log.Fatal(http.ListenAndServe(":"+port, server.Router))
 }

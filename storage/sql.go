@@ -65,8 +65,8 @@ const (
 		"WHERE d_l.dictionary_id = ? " +
 		"ORDER BY c_l.guessed / c_l.seen ASC LIMIT ?"
 	/*CountCardsInDict = "SELECT count(*) FROM dictionary_to_library d_l " +
-		"JOIN cards_library c_l ON (c_l.id = d_l.library_id) " +
-		"WHERE d_l.dictionary_id = ?"*/
+	"JOIN cards_library c_l ON (c_l.id = d_l.library_id) " +
+	"WHERE d_l.dictionary_id = ?"*/
 	GetWordsFromDict = "select w.name from dictionary_to_library d_l " +
 		"join cards_library c_l on(c_l.id=d_l.library_id) join card c on(c.id =  c_l.card_id) " +
 		"join word w on (c.translation = w.id) WHERE d_l.dictionary_id = ? ORDER BY c_l.guessed / c_l.seen ASC LIMIT ?"
@@ -88,14 +88,13 @@ const (
 	// mb change, talk about it
 	UpdateFrequency = "UPDATE wordtrainer.cards_library SET seen = if(if_seen, seen + 1, seen), if_seen = true, guessed = guessed + ? where id = ?"
 
-
 	//  dictionary_to_library
 	CreateDictionaryToLibrary     = "INSERT INTO wordtrainer.dictionary_to_library (dictionary_id, library_id) VALUES (?, ?)"
 	DeleteDictionaryToLibraryByID = "DELETE FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ? AND library_id = ?"
 	GetLibraryIDByDictionaryID    = "SELECT library_id FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ?"
 
 	//  chat
-	GetMessages = "SELECT m.UserId, m.data FROM chat_wordtrainer.broadcast_dialog JOIN chat_wordtrainer.message m ON (MessageId = m.ID) LIMIT ? OFFSET ?";
-	AddMessage = "INSERT INTO chat_wordtrainer.message (data, UserId) VALUES (?, ?)";
+	GetMessages                 = "SELECT m.UserId, m.data FROM chat_wordtrainer.broadcast_dialog JOIN chat_wordtrainer.message m ON (MessageId = m.ID) LIMIT ? OFFSET ?"
+	AddMessage                  = "INSERT INTO chat_wordtrainer.message (data, UserId) VALUES (?, ?)"
 	AddMessageToBroadcastDialog = "INSERT INTO chat_wordtrainer.broadcast_dialog (MessageId, UserId) VALUES(?, ?)"
 )

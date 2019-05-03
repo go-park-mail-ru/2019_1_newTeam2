@@ -25,11 +25,11 @@ func TestNewConfig(t *testing.T) {
 			ifErr: true,
 		},
 		{
-			path:  "/tmp/config.json",
+			path:  "/tmp/config_api.json",
 			ifErr: false,
 		},
 	}
-	file, _ := os.OpenFile("/tmp/config.json", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	file, _ := os.OpenFile("/tmp/config_api.json", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	enc := json.NewEncoder(file)
 	cnf := &config.Config{
 		Secret: "12345",

@@ -3,8 +3,8 @@ package game
 import (
 	"log"
 
-	"github.com/satori/go.uuid"
 	"github.com/gorilla/websocket"
+	"github.com/satori/go.uuid"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/room"
 )
 
@@ -14,7 +14,7 @@ type Game struct {
 	Register chan *websocket.Conn
 }
 
-func NewGame() *Game{
+func NewGame() *Game {
 	return &Game{
 		Rooms:    make(map[string]*room.Room),
 		MaxRooms: 2,

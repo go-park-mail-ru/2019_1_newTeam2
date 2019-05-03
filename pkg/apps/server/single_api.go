@@ -28,7 +28,7 @@ func (server *Server) GetSingleGame(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		responses.WriteToResponse(w, http.StatusBadRequest, fmt.Errorf("words num incorrect"))
 	}
-	cards , found, err := server.DB.GetCardsForGame(dict, num)
+	cards, found, err := server.DB.GetCardsForGame(dict, num)
 	if err != nil {
 		responses.WriteToResponse(w, http.StatusInternalServerError, fmt.Errorf("db error"))
 	}
@@ -42,8 +42,7 @@ func (server *Server) GetSingleGame(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) SetGameResults(w http.ResponseWriter, r *http.Request) {
-	results :=  models.GameResults{}
-
+	results := models.GameResults{}
 
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -60,7 +59,7 @@ func (server *Server) SetGameResults(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err, found := server.DB.UpdateFrequencies(results)
-	if  err != nil {
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

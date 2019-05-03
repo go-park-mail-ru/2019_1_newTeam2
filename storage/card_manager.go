@@ -131,7 +131,7 @@ func (db *Database) getCorrectParts(dictId int, cardsNum int) ([]models.GameWord
 }
 
 func (db *Database) getExtraParts(dictId int, wordsNum int) ([]string, bool, error) {
-	rows, err := db.Conn.Query(GetWordsFromDict, dictId, wordsNum * 3)
+	rows, err := db.Conn.Query(GetWordsFromDict, dictId, wordsNum*3)
 	if err != nil {
 		return nil, false, err
 	}
@@ -151,7 +151,7 @@ func (db *Database) getExtraParts(dictId int, wordsNum int) ([]string, bool, err
 func (db *Database) GetCardsForGame(dictId int, cardsNum int) ([]models.GameWord, bool, error) {
 
 	cards, found, err := db.getCorrectParts(dictId, cardsNum)
-	if err != nil || !found{
+	if err != nil || !found {
 		return nil, found, err
 	}
 	words, found, err := db.getExtraParts(dictId, len(cards))
@@ -161,14 +161,14 @@ func (db *Database) GetCardsForGame(dictId int, cardsNum int) ([]models.GameWord
 	for _, card := range cards {
 		curWords := map[string]bool{}
 		wordsLen := len(words)
-		if wordsLen <= wordsNum - 1 {
+		if wordsLen <= wordsNum-1 {
 			for _, word := range words {
 				if word != card.Variants[card.Correct] {
 					curWords[word] = true
 				}
 			}
 			mapLen := len(curWords)
-			for j := 0; j < wordsNum - 1 - mapLen; j++ {
+			for j := 0; j < wordsNum-1-mapLen; j++ {
 				curWords[faker.Word()] = true
 			}
 		} else {
@@ -180,7 +180,7 @@ func (db *Database) GetCardsForGame(dictId int, cardsNum int) ([]models.GameWord
 				if !ok && !ifInitial {
 					curWords[words[curIndex]] = true
 				}
-				if len(curWords) >= wordsNum - 1 {
+				if len(curWords) >= wordsNum-1 {
 					break
 				}
 			}

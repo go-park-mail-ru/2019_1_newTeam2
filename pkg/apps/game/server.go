@@ -8,18 +8,18 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
-	"github.com/user/2019_1_newTeam2/pkg/logger"
-	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/game"
+	"github.com/user/2019_1_newTeam2/pkg/config"
+	"github.com/user/2019_1_newTeam2/pkg/logger"
 )
 
 type GameServer struct {
 	Router       *mux.Router
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
-	AuthClient	 authorization.AuthCheckerClient
+	AuthClient   authorization.AuthCheckerClient
 	CookieField  string
-	Game		 *game.Game
+	Game         *game.Game
 }
 
 func NewGameServer(pathToConfig string) (*GameServer, error) {
@@ -47,7 +47,7 @@ func NewGameServer(pathToConfig string) (*GameServer, error) {
 
 func (server *GameServer) Run() {
 	grcpAuthConn, err := grpc.Dial(
-		"127.0.0.1:8092",
+		server.ServerConfig.AuthHost+":"+server.ServerConfig.AuthPort,
 		grpc.WithInsecure(),
 	)
 	if err != nil {
@@ -57,5 +57,5 @@ func (server *GameServer) Run() {
 	go server.Game.Run()
 	server.AuthClient = authorization.NewAuthCheckerClient(grcpAuthConn)
 	server.Logger.Logf("Running app on port %s", server.ServerConfig.Port)
-	server.Logger.Log(http.ListenAndServe(":" + server.ServerConfig.Port, server.Router))
+	server.Logger.Log(http.ListenAndServe(":"+server.ServerConfig.Port, server.Router))
 }

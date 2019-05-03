@@ -46,5 +46,5 @@ type UserManager interface {
 }
 
 type GameManager interface {
-	UpdateFrequencies (results models.GameResults) (error, bool)
+	UpdateFrequencies(results models.GameResults) (error, bool)
 }
