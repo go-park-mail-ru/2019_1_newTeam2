@@ -38,7 +38,7 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 		return nil, err
 	}
 	server.ServerConfig = newConfig
-	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, "wordtrainer")
+	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, server.ServerConfig.DBName)
 	if err != nil {
 		return nil, err
 	}
@@ -58,8 +58,12 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 }
 
 func (server *ChatServer) Run() {
-	grcpAuthConn, err := grpc.Dial(
+	/*grcpAuthConn, err := grpc.Dial(
 		"127.0.0.1:8092",
+		grpc.WithInsecure(),
+	)*/
+	grcpAuthConn, err := grpc.Dial(
+		server.ServerConfig.AuthHost + ":" + server.ServerConfig.AuthPort,
 		grpc.WithInsecure(),
 	)
 	if err != nil {

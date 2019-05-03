@@ -47,7 +47,7 @@ func NewGameServer(pathToConfig string) (*GameServer, error) {
 
 func (server *GameServer) Run() {
 	grcpAuthConn, err := grpc.Dial(
-		"127.0.0.1:8092",
+		server.ServerConfig.AuthHost + ":" + server.ServerConfig.AuthPort,
 		grpc.WithInsecure(),
 	)
 	if err != nil {
