@@ -7,7 +7,10 @@ require (
 	github.com/bxcodec/faker/v3 v3.0.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/fatih/color v1.7.0 // indirect
 	github.com/go-sql-driver/mysql v1.4.1
+	github.com/gobwas/glob v0.2.3 // indirect
+	github.com/gobwas/gws v0.0.0-20170427155341-6ec9a5ac805b // indirect
 	github.com/golang/mock v1.2.0
 	github.com/golang/protobuf v1.3.1
 	github.com/google/btree v1.0.0 // indirect
@@ -17,11 +20,14 @@ require (
 	github.com/gorilla/rpc v1.2.0
 	github.com/gorilla/websocket v1.4.0
 	github.com/hashicorp/golang-lru v0.5.1 // indirect
+	github.com/mattn/go-colorable v0.1.1 // indirect
+	github.com/mattn/go-isatty v0.0.7 // indirect
 	github.com/rs/cors v1.6.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/stretchr/testify v1.3.0
 	github.com/tealeg/xlsx v1.0.3
+	github.com/yuin/gopher-lua v0.0.0-20190206043414-8bfc7677f583 // indirect
 	golang.org/x/crypto v0.0.0-20190426145343-a29dc8fdc734
 	golang.org/x/exp v0.0.0-20190426190305-956cc1757749 // indirect
 	golang.org/x/image v0.0.0-20190424155947-59b11bec70c7 // indirect
