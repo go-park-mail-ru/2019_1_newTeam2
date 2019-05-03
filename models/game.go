@@ -13,3 +13,9 @@ type GameWord struct {
 	Variants []string `json:"variants,omitempty"`
 	Correct  int      `json:"correct"`
 }
+
+type GameQuestion struct {
+	Words [4]string `json:"words"`
+	Answer string `json:"answer"`
+	Question string `json:"question"`
+}

@@ -7,7 +7,7 @@ type DBInterface interface {
 	LanguageManager
 	CardManager
 	DictionaryManager
-	GameManager
+	SinglePlayerGameManager
 }
 
 type CardManager interface {
@@ -45,6 +45,6 @@ type UserManager interface {
 		langid int, pronounceOn int) (bool, error)
 }
 
-type GameManager interface {
-	UpdateFrequencies(results models.GameResults) (error, bool)
+type SinglePlayerGameManager interface {
+	UpdateFrequencies (results models.GameResults) (error, bool)
 }

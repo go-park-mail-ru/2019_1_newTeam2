@@ -1,72 +1,120 @@
 package game
 
 import (
-	"log"
+	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
+	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/room"
 )
 
-type Game struct {
-	Rooms    map[string]*room.Room
-	MaxRooms int
-	Register chan *websocket.Conn
+type GameRegister struct {
+	Conn 		*websocket.Conn
+	Username	string
 }
 
-func NewGame() *Game {
+type Game struct {
+	Rooms    			map[string]*room.Room
+	MaxRooms 			int
+	Register 			chan *GameRegister
+	DBUser   			string
+	DBPassUser			string
+}
+
+func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {
+	var mutex = &sync.Mutex{}
+	mutex.Lock()
+	for name, room := range game.Rooms {
+		if room == ERoom {
+			delete(game.Rooms, name)
+			ERoom.Logger.Log("room removed")
+		}
+	}
+	mutex.Unlock()
+}
+
+func NewGame(DBUser string, DBPassUser string) *Game{
 	return &Game{
 		Rooms:    make(map[string]*room.Room),
 		MaxRooms: 2,
-		Register: make(chan *websocket.Conn),
+		Register: make(chan *GameRegister),
+		DBUser: DBUser,
+		DBPassUser: DBPassUser,
 	}
 }
 
 func (game *Game) Run() {
 	for {
 		conn := <-game.Register
-		log.Printf("got new connection")
 		game.ProcessConn(conn)
 	}
 }
 
-func (game *Game) FindRoom() *room.Room {
-	for _, room := range game.Rooms {
-		if len(room.Players) < room.MaxPlayers {
-			return room
-		}
-	}
-
-	if len(game.Rooms) >= game.MaxRooms {
-		return nil
-	}
-
-	room := room.New()
-	go room.ListenToPlayers()
-	game.Rooms[room.ID] = room
-	log.Printf("room %s created", room.ID)
-
-	return room
-}
-
-func (game *Game) ProcessConn(conn *websocket.Conn) {
+func (game *Game) ProcessConn(conn *GameRegister) {
 	id := uuid.NewV4().String()
 	player := &room.Player{
-		Conn: conn,
+		Conn: conn.Conn,
 		ID:   id,
+		Data: models.PlayerData{conn.Username, 0},
 	}
-
-	room := game.FindRoom()
+	room := game.FindRoom(player)
 	if room == nil {
 		return
 	}
+	room.Logger.Log("player ", player.Data.Username, " joined room ", room.ID)
+	go player.Listen()
+	if len(room.Players) <= 1 {
+		go game.RoomRun(room)
+	} else {
+		player.Send(&models.GameMessage{Type: "Task", Payload: player.Room.Answer})
+	}
+}
+
+func (game *Game) FindRoom(player *room.Player) *room.Room {
+	for _, room := range game.Rooms {
+		if len(room.Players) < room.MaxPlayers {
+			room.Players[player.ID] = player
+			player.Room = room
+			return room
+		}
+	}
+	if len(game.Rooms) >= game.MaxRooms {
+		return nil
+	}
+	room := room.New(game.DBUser, game.DBPassUser)
 	room.Players[player.ID] = player
 	player.Room = room
-	log.Printf("player %s joined room %s", player.ID, room.ID)
-	go player.Listen()
+	game.Rooms[room.ID] = room
+	go room.ListenToPlayers()
+	room.Logger.Log("room created")
+	return room
+}
 
-	if len(room.Players) == room.MaxPlayers {
-		go room.Run()
+func (game *Game) RoomRun(r *room.Room) {
+	r.Ticker = time.NewTicker(time.Second)
+	go r.RunBroadcast()
+	players := []models.PlayerData{}
+	for _, p := range r.Players {
+		players = append(players, p.Data)
 	}
-
+	NewTask := r.CreateTask()
+	r.Answer = NewTask
+	r.Broadcast <- &models.GameMessage{Type: "Task", Payload: NewTask}
+	for {
+		<-r.Ticker.C
+		if len(r.Players) == 0 {
+			game.DeleteEmptyRoom(r)
+			return
+		}
+		players := []models.PlayerData{}
+		for _, p := range r.Players {
+			players = append(players, p.Data)
+		}
+		state := &models.State{
+			Players: players,
+		}
+		r.Broadcast <- &models.GameMessage{Type: "Leaderboard", Payload: state}
+	}
 }

@@ -41,7 +41,7 @@ func NewGameServer(pathToConfig string) (*GameServer, error) {
 	router.HandleFunc("/game", server.OpenConnection)
 
 	server.Router = router
-	server.Game = game.NewGame()
+	server.Game = game.NewGame(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
 	return server, nil
 }
 

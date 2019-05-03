@@ -2,6 +2,7 @@ module github.com/user/2019_1_newTeam2
 
 require (
 	cloud.google.com/go v0.37.4 // indirect
+	github.com/alok87/goutils v0.0.0-20170710173822-29ef704e5505
 	github.com/bxcodec/faker v2.0.1+incompatible // indirect
 	github.com/bxcodec/faker/v3 v3.0.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
