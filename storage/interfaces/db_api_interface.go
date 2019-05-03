@@ -7,7 +7,7 @@ type DBInterface interface {
 	LanguageManager
 	CardManager
 	DictionaryManager
-	GameManager
+	SinglePlayerGameManager
 }
 
 type CardManager interface {
@@ -43,4 +43,8 @@ type UserManager interface {
 	AddImage(path string, userID int) error
 	UpdateUserById(userID int, username string, email string,
 		langid int, pronounceOn int) (bool, error)
+}
+
+type SinglePlayerGameManager interface {
+	UpdateFrequencies (results models.GameResults) (error, bool)
 }

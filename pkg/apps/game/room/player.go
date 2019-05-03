@@ -1,7 +1,6 @@
 package room
 
 import (
-	"log"
 	"encoding/json"
 
 	"github.com/gorilla/websocket"
@@ -22,14 +21,14 @@ type IncomingMessage struct {
 }
 
 func (p *Player) Listen() {
-	log.Printf("start listening messages from player %s", p.ID)
+	p.Room.Logger.Log("start listening messages from player ", p.ID)
 
 	for {
 		m := &IncomingMessage{}
 
 		err := p.Conn.ReadJSON(m)
 		if websocket.IsUnexpectedCloseError(err) {
-			log.Printf("player %s was disconnected", p.ID)
+			p.Room.Logger.Log("player ", p.ID, " was disconnected")
 			p.Room.Unregister <- p
 			return
 		}
@@ -42,6 +41,6 @@ func (p *Player) Listen() {
 func (p *Player) Send(s *models.GameMessage) {
 	err := p.Conn.WriteJSON(s)
 	if err != nil {
-		log.Printf("cannot send state to client: %s", err)
+		p.Room.Logger.Log("cannot send state to client: ", err)
 	}
 }
