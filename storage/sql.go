@@ -67,9 +67,9 @@ const (
 	/*CountCardsInDict = "SELECT count(*) FROM dictionary_to_library d_l " +
 	"JOIN cards_library c_l ON (c_l.id = d_l.library_id) " +
 	"WHERE d_l.dictionary_id = ?"*/
-	GetWordsFromDict = "select w.name from dictionary_to_library d_l " +
-		"join cards_library c_l on(c_l.id=d_l.library_id) join card c on(c.id =  c_l.card_id) " +
-		"join word w on (c.translation = w.id) WHERE d_l.dictionary_id = ? ORDER BY c_l.guessed / c_l.seen ASC LIMIT ?"
+	GetWordsFromDict = "select w.name from wordtrainer.dictionary_to_library d_l " +
+		"join wordtrainer.cards_library c_l on(c_l.id=d_l.library_id) join wordtrainer.card c on(c.id =  c_l.card_id) " +
+		"join wordtrainer.word w on (c.translation = w.id) WHERE d_l.dictionary_id = ? ORDER BY c_l.guessed / c_l.seen ASC LIMIT ?"
 
 	TriggerDeleteCard = "DELETE FROM wordtrainer.cards_library WHERE ID IN ( SELECT library_id FROM wordtrainer.dictionary_to_library WHERE dictionary_id = ?)"
 
