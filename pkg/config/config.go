@@ -16,7 +16,7 @@ type Config struct {
 	DBName       string   `json:"dbName,omitempty"`
 	DBUser       string   `json:"dbUser,omitempty"`
 	DBPassUser   string   `json:"dbPassUser,omitempty"`
-	RoomSize int `json:"roomSize,omitempty"`
+	RoomSize     int      `json:"roomSize,omitempty"`
 }
 
 func NewConfig(pathToConfig string) (*Config, error) {
