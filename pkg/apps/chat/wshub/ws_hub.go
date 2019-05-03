@@ -71,7 +71,7 @@ func NewWSHub(username string, pass string) *WSHub {
 	hub.sendTo = make(chan *models.Message)
 	hub.clients = make(map[int]*Client)
 	hub.broadcast = make(chan *models.Message)
-	newDB, err := storage.NewDataBase(username, pass)
+	newDB, err := storage.NewDataBase(username, pass, "wordtrainer")
 	if err != nil {
 		return nil
 	}

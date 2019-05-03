@@ -38,7 +38,7 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 		return nil, err
 	}
 	server.ServerConfig = newConfig
-	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
+	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, "wordtrainer")
 	if err != nil {
 		return nil, err
 	}
