@@ -2,7 +2,7 @@ module github.com/user/2019_1_newTeam2
 
 require (
 	cloud.google.com/go v0.37.4 // indirect
-	github.com/alok87/goutils v0.0.0-20170710173822-29ef704e5505
+	github.com/alok87/goutils v0.0.0-20170710173822-29ef704e5505 // indirect
 	github.com/bxcodec/faker v2.0.1+incompatible // indirect
 	github.com/bxcodec/faker/v3 v3.0.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -14,7 +14,7 @@ require (
 	github.com/google/pprof v0.0.0-20190404155422-f8f10df84213 // indirect
 	github.com/gorilla/handlers v1.4.0
 	github.com/gorilla/mux v1.7.0
-	github.com/gorilla/rpc v1.2.0
+	github.com/gorilla/rpc v1.2.0 // indirect
 	github.com/gorilla/websocket v1.4.0
 	github.com/hashicorp/golang-lru v0.5.1 // indirect
 	github.com/rs/cors v1.6.0
@@ -27,7 +27,7 @@ require (
 	golang.org/x/image v0.0.0-20190424155947-59b11bec70c7 // indirect
 	golang.org/x/lint v0.0.0-20190409202823-959b441ac422 // indirect
 	golang.org/x/mobile v0.0.0-20190415191353-3e0bab5405d6 // indirect
-	golang.org/x/net v0.0.0-20190424112056-4829fb13d2c6
+	golang.org/x/net v0.0.0-20190424112056-4829fb13d2c6 // indirect
 	golang.org/x/oauth2 v0.0.0-20190402181905-9f3314589c9a // indirect
 	golang.org/x/sys v0.0.0-20190426135247-a129542de9ae // indirect
 	golang.org/x/text v0.3.2 // indirect

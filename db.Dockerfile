@@ -1,13 +1,18 @@
-FROM mysql:latest
+FROM serega753/goproj:latest
 
-ENV MYSQL_USER=root_use \
-    MYSQL_PASSWORD=Abc123456* \
-    MYSQL_ROOT_PASSWORD=Abc123456*
+ADD . /home/app/
 
-RUN mysql -u root_use -p  -e 'CREATE DATABASE wordtrainer'
+WORKDIR /home/app/
 
-RUN mysql -u root_use -p  -e 'CREATE DATABASE chat_wordtrainer'
+RUN cp ./storage/sql/* /home/app/
 
-RUN mysql -u root_use -p  -e 'CREATE DATABASE game_wordtrainer'
+RUN service mysql start && mysql -e 'CREATE DATABASE IF NOT EXISTS wordtrainer' \
+    && mysql -e 'CREATE DATABASE IF NOT EXISTS chat_wordtrainer' \
+    && mysql -e 'CREATE DATABASE IF NOT EXISTS game_wordtrainer' \
+    && mysql < ./dump.sql \
+    && mysql < ./chat_dump.sql \
+    && mysql < ./game_dump.sql
 
-RUN service mysql start && mysql < storage/sql/dump.sql
+EXPOSE 3306
+
+CMD service mysql start
