@@ -42,5 +42,3 @@ func NewDataBase(username string, pass string, dbName string) (*Database, error)
 	db.Conn = database
 	return db, nil
 }
-
-

@@ -2,7 +2,7 @@ package models
 
 type PlayerData struct {
 	Username string `json:"username"`
-	Score	 int	`json:"score"`
+	Score    int    `json:"score"`
 }
 
 type State struct {

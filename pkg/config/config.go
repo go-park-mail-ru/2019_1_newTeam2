@@ -8,12 +8,12 @@ import (
 type Config struct {
 	Secret       string   `json:"secret,omitempty"`
 	Port         string   `json:"port"`
-	AuthHost string `json:"authHost"`
-	AuthPort string `json:"authPort"`
+	AuthHost     string   `json:"authHost"`
+	AuthPort     string   `json:"authPort"`
 	UploadPath   string   `json:"uploadPath,omitempty"`
 	AvatarsPath  string   `json:"avatarsPath,omitempty"`
 	AllowedHosts []string `json:"AllowedHosts,omitempty"`
-	DBName	string `json:"dbName,omitempty"`
+	DBName       string   `json:"dbName,omitempty"`
 	DBUser       string   `json:"dbUser,omitempty"`
 	DBPassUser   string   `json:"dbPassUser,omitempty"`
 }

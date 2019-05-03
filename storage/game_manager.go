@@ -2,7 +2,7 @@ package storage
 
 import "github.com/user/2019_1_newTeam2/models"
 
-func (db *Database) UpdateFrequencies (results models.GameResults) (error, bool) {
+func (db *Database) UpdateFrequencies(results models.GameResults) (error, bool) {
 	allFound := true
 	tx, err := db.Conn.Begin()
 	if err != nil {
@@ -14,7 +14,7 @@ func (db *Database) UpdateFrequencies (results models.GameResults) (error, bool)
 	if err != nil {
 		return err, false
 	}
-	for _,update := range results {
+	for _, update := range results {
 		guessed := 0
 		if update.Correct {
 			guessed++

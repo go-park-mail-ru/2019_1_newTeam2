@@ -1,8 +1,8 @@
 package wshub
 
 import (
-	"net/http"
 	"github.com/user/2019_1_newTeam2/models"
+	"net/http"
 )
 
 type IWSCommunicator interface {

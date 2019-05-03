@@ -13,8 +13,8 @@ import (
 type AuthServer struct {
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
-	rpcServer	 *grpc.Server
-	AuthClient	 AuthCheckerClient
+	rpcServer    *grpc.Server
+	AuthClient   AuthCheckerClient
 }
 
 func NewServer(pathToConfig string) (*AuthServer, error) {
@@ -38,7 +38,7 @@ func NewServer(pathToConfig string) (*AuthServer, error) {
 }
 
 func (server *AuthServer) Run() {
-	lis, err := net.Listen("tcp", ":" + server.ServerConfig.Port)
+	lis, err := net.Listen("tcp", ":"+server.ServerConfig.Port)
 	if err != nil {
 		server.Logger.Logf("Can`t listen port %s", server.ServerConfig.Port)
 		return

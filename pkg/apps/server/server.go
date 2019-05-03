@@ -28,7 +28,7 @@ type Server struct {
 	Logger       logger.LoggerInterface
 	CookieField  string
 	// Hub          wshub.IWSCommunicator
-	AuthClient	 authorization.AuthCheckerClient
+	AuthClient authorization.AuthCheckerClient
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
@@ -47,7 +47,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	server.CookieField = "session_id"
 
 	server.ServerConfig = newConfig
-	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, server.ServerConfig.DBName)	// mb move last to config
+	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, server.ServerConfig.DBName) // mb move last to config
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +114,7 @@ func (server *Server) Run() {
 	}
 
 	grcpAuthConn, err := grpc.Dial(
-		server.ServerConfig.AuthHost + ":" + server.ServerConfig.AuthPort,
+		server.ServerConfig.AuthHost+":"+server.ServerConfig.AuthPort,
 		grpc.WithInsecure(),
 	)
 	if err != nil {

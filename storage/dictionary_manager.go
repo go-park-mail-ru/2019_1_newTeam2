@@ -155,13 +155,12 @@ func (db *Database) FillDictionaryFromXLSX(dictId int, pathToFile string) error 
 		return err
 	}
 
-
 	var language []string
 	for _, cell := range xlsDict.Sheets[0].Rows[0].Cells {
 		language = append(language, cell.String())
 	}
 
-	if (len(language) != 2) {
+	if len(language) != 2 {
 		return fmt.Errorf("bad file")
 	}
 
@@ -181,12 +180,12 @@ func (db *Database) FillDictionaryFromXLSX(dictId int, pathToFile string) error 
 		for _, cell := range row.Cells {
 			data = append(data, cell.String())
 		}
-		if (len(data) != 2) {
+		if len(data) != 2 {
 			return fmt.Errorf("bad file")
 		}
 		word1 := models.Word{data[0], lang1.ID}
 		word2 := models.Word{data[1], lang2.ID}
-		card := models.Card{0, &word1, &word2, 0,}
+		card := models.Card{0, &word1, &word2, 0}
 		err = db.SetCardToDictionary(int(dictId), card)
 		if err != nil {
 			return err
