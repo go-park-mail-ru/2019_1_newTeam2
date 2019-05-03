@@ -47,7 +47,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	server.CookieField = "session_id"
 
 	server.ServerConfig = newConfig
-	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, server.ServerConfig.DBName) // mb move last to config
+	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
 	if err != nil {
 		return nil, err
 	}
