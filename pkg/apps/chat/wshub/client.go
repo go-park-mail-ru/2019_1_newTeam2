@@ -54,10 +54,8 @@ func (cl *Client) WriteToInet() {
 		case mes, ok := <-cl.sendChan:
 			_ = cl.Conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
-				err := cl.Conn.WriteJSON(models.Error{"connection was closed"})
-				if err != nil {
-					return
-				}
+				_= cl.Conn.WriteMessage(websocket.CloseMessage, []byte{})
+				return
 			}
 			err := cl.Conn.WriteJSON(mes)
 			if err != nil {
