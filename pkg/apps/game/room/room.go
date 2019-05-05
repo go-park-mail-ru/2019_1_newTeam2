@@ -61,7 +61,6 @@ func (r *Room) ListenToPlayers() {
 						m.Player.Data.Score += 1
 						NewTask := r.CreateTask()
 						r.Answer = NewTask
-						NewTask.Answer = ""
 						r.Broadcast <- &models.GameMessage{Type: "Task", Payload: NewTask}
 					}
 			}
