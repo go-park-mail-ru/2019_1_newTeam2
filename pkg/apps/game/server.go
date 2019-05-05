@@ -11,6 +11,7 @@ import (
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/game"
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
+	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 )
 
 type GameServer struct {
@@ -38,6 +39,10 @@ func NewGameServer(pathToConfig string) (*GameServer, error) {
 	server.CookieField = "session_id"
 
 	router := mux.NewRouter()
+	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
+	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
+	router.Use(middlewares.CreatePanicRecoveryMiddleware())
+
 	router.HandleFunc("/game", server.OpenConnection)
 
 	server.Router = router

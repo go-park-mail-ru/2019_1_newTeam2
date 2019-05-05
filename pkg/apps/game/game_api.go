@@ -17,7 +17,8 @@ func (server *GameServer) OpenConnection(w http.ResponseWriter, r *http.Request)
 		},
 	}
 	Username, err := server.GetUsernameFromCookie(r)
-	conn, err := upgrader.Upgrade(w, r, http.Header{"Upgrade": []string{"websocket"}})
+	// ws, err := upgrader.Upgrade(w.(http.ResponseWriter), r, nil)
+	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		server.Logger.Log("cannot upgrade connection: %s", err)
 	}
