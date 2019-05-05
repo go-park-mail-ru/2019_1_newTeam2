@@ -1,3 +1,5 @@
+set global innodb_large_prefix = 'OFF';
+
 USE chat_wordtrainer;
 
 DROP TABLE IF EXISTS russian_english_words;
@@ -7,8 +9,8 @@ DROP TABLE IF EXISTS broadcast_dialog;
 DROP TABLE IF EXISTS message;
 
 CREATE TABLE russian_english_words (
-    Word VARCHAR(256) PRIMARY KEY,
-    Translate VARCHAR(256)
+    Word VARCHAR(127) PRIMARY KEY,
+    Translate VARCHAR(127)
 );
 
 CREATE TABLE message (

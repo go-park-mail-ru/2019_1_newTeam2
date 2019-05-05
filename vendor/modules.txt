@@ -1,7 +1,7 @@
 # github.com/bxcodec/faker/v3 v3.0.0
 github.com/bxcodec/faker/v3
 github.com/bxcodec/faker/v3/support/slice
-# github.com/davecgh/go-spew v1.1.0
+# github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 github.com/dgrijalva/jwt-go
@@ -9,7 +9,7 @@ github.com/dgrijalva/jwt-go
 github.com/go-sql-driver/mysql
 # github.com/golang/mock v1.2.0
 github.com/golang/mock/gomock
-# github.com/golang/protobuf v1.3.0
+# github.com/golang/protobuf v1.3.1
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
@@ -25,26 +25,27 @@ github.com/gorilla/websocket
 github.com/pmezard/go-difflib/difflib
 # github.com/rs/cors v1.6.0
 github.com/rs/cors
+# github.com/satori/go.uuid v1.2.0
+github.com/satori/go.uuid
 # github.com/stretchr/testify v1.3.0
 github.com/stretchr/testify/suite
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
 # github.com/tealeg/xlsx v1.0.3
 github.com/tealeg/xlsx
-# golang.org/x/crypto v0.0.0-20190403202508-8e1b8d32e692
+# golang.org/x/crypto v0.0.0-20190426145343-a29dc8fdc734
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
-# golang.org/x/net v0.0.0-20190311183353-d8887717615a
-golang.org/x/net/context
+# golang.org/x/net v0.0.0-20190424112056-4829fb13d2c6
 golang.org/x/net/trace
 golang.org/x/net/internal/timeseries
 golang.org/x/net/http2
 golang.org/x/net/http2/hpack
 golang.org/x/net/http/httpguts
 golang.org/x/net/idna
-# golang.org/x/sys v0.0.0-20190403152447-81d4e9dc473e
+# golang.org/x/sys v0.0.0-20190426135247-a129542de9ae
 golang.org/x/sys/unix
-# golang.org/x/text v0.3.0
+# golang.org/x/text v0.3.2
 golang.org/x/text/secure/bidirule
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm

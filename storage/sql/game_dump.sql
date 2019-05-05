@@ -1,3 +1,5 @@
+set global innodb_large_prefix = 'OFF';
+
 USE game_wordtrainer;
 
 DROP TABLE IF EXISTS russian_english_words;
