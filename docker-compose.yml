@@ -14,14 +14,14 @@ services:
       - uniting_net
 
 
-  db:
-    build:
-      context: .
-      dockerfile: ./db.Dockerfile
-    ports:
-      - 3306:3306
-    networks:
-      - uniting_net
+  # db:
+  #   build:
+  #     context: .
+  #     dockerfile: ./db.Dockerfile
+  #   ports:
+  #     - 3306:3306
+  #   networks:
+  #     - uniting_net
 
 
   auth:
