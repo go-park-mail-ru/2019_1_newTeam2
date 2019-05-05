@@ -4,12 +4,11 @@ ADD . /home/app/
 
 WORKDIR /home/app/
 
-RUN cp ./storage/sql/* /home/app/
+RUN cp ./storage/sql/dump.sql /home/app/dump.sql
+RUN cp ./storage/sql/game_dump.sql /home/app/game_dump.sql
+RUN cp ./storage/sql/chat_dump.sql /home/app/chat_dump.sql
 
-RUN service mysql start && mysql -e 'CREATE DATABASE IF NOT EXISTS wordtrainer' \
-    && mysql -e 'CREATE DATABASE IF NOT EXISTS chat_wordtrainer' \
-    && mysql -e 'CREATE DATABASE IF NOT EXISTS game_wordtrainer' \
-    && mysql < ./dump.sql \
+RUN service mysql start && mysql < ./dump.sql \
     && mysql < ./chat_dump.sql \
     && mysql < ./game_dump.sql
 
