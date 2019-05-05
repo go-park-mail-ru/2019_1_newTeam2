@@ -50,6 +50,15 @@ func New(DBUser string, DBPassUser string) *Room {
 	}
 }
 
+func (r *Room) FindPlayer(player *Player) bool {
+	_, ok := r.Players[player.ID]
+	if ok {
+		return true
+	} else {
+		return false
+	}
+}
+
 func (r *Room) ListenToPlayers() {
 	for {
 		select {

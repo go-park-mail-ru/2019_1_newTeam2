@@ -1,11 +1,12 @@
 package game
 
 import (
+	"fmt"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/satori/go.uuid"
+	//"github.com/satori/go.uuid"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/room"
 )
@@ -52,16 +53,16 @@ func (game *Game) Run() {
 	}
 }
 
-func (game *Game) ProcessConn(conn *GameRegister) {
-	id := uuid.NewV4().String()
+func (game *Game) ProcessConn(conn *GameRegister) error {
+	//id := uuid.NewV4().String()
 	player := &room.Player{
 		Conn: conn.Conn,
-		ID:   id,
+		ID:   conn.Username,
 		Data: models.PlayerData{conn.Username, 0},
 	}
 	room := game.FindRoom(player)
 	if room == nil {
-		return
+		return fmt.Errorf("Can`t create and found room")
 	}
 	room.Logger.Log("player ", player.Data.Username, " joined room ", room.ID)
 	go player.Listen()
@@ -70,11 +71,16 @@ func (game *Game) ProcessConn(conn *GameRegister) {
 	} else {
 		player.Send(&models.GameMessage{Type: "Task", Payload: player.Room.Answer})
 	}
+	return nil
 }
 
 func (game *Game) FindRoom(player *room.Player) *room.Room {
 	for _, room := range game.Rooms {
 		if len(room.Players) < room.MaxPlayers {
+			if room.FindPlayer(player) == true {
+				room.Logger.Log("keeeeeeeeeeeeeeeeeeeeeeeeeeeeek")
+				return nil
+			}
 			room.Players[player.ID] = player
 			player.Room = room
 			return room
