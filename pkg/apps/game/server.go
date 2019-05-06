@@ -42,6 +42,7 @@ func NewGameServer(pathToConfig string) (*GameServer, error) {
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
+	router.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, server.IsLogined))
 
 	router.HandleFunc("/game", server.OpenConnection)
 
