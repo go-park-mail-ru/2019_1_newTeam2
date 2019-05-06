@@ -39,6 +39,7 @@ func NewGameServer(pathToConfig string) (*GameServer, error) {
 	server.CookieField = "session_id"
 
 	router := mux.NewRouter()
+	router = router.PathPrefix("/multiplayer/").Subrouter()
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())

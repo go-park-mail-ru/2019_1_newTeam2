@@ -45,7 +45,9 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 	server.DB = newDB
 	server.CookieField = "session_id"
 	server.Hub = wshub.NewWSCommunicator(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
+
 	router := mux.NewRouter()
+	router = router.PathPrefix("/world_chat/").Subrouter()
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())

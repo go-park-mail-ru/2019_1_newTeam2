@@ -62,6 +62,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	router := mux.NewRouter()
 
+	router = router.PathPrefix("/api/").Subrouter()
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
