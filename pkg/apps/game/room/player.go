@@ -1,10 +1,12 @@
 package room
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/gorilla/websocket"
 	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
 )
 
 type Player struct {
@@ -29,6 +31,15 @@ func (p *Player) Listen() {
 		err := p.Conn.ReadJSON(m)
 		if websocket.IsUnexpectedCloseError(err) {
 			p.Room.Logger.Log("player ", p.ID, " was disconnected")
+			ctx := context.Background()
+			_, err := p.Room.ScoreClient.UpdateUserScore(ctx,
+				&mgr.UserScore{
+					Username: p.ID,
+					AddScore: int32(p.Data.Score),
+				})
+			if err != nil {
+				p.Room.Logger.Log("ADD SCORE ERROR: ", err)
+			}
 			p.Room.Unregister <- p
 			return
 		}

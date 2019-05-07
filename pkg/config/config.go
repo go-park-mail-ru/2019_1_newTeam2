@@ -10,8 +10,8 @@ type Config struct {
 	Port         string   `json:"port"`
 	AuthHost     string   `json:"authHost"`
 	AuthPort     string   `json:"authPort"`
+	ScorePort    string   `json:"scorePort,omitempty"`
 	UploadPath   string   `json:"uploadPath,omitempty"`
-	CommonDbPort string   `json:"commonDbServPort"`
 	AvatarsPath  string   `json:"avatarsPath,omitempty"`
 	AllowedHosts []string `json:"AllowedHosts,omitempty"`
 	DBName       string   `json:"dbName,omitempty"`

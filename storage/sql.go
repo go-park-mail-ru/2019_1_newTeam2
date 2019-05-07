@@ -20,6 +20,9 @@ const (
 		"LIMIT ? OFFSET ?) l ON (u.id = l.id) " +
 		"ORDER BY score;"
 
+	GetUserScore	= "SELECT Score FROM wordtrainer.user WHERE Username = ?"
+	UpdateUserScore = "UPDATE wordtrainer.user SET Score = ? WHERE Username = ?"
+
 	// dictionary
 	CreateEmptyDictionary = "INSERT INTO wordtrainer.dictionary (name, description, UserID) VALUES (?, ?, ?)"
 	UpdateDictionary      = "UPDATE wordtrainer.dictionary SET name = ?, description = ? WHERE ID = ?"
