@@ -12,6 +12,7 @@ import (
 	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/game"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/room"
+	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
 	"github.com/user/2019_1_newTeam2/pkg/middlewares"
@@ -22,6 +23,7 @@ type GameServer struct {
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
 	AuthClient   authorization.AuthCheckerClient
+	ScoreClient  mgr.UserScoreUpdaterClient
 	CookieField  string
 	Game         *game.Game
 }
@@ -55,7 +57,6 @@ func NewGameServer(pathToConfig string) (*GameServer, error) {
 
 	r.Handle("/metrics", promhttp.Handler())
 	server.Router = r
-	server.Game = game.NewGame(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
 	return server, nil
 }
 
@@ -69,10 +70,21 @@ func (server *GameServer) Run() {
 	}
 	defer grcpAuthConn.Close()
 
+	grcpScoreConn, err := grpc.Dial(
+		server.ServerConfig.AuthHost+":"+server.ServerConfig.ScorePort,
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		server.Logger.Log("Can`t connect ro grpc (score ms)")
+	}
+	defer grcpScoreConn.Close()
+
 	prometheus.MustRegister(MultiplayerHitsMetric, room.PlayerCountMetric, game.RoomCountMetric)
 
-	go server.Game.Run()
 	server.AuthClient = authorization.NewAuthCheckerClient(grcpAuthConn)
+	server.ScoreClient = mgr.NewUserScoreUpdaterClient(grcpScoreConn)
+	server.Game = game.NewGame(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, server.ScoreClient)
+	go server.Game.Run()
 	server.Logger.Logf("Running app on port %s", server.ServerConfig.Port)
 	server.Logger.Log(http.ListenAndServe(":"+server.ServerConfig.Port, server.Router))
 }

@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	//"github.com/satori/go.uuid"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/room"
+	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
 )
 
 type GameRegister struct {
@@ -17,11 +17,12 @@ type GameRegister struct {
 }
 
 type Game struct {
-	Rooms      map[string]*room.Room
-	MaxRooms   int
-	Register   chan *GameRegister
-	DBUser     string
-	DBPassUser string
+	Rooms        map[string]*room.Room
+	MaxRooms     int
+	Register     chan *GameRegister
+	DBUser       string
+	DBPassUser   string
+	ScoreClient  mgr.UserScoreUpdaterClient
 }
 
 func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {
@@ -37,13 +38,14 @@ func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {
 	mutex.Unlock()
 }
 
-func NewGame(DBUser string, DBPassUser string) *Game {
+func NewGame(DBUser string, DBPassUser string, scoreClient mgr.UserScoreUpdaterClient) *Game {
 	return &Game{
-		Rooms:      make(map[string]*room.Room),
-		MaxRooms:   2,
-		Register:   make(chan *GameRegister),
-		DBUser:     DBUser,
-		DBPassUser: DBPassUser,
+		Rooms:       make(map[string]*room.Room),
+		MaxRooms:    2,
+		Register:    make(chan *GameRegister),
+		DBUser:      DBUser,
+		DBPassUser:  DBPassUser,
+		ScoreClient: scoreClient,
 	}
 }
 
@@ -90,7 +92,7 @@ func (game *Game) FindRoom(player *room.Player) *room.Room {
 	if len(game.Rooms) >= game.MaxRooms {
 		return nil
 	}
-	room := room.New(game.DBUser, game.DBPassUser)
+	room := room.New(game.DBUser, game.DBPassUser, game.ScoreClient)
 	room.Players[player.ID] = player
 	player.Room = room
 	game.Rooms[room.ID] = room
