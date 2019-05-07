@@ -21,7 +21,7 @@ type Room struct {
 	Unregister chan *Player
 	Message    chan *IncomingMessage
 	Broadcast  chan *models.GameMessage
-	Answer	   models.GameQuestion
+	Answer     models.GameQuestion
 }
 
 func New(DBUser string, DBPassUser string) *Room {
@@ -29,7 +29,7 @@ func New(DBUser string, DBPassUser string) *Room {
 
 	logger := new(logger.GoLogger)
 	logger.SetOutput(os.Stderr)
-	logger.SetPrefix("ROOM ("+ id + ") LOG: ")
+	logger.SetPrefix("ROOM (" + id + ") LOG: ")
 
 	newDB, err := storage.NewDataBase(DBUser, DBPassUser)
 	if err != nil {
@@ -41,8 +41,8 @@ func New(DBUser string, DBPassUser string) *Room {
 		ID:         id,
 		MaxPlayers: 3,
 		Players:    make(map[string]*Player),
-		Logger:		logger,
-		DB:			newDB,
+		Logger:     logger,
+		DB:         newDB,
 		Register:   make(chan *Player),
 		Unregister: make(chan *Player),
 		Broadcast:  make(chan *models.GameMessage),
@@ -64,14 +64,14 @@ func (r *Room) ListenToPlayers() {
 		select {
 		case m := <-r.Message:
 			switch m.Type {
-				case "ANSWER":
-					answer := string(m.Payload)[1:len(string(m.Payload))-1]
-					if answer == r.Answer.Answer {
-						m.Player.Data.Score += 1
-						NewTask := r.CreateTask()
-						r.Answer = NewTask
-						r.Broadcast <- &models.GameMessage{Type: "Task", Payload: NewTask}
-					}
+			case "ANSWER":
+				answer := string(m.Payload)[1 : len(string(m.Payload))-1]
+				if answer == r.Answer.Answer {
+					m.Player.Data.Score += 1
+					NewTask := r.CreateTask()
+					r.Answer = NewTask
+					r.Broadcast <- &models.GameMessage{Type: "Task", Payload: NewTask}
+				}
 			}
 		case p := <-r.Unregister:
 			delete(r.Players, p.ID)

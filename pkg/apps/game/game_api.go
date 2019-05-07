@@ -2,7 +2,7 @@ package game
 
 import (
 	"net/http"
-  
+
 	"github.com/gorilla/websocket"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/game"

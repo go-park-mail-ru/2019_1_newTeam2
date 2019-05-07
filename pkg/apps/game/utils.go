@@ -12,15 +12,15 @@ func (server *GameServer) IsLogined(r *http.Request, secret []byte, cookieField 
 	return err == nil
 }
 
-func (server *GameServer) GetUsernameFromCookie(r *http.Request) (string, error){
+func (server *GameServer) GetUsernameFromCookie(r *http.Request) (string, error) {
 	cookie, err := r.Cookie(server.CookieField)
 	if err != nil {
 		return "", err
 	}
 	ctx := context.Background()
 	StrUsername, err := server.AuthClient.GetUsernameFromCookie(ctx,
-		&authorization.AuthCookie {
-			Data: cookie.Value,
+		&authorization.AuthCookie{
+			Data:   cookie.Value,
 			Secret: server.ServerConfig.Secret,
 		})
 	if err != nil {

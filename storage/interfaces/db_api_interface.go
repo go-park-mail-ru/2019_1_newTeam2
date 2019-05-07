@@ -46,5 +46,5 @@ type UserManager interface {
 }
 
 type SinglePlayerGameManager interface {
-	UpdateFrequencies (results models.GameResults) (error, bool)
+	UpdateFrequencies(results models.GameResults) (error, bool)
 }

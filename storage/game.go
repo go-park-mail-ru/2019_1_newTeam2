@@ -17,9 +17,9 @@ func Find(arr []int, num int) bool {
 func RandNum(max int, count int) []int {
 	arr := make([]int, count)
 	for i := range arr {
-		res := rand.Int() % max + 1
+		res := rand.Int()%max + 1
 		for Find(arr, res) == true {
-			res = rand.Int() % max + 1
+			res = rand.Int()%max + 1
 		}
 		arr[i] = res
 	}
@@ -35,7 +35,7 @@ func (db *Database) CreateTask() (models.GameQuestion, error) {
 		return models.GameQuestion{}, err
 	}
 	task := models.GameQuestion{}
-	RandInt := RandNum(LastID,4)
+	RandInt := RandNum(LastID, 4)
 	AnswerId := rand.Int() % 4
 
 	res = db.Conn.QueryRow(GameGetTranslate, RandInt[AnswerId])

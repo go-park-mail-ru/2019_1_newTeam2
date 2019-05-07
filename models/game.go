@@ -15,7 +15,7 @@ type GameWord struct {
 }
 
 type GameQuestion struct {
-	Words [4]string `json:"words"`
-	Answer string `json:"answer"`
-	Question string `json:"question"`
+	Words    [4]string `json:"words"`
+	Answer   string    `json:"answer"`
+	Question string    `json:"question"`
 }

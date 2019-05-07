@@ -100,7 +100,7 @@ const (
 	AddMessageToBroadcastDialog = "INSERT INTO chat_wordtrainer.broadcast_dialog (MessageId, UserId) VALUES(?, ?)"
 
 	//  game
-	GameGetLastId = "SELECT MAX(ID) FROM game_wordtrainer.russian_english_words"
-	GameGetWord = "SELECT Word FROM game_wordtrainer.russian_english_words WHERE ID = ?"
+	GameGetLastId    = "SELECT MAX(ID) FROM game_wordtrainer.russian_english_words"
+	GameGetWord      = "SELECT Word FROM game_wordtrainer.russian_english_words WHERE ID = ?"
 	GameGetTranslate = "SELECT Translate FROM game_wordtrainer.russian_english_words WHERE ID = ?"
 )
