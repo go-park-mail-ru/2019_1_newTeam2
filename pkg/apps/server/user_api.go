@@ -15,6 +15,7 @@ import (
 )
 
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
+	server.Logger.Log("GetUser")
 	userId, err := server.GetUserIdFromCookie(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -83,6 +84,7 @@ func (server *Server) UsersPaginate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	server.Logger.Log("UpdateUser")
 	userId, err := server.GetUserIdFromCookie(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

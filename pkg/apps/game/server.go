@@ -7,8 +7,11 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/game"
+	"github.com/user/2019_1_newTeam2/pkg/apps/game/room"
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
 	"github.com/user/2019_1_newTeam2/pkg/middlewares"
@@ -38,16 +41,20 @@ func NewGameServer(pathToConfig string) (*GameServer, error) {
 
 	server.CookieField = "session_id"
 
-	router := mux.NewRouter()
-	router = router.PathPrefix("/multiplayer/").Subrouter()
+	r := mux.NewRouter()
+	router := r.PathPrefix("/multiplayer/").Subrouter()
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
 	router.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, server.IsLogined))
 
-	router.HandleFunc("/game", server.OpenConnection)
+	router.HandleFunc("/game", promhttp.InstrumentHandlerCounter(
+		MultiplayerHitsMetric,
+		http.HandlerFunc(server.OpenConnection),
+		))
 
-	server.Router = router
+	r.Handle("/metrics", promhttp.Handler())
+	server.Router = r
 	server.Game = game.NewGame(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
 	return server, nil
 }
@@ -61,6 +68,9 @@ func (server *GameServer) Run() {
 		server.Logger.Log("Can`t connect ro grpc (auth ms)")
 	}
 	defer grcpAuthConn.Close()
+
+	prometheus.MustRegister(MultiplayerHitsMetric, room.PlayerCountMetric, game.RoomCountMetric)
+
 	go server.Game.Run()
 	server.AuthClient = authorization.NewAuthCheckerClient(grcpAuthConn)
 	server.Logger.Logf("Running app on port %s", server.ServerConfig.Port)

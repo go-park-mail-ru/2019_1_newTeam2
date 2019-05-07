@@ -66,7 +66,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
-	router.Use(server.metricsMiddleware())
+	router.Use(server.metricsMiddleware)
 
 	needLogin := router.PathPrefix("/").Subrouter()
 	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, server.IsLogined))
@@ -106,6 +106,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
+	server.Router = router
 	server.Router = r
 
 	return server, nil
@@ -125,6 +126,8 @@ func (server *Server) Run() {
 		server.Logger.Log("Can`t connect ro grpc (auth ms)")
 	}
 	defer grcpAuthConn.Close()
+
+
 	server.AuthClient = authorization.NewAuthCheckerClient(grcpAuthConn)
 
 	prometheus.MustRegister(ApiMetrics)
