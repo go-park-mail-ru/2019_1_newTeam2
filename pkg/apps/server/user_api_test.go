@@ -3,7 +3,7 @@ package server_test
 import (
 	"bytes"
 	"encoding/json"
-
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -131,7 +131,9 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 		token := correctToken
 		PlaceTokenToRequest(token, r)
 		w := httptest.NewRecorder()
+		log.Println("start")
 		suite.underTest.GetUser(w, r)
+		log.Println("end")
 
 		response := w.Result()
 		suite.Equal(item.response, response.Status)
@@ -139,7 +141,6 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 			defer response.Body.Close()
 			result := new(models.User)
 			json.NewDecoder(response.Body).Decode(result)
-
 			suite.Equal(item.t, *result)
 		}
 	}
