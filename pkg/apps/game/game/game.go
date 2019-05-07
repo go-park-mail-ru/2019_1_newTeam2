@@ -30,6 +30,7 @@ func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {
 	for name, room := range game.Rooms {
 		if room == ERoom {
 			delete(game.Rooms, name)
+			RoomCountMetric.Dec()
 			ERoom.Logger.Log("room removed")
 		}
 	}
@@ -60,14 +61,15 @@ func (game *Game) ProcessConn(conn *GameRegister) error {
 		ID:   conn.Username,
 		Data: models.PlayerData{conn.Username, 0},
 	}
-	room := game.FindRoom(player)
-	if room == nil {
+	r := game.FindRoom(player)
+	if r == nil {
 		return fmt.Errorf("Can`t create and found room")
 	}
-	room.Logger.Log("player ", player.Data.Username, " joined room ", room.ID)
+	r.Logger.Log("player ", player.Data.Username, " joined room ", r.ID)
+	room.PlayerCountMetric.Inc()
 	go player.Listen()
-	if len(room.Players) <= 1 {
-		go game.RoomRun(room)
+	if len(r.Players) <= 1 {
+		go game.RoomRun(r)
 	} else {
 		player.Send(&models.GameMessage{Type: "Task", Payload: player.Room.Answer})
 	}
@@ -78,7 +80,6 @@ func (game *Game) FindRoom(player *room.Player) *room.Room {
 	for _, room := range game.Rooms {
 		if len(room.Players) < room.MaxPlayers {
 			if room.FindPlayer(player) == true {
-				room.Logger.Log("keeeeeeeeeeeeeeeeeeeeeeeeeeeeek")
 				return nil
 			}
 			room.Players[player.ID] = player
@@ -94,6 +95,7 @@ func (game *Game) FindRoom(player *room.Player) *room.Room {
 	player.Room = room
 	game.Rooms[room.ID] = room
 	go room.ListenToPlayers()
+	RoomCountMetric.Inc()
 	room.Logger.Log("room created")
 	return room
 }

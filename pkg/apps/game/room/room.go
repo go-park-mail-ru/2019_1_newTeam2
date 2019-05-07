@@ -75,6 +75,7 @@ func (r *Room) ListenToPlayers() {
 			}
 		case p := <-r.Unregister:
 			delete(r.Players, p.ID)
+			PlayerCountMetric.Dec()
 			r.Logger.Log("player was deleted from room ", r.ID)
 		}
 
