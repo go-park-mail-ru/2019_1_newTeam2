@@ -12,16 +12,16 @@ import (
 )
 
 type GameRegister struct {
-	Conn 		*websocket.Conn
-	Username	string
+	Conn     *websocket.Conn
+	Username string
 }
 
 type Game struct {
-	Rooms    			map[string]*room.Room
-	MaxRooms 			int
-	Register 			chan *GameRegister
-	DBUser   			string
-	DBPassUser			string
+	Rooms      map[string]*room.Room
+	MaxRooms   int
+	Register   chan *GameRegister
+	DBUser     string
+	DBPassUser string
 }
 
 func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {
@@ -36,12 +36,12 @@ func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {
 	mutex.Unlock()
 }
 
-func NewGame(DBUser string, DBPassUser string) *Game{
+func NewGame(DBUser string, DBPassUser string) *Game {
 	return &Game{
-		Rooms:    make(map[string]*room.Room),
-		MaxRooms: 2,
-		Register: make(chan *GameRegister),
-		DBUser: DBUser,
+		Rooms:      make(map[string]*room.Room),
+		MaxRooms:   2,
+		Register:   make(chan *GameRegister),
+		DBUser:     DBUser,
 		DBPassUser: DBPassUser,
 	}
 }

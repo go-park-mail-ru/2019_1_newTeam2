@@ -11,6 +11,7 @@ type Config struct {
 	AuthHost     string   `json:"authHost"`
 	AuthPort     string   `json:"authPort"`
 	UploadPath   string   `json:"uploadPath,omitempty"`
+	CommonDbPort string   `json:"commonDbServPort"`
 	AvatarsPath  string   `json:"avatarsPath,omitempty"`
 	AllowedHosts []string `json:"AllowedHosts,omitempty"`
 	DBName       string   `json:"dbName,omitempty"`

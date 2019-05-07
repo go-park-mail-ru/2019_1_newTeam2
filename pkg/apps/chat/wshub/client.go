@@ -54,7 +54,7 @@ func (cl *Client) WriteToInet() {
 		case mes, ok := <-cl.sendChan:
 			_ = cl.Conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
-				_= cl.Conn.WriteMessage(websocket.CloseMessage, []byte{})
+				_ = cl.Conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
 			err := cl.Conn.WriteJSON(mes)
