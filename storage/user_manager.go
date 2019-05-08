@@ -7,19 +7,16 @@ import (
 )
 
 func (db *Database) CheckUserByUsername(username string) (models.User, bool, error) {
-	results, err := db.Conn.Query(GetUserByUsernameQuery, username)
-
-	if err != nil {
-		return models.User{}, false, err
-	}
+	result := db.Conn.QueryRow(GetUserByUsernameQuery, username)
 
 	user := new(models.User)
-	for results.Next() {
-		err = results.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.LangID, &user.PronounceON, &user.Score, &user.AvatarPath)
-		if err != nil {
-			return models.User{}, false, nil
-		}
+
+	err := result.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.LangID, &user.PronounceON, &user.Score, &user.AvatarPath)
+
+	if err != nil {
+		return models.User{}, false, nil
 	}
+
 	if user.Username == "" {
 		return models.User{}, false, nil
 	}
@@ -58,18 +55,10 @@ func (db *Database) UpdateUserById(userID int, username string, email string,
 		return false, fmt.Errorf("Такого пользователя не существует")
 	}
 
-	// hashPassword, err := HashPassword(password)
-
-	// if err != nil {
-	// 	db.Logger.Log("hash error")
-	// 	return false, fmt.Errorf("hash error")
-	// }
-
 	_, UpdateErr := db.Conn.Exec(
 		UpdateUserQuery,
 		username,
 		email,
-		// hashPassword,
 		langid,
 		pronounceOn,
 		userID,
@@ -139,13 +128,10 @@ func (db *Database) UserRegistration(username string, email string,
 	if check {
 		return false, fmt.Errorf("Такой пользователь уже существует")
 	}
-
 	hashPassword, err := HashPassword(password)
-
 	if err != nil {
 		return false, fmt.Errorf("hash error")
 	}
-
 	_, CreateErr := db.Conn.Exec(
 		AddUserQuery,
 		username,
@@ -156,11 +142,9 @@ func (db *Database) UserRegistration(username string, email string,
 		0,
 		"",
 	)
-
 	if CreateErr != nil {
 		db.Logger.Log(CreateErr)
 		return false, fmt.Errorf("CreateErr: user not create")
 	}
-
 	return true, nil
 }
