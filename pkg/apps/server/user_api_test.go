@@ -3,6 +3,8 @@ package server_test
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/user/2019_1_newTeam2/mocks/mock_auth"
+	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -29,6 +31,7 @@ func TestUserHandlerSuite(t *testing.T) {
 type UserHandlerTestSuite struct {
 	suite.Suite
 	dataBase  *mock_interfaces.MockDBInterface
+	authClient *mock_auth.MockAuthCheckerClient
 	underTest *server.Server
 }
 
@@ -36,7 +39,7 @@ func (suite *UserHandlerTestSuite) SetupTest() {
 	mockCtrl := gomock.NewController(suite.T())
 	defer mockCtrl.Finish()
 	suite.dataBase = mock_interfaces.NewMockDBInterface(mockCtrl)
-
+	suite.authClient = mock_auth.NewMockAuthCheckerClient(mockCtrl)
 	server := new(server.Server)
 	config := new(config.Config)
 	config.Secret = "12345"
@@ -45,6 +48,7 @@ func (suite *UserHandlerTestSuite) SetupTest() {
 	config.AvatarsPath = ""
 	server.ServerConfig = config
 	server.DB = suite.dataBase
+	server.AuthClient = suite.authClient
 	suite.underTest = server
 
 	logger := new(logger.GoLogger)
@@ -127,6 +131,7 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 
 	for _, item := range cases {
 		suite.dataBase.EXPECT().GetUserByID(item.id).Return(item.t, item.exists, item.err)
+		suite.authClient.EXPECT().GetIdFromCookie(gomock.Any(), gomock.Any()).Return(&authorization.Id{UserId:int64(item.id)}, nil)
 		r, _ := http.NewRequest(item.method, "/users/", nil)
 		token := correctToken
 		PlaceTokenToRequest(token, r)
@@ -306,6 +311,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 
 			suite.dataBase.EXPECT().GetUsers(item.page, item.row).Return(item.t, item.got, item.err)
 		}
+		suite.authClient.EXPECT().GetIdFromCookie(gomock.Any(), gomock.Any())
 		r, _ := http.NewRequest(item.method, "/users", nil)
 		token := correctToken
 		PlaceTokenToRequest(token, r)
@@ -383,6 +389,7 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 			suite.dataBase.EXPECT().UpdateUserById(item.t.ID, item.t.Username, item.t.Email,
 				item.t.LangID, item.t.PronounceON)
 		}
+		suite.authClient.EXPECT().GetIdFromCookie(gomock.Any(), gomock.Any()).Return(&authorization.Id{UserId:int64(item.id)}, nil)
 		body, _ := json.Marshal(item.t)
 		r, _ := http.NewRequest(item.method, "/users/", bytes.NewBuffer(body))
 		token := correctToken
@@ -447,6 +454,7 @@ func (suite *UserHandlerTestSuite) TestDeleteUser() {
 	}
 
 	for _, item := range cases {
+		suite.authClient.EXPECT().GetIdFromCookie(gomock.Any(), gomock.Any()).Return(&authorization.Id{UserId:int64(item.id)}, nil)
 		suite.dataBase.EXPECT().GetUserByID(item.id).Return(item.t, item.exists, item.err)
 		suite.dataBase.EXPECT().UpdateUserById(item.t.ID, item.t.Username, item.t.Email,
 			item.t.LangID, item.t.PronounceON)
