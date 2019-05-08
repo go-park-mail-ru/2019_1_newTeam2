@@ -2,6 +2,7 @@
 // Source: storage/interfaces/db_api_interface.go
 
 // Package mock_interfaces is a generated GoMock package.
+
 package mock_interfaces
 
 import (

@@ -2,6 +2,7 @@
 // Source: pkg/apps/chat/wshub/ws_interface.go
 
 // Package mock_wshub is a generated GoMock package.
+
 package mock_wshub
 
 import (

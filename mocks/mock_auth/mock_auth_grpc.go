@@ -2,6 +2,7 @@
 // Source: pkg/apps/authorization/authorization.pb.go
 
 // Package mock_authorization is a generated GoMock package.
+
 package mock_auth
 
 import (
