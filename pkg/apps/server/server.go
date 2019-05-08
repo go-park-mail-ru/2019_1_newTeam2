@@ -127,7 +127,6 @@ func (server *Server) Run() {
 	}
 	defer grcpAuthConn.Close()
 
-
 	server.AuthClient = authorization.NewAuthCheckerClient(grcpAuthConn)
 
 	prometheus.MustRegister(ApiMetrics)

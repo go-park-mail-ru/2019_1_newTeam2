@@ -3,27 +3,27 @@ package room
 import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
 	"github.com/user/2019_1_newTeam2/storage"
 	"github.com/user/2019_1_newTeam2/storage/interfaces"
-	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
 	"os"
 	"time"
 )
 
 type Room struct {
-	ID           string
-	Ticker       *time.Ticker
-	Logger       logger.LoggerInterface
-	DB           interfaces.DBGameInterface
-	Players      map[string]*Player
-	MaxPlayers   int
-	Register   	 chan *Player
-	Unregister 	 chan *Player
-	Message    	 chan *IncomingMessage
-	Broadcast  	 chan *models.GameMessage
-	Answer     	 models.GameQuestion
-	ScoreClient  mgr.UserScoreUpdaterClient
+	ID          string
+	Ticker      *time.Ticker
+	Logger      logger.LoggerInterface
+	DB          interfaces.DBGameInterface
+	Players     map[string]*Player
+	MaxPlayers  int
+	Register    chan *Player
+	Unregister  chan *Player
+	Message     chan *IncomingMessage
+	Broadcast   chan *models.GameMessage
+	Answer      models.GameQuestion
+	ScoreClient mgr.UserScoreUpdaterClient
 }
 
 func New(DBUser string, DBPassUser string, scoreClient mgr.UserScoreUpdaterClient) *Room {

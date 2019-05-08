@@ -53,7 +53,7 @@ func NewGameServer(pathToConfig string) (*GameServer, error) {
 	router.HandleFunc("/game", promhttp.InstrumentHandlerCounter(
 		MultiplayerHitsMetric,
 		http.HandlerFunc(server.OpenConnection),
-		))
+	))
 
 	r.Handle("/metrics", promhttp.Handler())
 	server.Router = r

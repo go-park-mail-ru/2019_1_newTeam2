@@ -9,4 +9,3 @@ type DBMGRInterface interface {
 type MGRManager interface {
 	UpdateScore(username string, added_points int) (models.UserScore, error)
 }
-

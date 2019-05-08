@@ -17,12 +17,12 @@ type GameRegister struct {
 }
 
 type Game struct {
-	Rooms        map[string]*room.Room
-	MaxRooms     int
-	Register     chan *GameRegister
-	DBUser       string
-	DBPassUser   string
-	ScoreClient  mgr.UserScoreUpdaterClient
+	Rooms       map[string]*room.Room
+	MaxRooms    int
+	Register    chan *GameRegister
+	DBUser      string
+	DBPassUser  string
+	ScoreClient mgr.UserScoreUpdaterClient
 }
 
 func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {

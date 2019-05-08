@@ -2,5 +2,5 @@ package models
 
 type UserScore struct {
 	Username string `json:"username"`
-	Score    int `json:"int"`
+	Score    int    `json:"int"`
 }

@@ -30,9 +30,9 @@ func TestUserHandlerSuite(t *testing.T) {
 
 type UserHandlerTestSuite struct {
 	suite.Suite
-	dataBase  *mock_interfaces.MockDBInterface
+	dataBase   *mock_interfaces.MockDBInterface
 	authClient *mock_auth.MockAuthCheckerClient
-	underTest *server.Server
+	underTest  *server.Server
 }
 
 func (suite *UserHandlerTestSuite) SetupTest() {
@@ -131,7 +131,7 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 
 	for _, item := range cases {
 		suite.dataBase.EXPECT().GetUserByID(item.id).Return(item.t, item.exists, item.err)
-		suite.authClient.EXPECT().GetIdFromCookie(gomock.Any(), gomock.Any()).Return(&authorization.Id{UserId:int64(item.id)}, nil)
+		suite.authClient.EXPECT().GetIdFromCookie(gomock.Any(), gomock.Any()).Return(&authorization.Id{UserId: int64(item.id)}, nil)
 		r, _ := http.NewRequest(item.method, "/users/", nil)
 		token := correctToken
 		PlaceTokenToRequest(token, r)
@@ -389,7 +389,7 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 			suite.dataBase.EXPECT().UpdateUserById(item.t.ID, item.t.Username, item.t.Email,
 				item.t.LangID, item.t.PronounceON)
 		}
-		suite.authClient.EXPECT().GetIdFromCookie(gomock.Any(), gomock.Any()).Return(&authorization.Id{UserId:int64(item.id)}, nil)
+		suite.authClient.EXPECT().GetIdFromCookie(gomock.Any(), gomock.Any()).Return(&authorization.Id{UserId: int64(item.id)}, nil)
 		body, _ := json.Marshal(item.t)
 		r, _ := http.NewRequest(item.method, "/users/", bytes.NewBuffer(body))
 		token := correctToken
@@ -454,7 +454,7 @@ func (suite *UserHandlerTestSuite) TestDeleteUser() {
 	}
 
 	for _, item := range cases {
-		suite.authClient.EXPECT().GetIdFromCookie(gomock.Any(), gomock.Any()).Return(&authorization.Id{UserId:int64(item.id)}, nil)
+		suite.authClient.EXPECT().GetIdFromCookie(gomock.Any(), gomock.Any()).Return(&authorization.Id{UserId: int64(item.id)}, nil)
 		suite.dataBase.EXPECT().GetUserByID(item.id).Return(item.t, item.exists, item.err)
 		suite.dataBase.EXPECT().UpdateUserById(item.t.ID, item.t.Username, item.t.Email,
 			item.t.LangID, item.t.PronounceON)

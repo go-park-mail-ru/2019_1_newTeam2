@@ -6,9 +6,9 @@
 package mock_auth
 
 import (
-	x "github.com/user/2019_1_newTeam2/pkg/apps/authorization"
 	context "context"
 	gomock "github.com/golang/mock/gomock"
+	x "github.com/user/2019_1_newTeam2/pkg/apps/authorization"
 	grpc "google.golang.org/grpc"
 	reflect "reflect"
 )

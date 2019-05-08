@@ -20,7 +20,7 @@ const (
 		"LIMIT ? OFFSET ?) l ON (u.id = l.id) " +
 		"ORDER BY score;"
 
-	GetUserScore	= "SELECT Score FROM wordtrainer.user WHERE Username = ?"
+	GetUserScore    = "SELECT Score FROM wordtrainer.user WHERE Username = ?"
 	UpdateUserScore = "UPDATE wordtrainer.user SET Score = ? WHERE Username = ?"
 
 	// dictionary

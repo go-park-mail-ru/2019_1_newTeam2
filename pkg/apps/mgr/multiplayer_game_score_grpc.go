@@ -8,7 +8,7 @@ import (
 )
 
 type UserScoreUpdaterManager struct {
-	DB	interfaces.DBMGRInterface
+	DB interfaces.DBMGRInterface
 }
 
 func NewUserScoreUpdaterManager(DBUser string, DBPassUser string) *UserScoreUpdaterManager {
