@@ -5,12 +5,12 @@ require (
 	github.com/alok87/goutils v0.0.0-20170710173822-29ef704e5505 // indirect
 	github.com/bxcodec/faker v2.0.1+incompatible // indirect
 	github.com/bxcodec/faker/v3 v3.0.0
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.7.0 // indirect
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gobwas/gws v0.0.0-20170427155341-6ec9a5ac805b // indirect
+	github.com/gogo/protobuf v1.2.0 // indirect
 	github.com/golang/mock v1.2.0
 	github.com/golang/protobuf v1.3.1
 	github.com/google/btree v1.0.0 // indirect
@@ -22,9 +22,9 @@ require (
 	github.com/hashicorp/golang-lru v0.5.1 // indirect
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
+	github.com/prometheus/client_golang v0.9.3-0.20190127221311-3c4408c8b829
 	github.com/rs/cors v1.6.0
 	github.com/satori/go.uuid v1.2.0
-	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/stretchr/testify v1.3.0
 	github.com/tealeg/xlsx v1.0.3
 	github.com/yuin/gopher-lua v0.0.0-20190206043414-8bfc7677f583 // indirect

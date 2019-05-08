@@ -14,6 +14,8 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/user/2019_1_newTeam2/filesystem"
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
@@ -58,13 +60,13 @@ func NewServer(pathToConfig string) (*Server, error) {
 		return nil, err
 	}
 
-	// server.Hub = wshub.NewWSCommunicator()
+	r := mux.NewRouter()
 
-	router := mux.NewRouter()
-
+	router := r.PathPrefix("/api/").Subrouter()
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
+	router.Use(server.metricsMiddleware)
 
 	needLogin := router.PathPrefix("/").Subrouter()
 	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, server.IsLogined))
@@ -100,9 +102,12 @@ func NewServer(pathToConfig string) (*Server, error) {
 	router.HandleFunc("/session/", server.Logout).Methods(http.MethodPatch, http.MethodOptions)
 	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
 
+	r.Handle("/metrics", promhttp.Handler())
+
 	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
 	server.Router = router
+	server.Router = r
 
 	return server, nil
 }
@@ -121,8 +126,11 @@ func (server *Server) Run() {
 		server.Logger.Log("Can`t connect ro grpc (auth ms)")
 	}
 	defer grcpAuthConn.Close()
+
+
 	server.AuthClient = authorization.NewAuthCheckerClient(grcpAuthConn)
 
+	prometheus.MustRegister(ApiMetrics)
 	server.Logger.Logf("Running app on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, server.Router))
 }

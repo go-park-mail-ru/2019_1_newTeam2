@@ -6,25 +6,27 @@ import (
 	"github.com/user/2019_1_newTeam2/pkg/logger"
 	"github.com/user/2019_1_newTeam2/storage"
 	"github.com/user/2019_1_newTeam2/storage/interfaces"
+	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
 	"os"
 	"time"
 )
 
 type Room struct {
-	ID         string
-	Ticker     *time.Ticker
-	Logger     logger.LoggerInterface
-	DB         interfaces.DBGameInterface
-	Players    map[string]*Player
-	MaxPlayers int
-	Register   chan *Player
-	Unregister chan *Player
-	Message    chan *IncomingMessage
-	Broadcast  chan *models.GameMessage
-	Answer     models.GameQuestion
+	ID           string
+	Ticker       *time.Ticker
+	Logger       logger.LoggerInterface
+	DB           interfaces.DBGameInterface
+	Players      map[string]*Player
+	MaxPlayers   int
+	Register   	 chan *Player
+	Unregister 	 chan *Player
+	Message    	 chan *IncomingMessage
+	Broadcast  	 chan *models.GameMessage
+	Answer     	 models.GameQuestion
+	ScoreClient  mgr.UserScoreUpdaterClient
 }
 
-func New(DBUser string, DBPassUser string) *Room {
+func New(DBUser string, DBPassUser string, scoreClient mgr.UserScoreUpdaterClient) *Room {
 	id := uuid.NewV4().String()
 
 	logger := new(logger.GoLogger)
@@ -38,15 +40,16 @@ func New(DBUser string, DBPassUser string) *Room {
 	}
 
 	return &Room{
-		ID:         id,
-		MaxPlayers: 3,
-		Players:    make(map[string]*Player),
-		Logger:     logger,
-		DB:         newDB,
-		Register:   make(chan *Player),
-		Unregister: make(chan *Player),
-		Broadcast:  make(chan *models.GameMessage),
-		Message:    make(chan *IncomingMessage),
+		ID:          id,
+		MaxPlayers:  3,
+		Players:     make(map[string]*Player),
+		Logger:      logger,
+		DB:          newDB,
+		Register:    make(chan *Player),
+		Unregister:  make(chan *Player),
+		Broadcast:   make(chan *models.GameMessage),
+		Message:     make(chan *IncomingMessage),
+		ScoreClient: scoreClient,
 	}
 }
 
@@ -75,6 +78,7 @@ func (r *Room) ListenToPlayers() {
 			}
 		case p := <-r.Unregister:
 			delete(r.Players, p.ID)
+			PlayerCountMetric.Dec()
 			r.Logger.Log("player was deleted from room ", r.ID)
 		}
 

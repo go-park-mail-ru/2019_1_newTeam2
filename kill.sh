@@ -1,4 +1,4 @@
-for((i=8090; i <= 8093; i++))
+for((i=8090; i <= 8094; i++))
 do
 	kill -s SIGKILL "$(sudo netstat -ltp | \
 		awk -v port="$i" '{

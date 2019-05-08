@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	//"github.com/satori/go.uuid"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/room"
+	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
 )
 
 type GameRegister struct {
@@ -17,11 +17,12 @@ type GameRegister struct {
 }
 
 type Game struct {
-	Rooms      map[string]*room.Room
-	MaxRooms   int
-	Register   chan *GameRegister
-	DBUser     string
-	DBPassUser string
+	Rooms        map[string]*room.Room
+	MaxRooms     int
+	Register     chan *GameRegister
+	DBUser       string
+	DBPassUser   string
+	ScoreClient  mgr.UserScoreUpdaterClient
 }
 
 func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {
@@ -30,19 +31,21 @@ func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {
 	for name, room := range game.Rooms {
 		if room == ERoom {
 			delete(game.Rooms, name)
+			RoomCountMetric.Dec()
 			ERoom.Logger.Log("room removed")
 		}
 	}
 	mutex.Unlock()
 }
 
-func NewGame(DBUser string, DBPassUser string) *Game {
+func NewGame(DBUser string, DBPassUser string, scoreClient mgr.UserScoreUpdaterClient) *Game {
 	return &Game{
-		Rooms:      make(map[string]*room.Room),
-		MaxRooms:   2,
-		Register:   make(chan *GameRegister),
-		DBUser:     DBUser,
-		DBPassUser: DBPassUser,
+		Rooms:       make(map[string]*room.Room),
+		MaxRooms:    2,
+		Register:    make(chan *GameRegister),
+		DBUser:      DBUser,
+		DBPassUser:  DBPassUser,
+		ScoreClient: scoreClient,
 	}
 }
 
@@ -60,14 +63,15 @@ func (game *Game) ProcessConn(conn *GameRegister) error {
 		ID:   conn.Username,
 		Data: models.PlayerData{conn.Username, 0},
 	}
-	room := game.FindRoom(player)
-	if room == nil {
+	r := game.FindRoom(player)
+	if r == nil {
 		return fmt.Errorf("Can`t create and found room")
 	}
-	room.Logger.Log("player ", player.Data.Username, " joined room ", room.ID)
+	r.Logger.Log("player ", player.Data.Username, " joined room ", r.ID)
+	room.PlayerCountMetric.Inc()
 	go player.Listen()
-	if len(room.Players) <= 1 {
-		go game.RoomRun(room)
+	if len(r.Players) <= 1 {
+		go game.RoomRun(r)
 	} else {
 		player.Send(&models.GameMessage{Type: "Task", Payload: player.Room.Answer})
 	}
@@ -78,7 +82,6 @@ func (game *Game) FindRoom(player *room.Player) *room.Room {
 	for _, room := range game.Rooms {
 		if len(room.Players) < room.MaxPlayers {
 			if room.FindPlayer(player) == true {
-				room.Logger.Log("keeeeeeeeeeeeeeeeeeeeeeeeeeeeek")
 				return nil
 			}
 			room.Players[player.ID] = player
@@ -89,11 +92,12 @@ func (game *Game) FindRoom(player *room.Player) *room.Room {
 	if len(game.Rooms) >= game.MaxRooms {
 		return nil
 	}
-	room := room.New(game.DBUser, game.DBPassUser)
+	room := room.New(game.DBUser, game.DBPassUser, game.ScoreClient)
 	room.Players[player.ID] = player
 	player.Room = room
 	game.Rooms[room.ID] = room
 	go room.ListenToPlayers()
+	RoomCountMetric.Inc()
 	room.Logger.Log("room created")
 	return room
 }
