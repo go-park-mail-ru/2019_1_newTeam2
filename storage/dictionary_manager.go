@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/tealeg/xlsx"
 	"github.com/user/2019_1_newTeam2/models"
 )
 
@@ -36,7 +37,12 @@ func (db *Database) DictionaryDelete(DictID int) error {
 }
 
 func (db *Database) DictionaryUpdate(DictID int, Name string, Description string) error {
-	_, UpdateErr := db.Conn.Exec(
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		db.Logger.Log("DictionaryUpdate: transaction error - ", err)
+		return fmt.Errorf("DictionaryUpdate: transaction error")
+	}
+	_, UpdateErr := tx.Exec(
 		UpdateDictionary,
 		Name,
 		Description,
@@ -44,14 +50,17 @@ func (db *Database) DictionaryUpdate(DictID int, Name string, Description string
 	)
 	if UpdateErr != nil {
 		db.Logger.Log(UpdateErr)
-		return fmt.Errorf("UpdateErr: user not update")
+		tx.Rollback()
+		return fmt.Errorf("DictionaryUpdate: user not update")
 	}
-
+	tx.Commit()
 	return nil
 }
 
 func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfoPrivilege, error) {
-	result, CreateErr := db.Conn.Exec(
+	tx, err := db.Conn.Begin()
+
+	result, CreateErr := tx.Exec(
 		CreateEmptyDictionary,
 		Name,
 		Description,
@@ -59,8 +68,10 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	)
 	if CreateErr != nil {
 		db.Logger.Log(CreateErr)
+		tx.Rollback()
 		return models.DictionaryInfoPrivilege{}, fmt.Errorf("CreateErr: user not create")
 	}
+	tx.Commit()
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
 		db.Logger.Log(GetIDErr)
@@ -135,4 +146,50 @@ func (db *Database) BorrowDictById(dictId int, thiefId int) (int, models.Diction
 		return 0, models.DictionaryInfo{}, DBerror
 	}
 	return ownerId, dict, nil
+}
+
+func (db *Database) FillDictionaryFromXLSX(dictId int, pathToFile string) error {
+	xlsDict, err := xlsx.OpenFile(pathToFile)
+	if err != nil {
+		db.Logger.Log("file not found: ", err)
+		return err
+	}
+
+	var language []string
+	for _, cell := range xlsDict.Sheets[0].Rows[0].Cells {
+		language = append(language, cell.String())
+	}
+
+	if len(language) != 2 {
+		return fmt.Errorf("bad file")
+	}
+
+	lang1, err := db.GetLangByName(language[0])
+	if err != nil {
+		db.Logger.Log("FillDictionaryFromXLSX: language", language[0], "not found")
+		return err
+	}
+	lang2, err := db.GetLangByName(language[1])
+	if err != nil {
+		db.Logger.Log("FillDictionaryFromXLSX: language", language[1], "not found")
+		return err
+	}
+
+	for _, row := range xlsDict.Sheets[0].Rows[1:] {
+		var data []string
+		for _, cell := range row.Cells {
+			data = append(data, cell.String())
+		}
+		if len(data) != 2 {
+			return fmt.Errorf("bad file")
+		}
+		word1 := models.Word{data[0], lang1.ID}
+		word2 := models.Word{data[1], lang2.ID}
+		card := models.Card{0, &word1, &word2, 0}
+		err = db.SetCardToDictionary(int(dictId), card)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

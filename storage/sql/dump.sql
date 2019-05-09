@@ -1,3 +1,5 @@
+set global innodb_large_prefix = 'OFF';
+
 USE wordtrainer;
 
 DROP TABLE IF EXISTS dictionary_to_library;
@@ -10,7 +12,7 @@ DROP TABLE IF EXISTS language;
 
 CREATE TABLE language (
 	ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-	name VARCHAR(255) NOT NULL
+	name VARCHAR(128) NOT NULL UNIQUE
 );
 
 INSERT INTO language (name) VALUES ("English");
@@ -18,19 +20,19 @@ INSERT INTO language (name) VALUES ("Russian");
 
 CREATE TABLE user (
 	ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-	Username VARCHAR(255) NOT NULL,
-	Email VARCHAR(255) NOT NULL,
-	Password VARCHAR(255) NOT NULL,
+	Username VARCHAR(128) NOT NULL UNIQUE,
+	Email VARCHAR(128) NOT NULL,
+	Password VARCHAR(128) NOT NULL,
 	LangID INT UNSIGNED NOT NULL,
 	PronounceON TINYINT NOT NULL,
 	Score INT UNSIGNED NOT NULL,
-	AvatarPath VARCHAR(255) NOT NULL,
+	AvatarPath VARCHAR(128) NOT NULL,
 	FOREIGN KEY (LangID) REFERENCES language (ID)
 );
 
 CREATE TABLE dictionary (
 	ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-	name VARCHAR(255) NOT NULL,
+	name VARCHAR(128) NOT NULL,
 	description TEXT,
 	UserID INT UNSIGNED NOT NULL,
 	FOREIGN KEY (UserID) REFERENCES user (ID)
@@ -38,7 +40,7 @@ CREATE TABLE dictionary (
 
 CREATE TABLE word (
 	ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-	name VARCHAR(255) NOT NULL,
+	name VARCHAR(128) NOT NULL,
 	LangID INT UNSIGNED NOT NULL,
 	FOREIGN KEY (LangID) REFERENCES language (ID)
 );
@@ -53,9 +55,11 @@ CREATE TABLE card (
 
 CREATE TABLE cards_library (
 	ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-	frequency DOUBLE NOT NULL,
 	card_id INT UNSIGNED NOT NULL,
 	count INT UNSIGNED NOT NULL,
+	guessed INT UNSIGNED NOT NULL DEFAULT 0,
+	seen INT UNSIGNED NOT NULL DEFAULT 1,
+	if_seen BOOL NOT NULL DEFAULT FALSE,
 	FOREIGN KEY (card_id) REFERENCES card (ID)
 );
 
@@ -64,7 +68,8 @@ CREATE TABLE dictionary_to_library (
 	dictionary_id INT UNSIGNED NOT NULL,
 	library_id INT UNSIGNED NOT NULL,
 	FOREIGN KEY (dictionary_id) REFERENCES dictionary (ID) ON DELETE CASCADE,
-	FOREIGN KEY (library_id) REFERENCES cards_library (ID) ON DELETE CASCADE
+	FOREIGN KEY (library_id) REFERENCES cards_library (ID) ON DELETE CASCADE,
+	UNIQUE(dictionary_id, library_id)
 );
 
 
@@ -80,7 +85,7 @@ BEGIN
   DECLARE cur_card_id INT;
   DECLARE cur_c_l_id INT;
   DECLARE new_dict_id, dict_owner INT;
-  DECLARE dict_name VARCHAR(255);
+  DECLARE dict_name VARCHAR(128);
   DECLARE dict_desc TEXT;
 	DECLARE c1 CURSOR FOR
 		SELECT card.ID
@@ -99,7 +104,7 @@ BEGIN
 		IF done THEN
 			LEAVE read_loop;
 		END IF;
-		INSERT INTO cards_library(frequency, card_id, count) VALUES (0, cur_card_id, 1);
+		INSERT INTO cards_library(card_id, count) VALUES (cur_card_id, 1);
 		SELECT LAST_INSERT_ID() INTO cur_c_l_id;
 		INSERT INTO dictionary_to_library(dictionary_id, library_id) VALUES (new_dict_id, cur_c_l_id);
 	END LOOP;

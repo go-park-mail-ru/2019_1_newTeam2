@@ -89,14 +89,6 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "integer"
-          }
-        ],
         "responses": {
           "200": {
             "description": "successful operation",
@@ -118,16 +110,19 @@
         "consumes": [
           "application/json"
         ],
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
-            "name": "userId",
-            "in": "path",
+            "in": "body",
+            "name": "body",
+            "description": "user object to register",
             "required": true,
-            "type": "integer"
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
           }
+        ],
+        "produces": [
+          "application/json"
         ],
         "responses": {
           "200": {
@@ -147,14 +142,6 @@
         ],
         "summary": "Delete user profile",
         "operationId": "DeleteUser",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "integer"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -397,7 +384,7 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/DictionaryInfo"
+              "$ref": "#/definitions/DictionaryInfoPrivilege"
             }
           },
           "400": {
@@ -448,10 +435,13 @@
         "summary": "Delete dictionary",
         "parameters": [
           {
-            "name": "dictionaryId",
-            "in": "path",
+            "in": "body",
+            "name": "body",
+            "description": "Dictionary Id",
             "required": true,
-            "type": "integer"
+            "schema": {
+              "$ref": "#/definitions/ParametersId"
+            }
           }
         ],
         "responses": {
@@ -542,6 +532,51 @@
           },
           "404": {
             "description": "Error while searching for card"
+          }
+        }
+      }
+    },
+    "/cards/": {
+      "post": {
+        "tags": [
+          "card"
+        ],
+        "summary": "Set cards to dictionary from file",
+        "operationId": "UploadFile",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "dictionaryId",
+            "in": "header",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "additionalMetadata",
+            "in": "formData",
+            "description": "Additional data to pass to server",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "file to upload",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Error in the path"
+          },
+          "500": {
+            "description": "Error while uploading the file"
           }
         }
       }
@@ -679,6 +714,14 @@
     }
   },
   "definitions": {
+    "ParametersId": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        }
+      }
+    },
     "DictionaryUpdate": {
       "type": "object",
       "properties": {
@@ -761,6 +804,27 @@
         },
         "userId": {
           "type": "integer"
+        }
+      }
+    },
+    "DictionaryInfoPrivilege": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "omitempty"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "integer"
+        },
+        "privilege": {
+          "type": "boolean"
         }
       }
     },

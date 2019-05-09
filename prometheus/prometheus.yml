@@ -1,0 +1,19 @@
+global:
+  scrape_interval:     5s # Set the scrape interval to every 15 seconds.
+  evaluation_interval: 5s # Evaluate rules every 15 seconds.
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+
+rule_files:
+
+scrape_configs:
+  - job_name: 'prometheus'
+  - job_name: 'api'
+    static_configs:
+      - targets: ['api:8090']
+  - job_name: 'multiplayer'
+    static_configs:
+      - targets: ['multiplayer:8093']

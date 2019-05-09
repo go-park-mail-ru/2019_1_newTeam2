@@ -19,19 +19,27 @@ func (db *Database) DeleteCardInDictionary(dictionaryID int, cardID int) error {
 }
 
 func (db *Database) CreateCardsLibrary(CardID int) (int, error) {
-	result, CreateErr := db.Conn.Exec(
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		db.Logger.Log("CreateCardsLibrary: transaction error")
+		return 0, err
+	}
+
+	result, CreateErr := tx.Exec(
 		CreateCardsLibrary,
-		0,
 		CardID,
 		1,
 	)
 	if CreateErr != nil {
+		tx.Rollback()
 		return 0, fmt.Errorf("CreateErr: word not create")
 	}
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
+		tx.Rollback()
 		return 0, fmt.Errorf("GetIDErr: can`t get last dict id")
 	}
+	tx.Commit()
 	return int(lastID), nil
 }
 

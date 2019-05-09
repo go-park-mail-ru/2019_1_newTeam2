@@ -2,8 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"github.com/user/2019_1_newTeam2/pkg/wshub"
-	"github.com/user/2019_1_newTeam2/storage"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -12,11 +10,16 @@ import (
 
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/responses"
+	"github.com/user/2019_1_newTeam2/pkg/utils"
 )
 
 func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("CreateDictionaryAPI")
-	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	userId, err := server.GetUserIdFromCookie(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	var dictionary models.CreateDictionary
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -118,7 +121,11 @@ func (server *Server) GetDictionaryById(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	userId, err := server.GetUserIdFromCookie(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	if result.ID == userId {
 		result.Privilege = true
 	} else {
@@ -130,8 +137,12 @@ func (server *Server) GetDictionaryById(w http.ResponseWriter, r *http.Request) 
 func (server *Server) DictsPaginate(w http.ResponseWriter, r *http.Request) {
 	page := 0
 	rowsNum := 0
-	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
-	err := ParseParams(w, r, &page, &rowsNum)
+	userId, err := server.GetUserIdFromCookie(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	err = utils.ParseParams(w, r, &page, &rowsNum)
 	if err != nil {
 		return
 	}
@@ -150,15 +161,15 @@ func (server *Server) DictsPaginate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) BorrowDictById(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+	/*vars := mux.Vars(r)
 	idStr := vars["id"]
 	dictId, err := strconv.Atoi(idStr)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	userId, _ := GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
-	ownerId, createdDict, err := server.DB.BorrowDictById(dictId, userId)
+	userId, _ := common.GetIdFromCookie(r, []byte(server.ServerConfig.Secret), server.CookieField)
+	//ownerId, createdDict, err := server.DB.BorrowDictById(dictId, userId)
 	if err == storage.ErrNotFound {
 		responses.WriteToResponse(w, http.StatusNotFound, nil)
 	}
@@ -167,7 +178,6 @@ func (server *Server) BorrowDictById(w http.ResponseWriter, r *http.Request) {
 		responses.WriteToResponse(w, http.StatusInternalServerError, nil)
 	}
 	responses.WriteToResponse(w, http.StatusOK, createdDict)
-	//ownerId = 0		// TODO(sergeychur): REMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	mes := wshub.Message{ID: ownerId, Data: models.DictionaryNote{BorrowerId: userId, DictionaryName: createdDict.Name}}
-	server.Hub.SendToClient(&mes)
+	//mes := wshub.Message{ID: ownerId, Data: models.DictionaryNote{BorrowerId: userId, DictionaryName: createdDict.Name}}
+	//server.Hub.SendToClient(&mes)*/
 }

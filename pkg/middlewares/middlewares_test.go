@@ -2,7 +2,8 @@ package middlewares_test
 
 import (
 	"bytes"
-	"github.com/user/2019_1_newTeam2/pkg/apps/server"
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 	"log"
 	"net/http"
@@ -95,9 +96,36 @@ func PlaceTokenToRequest(token string, r *http.Request) {
 
 const correctToken string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
 
+func GetIdFromCookie(in string, secret []byte) (int, error) {
+	token, err := jwt.Parse(in, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(secret), nil
+	})
+	if err != nil {
+		return 0, err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return int(claims["id"].(float64)), nil
+	}
+	return 0, fmt.Errorf("token invalid")
+}
+
+func IsLogined(r *http.Request, secret []byte, cookieField string) bool {
+	cookie, err := r.Cookie(cookieField)
+	if err != nil {
+		return false
+	}
+	_, err = GetIdFromCookie(cookie.Value, secret)
+	return err == nil
+}
+
 func TestCreateCheckAuthMiddleware(t *testing.T) {
 	ifPlaceToken := []bool{true, false}
-	checkFunc := server.IsLogined
+
+	checkFunc := IsLogined
 	function := middlewares.CreateCheckAuthMiddleware([]byte("12345"), "session_id", checkFunc)
 	inside := false
 	h := http.HandlerFunc(

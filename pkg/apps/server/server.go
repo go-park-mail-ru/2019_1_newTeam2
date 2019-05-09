@@ -1,18 +1,21 @@
 package server
 
 import (
-	"github.com/user/2019_1_newTeam2/pkg/wshub"
+	// "github.com/user/2019_1_newTeam2/pkg/wshub"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 
+	"google.golang.org/grpc"
+
+	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
 	"github.com/user/2019_1_newTeam2/pkg/middlewares"
 
-	//"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	//"github.com/rs/cors"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/user/2019_1_newTeam2/filesystem"
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"
@@ -26,7 +29,8 @@ type Server struct {
 	ServerConfig *config.Config
 	Logger       logger.LoggerInterface
 	CookieField  string
-	Hub          wshub.IWSCommunicator
+	// Hub          wshub.IWSCommunicator
+	AuthClient authorization.AuthCheckerClient
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
@@ -56,16 +60,16 @@ func NewServer(pathToConfig string) (*Server, error) {
 		return nil, err
 	}
 
-	server.Hub = wshub.NewWSCommunicator()
+	r := mux.NewRouter()
 
-	router := mux.NewRouter()
-
+	router := r.PathPrefix("/api/").Subrouter()
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
+	router.Use(server.metricsMiddleware)
 
 	needLogin := router.PathPrefix("/").Subrouter()
-	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, IsLogined))
+	needLogin.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, server.IsLogined))
 	needLogin.HandleFunc("/users/", server.GetUser).Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.UpdateUser).Methods(http.MethodPut, http.MethodOptions)
 	needLogin.HandleFunc("/users/", server.DeleteUser).Methods(http.MethodDelete, http.MethodOptions)
@@ -82,12 +86,15 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	needLogin.HandleFunc("/cards", server.CardsPaginate).Queries("dict", "{dictId}", "rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	needLogin.HandleFunc("/card/{id:[0-9]+}", server.GetCardById).Methods(http.MethodGet, http.MethodOptions)
-	needLogin.HandleFunc("/card/", server.LoginAPI).Methods(http.MethodPut, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.DeleteCardInDictionary).Methods(http.MethodDelete, http.MethodOptions)
 	needLogin.HandleFunc("/card/", server.CreateCardInDictionary).Methods(http.MethodPost, http.MethodOptions)
+	needLogin.HandleFunc("/cards/", server.UploadWordsFileAPI).Methods(http.MethodPost, http.MethodOptions)
+
+	needLogin.HandleFunc("/single", server.GetSingleGame).Queries("dict", "{dictId}", "words", "{wordsNum}").Methods(http.MethodGet, http.MethodOptions)
+	needLogin.HandleFunc("/single", server.SetGameResults).Methods(http.MethodPost, http.MethodOptions)
 
 	// set needLogin in future, when front is ready
-	needLogin.HandleFunc("/subscribe/", server.WSSubscribe).Methods(http.MethodGet)
+	// needLogin.HandleFunc("/subscribe/", server.WSSubscribe).Methods(http.MethodGet)
 
 	router.HandleFunc("/users", server.UsersPaginate).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/users/", server.SignUpAPI).Methods(http.MethodPost, http.MethodOptions)
@@ -95,9 +102,12 @@ func NewServer(pathToConfig string) (*Server, error) {
 	router.HandleFunc("/session/", server.Logout).Methods(http.MethodPatch, http.MethodOptions)
 	router.HandleFunc("/session/", server.LoginAPI).Methods(http.MethodPost, http.MethodOptions)
 
+	r.Handle("/metrics", promhttp.Handler())
+
 	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
 	server.Router = router
+	server.Router = r
 
 	return server, nil
 }
@@ -107,6 +117,19 @@ func (server *Server) Run() {
 	if port == "" {
 		port = server.ServerConfig.Port
 	}
+
+	grcpAuthConn, err := grpc.Dial(
+		server.ServerConfig.AuthHost+":"+server.ServerConfig.AuthPort,
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		server.Logger.Log("Can`t connect ro grpc (auth ms)")
+	}
+	defer grcpAuthConn.Close()
+
+	server.AuthClient = authorization.NewAuthCheckerClient(grcpAuthConn)
+
+	prometheus.MustRegister(ApiMetrics)
 	server.Logger.Logf("Running app on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, server.Router))
 }

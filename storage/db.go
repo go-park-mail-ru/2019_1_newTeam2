@@ -16,8 +16,6 @@ var (
 )
 
 type Database struct {
-	// should be sqlx.db etc
-	// now some map, where we can get users from
 	Conn   *sql.DB
 	Logger logger.LoggerInterface
 }
@@ -36,10 +34,10 @@ func NewDataBase(username string, pass string) (*Database, error) {
 		return nil, fmt.Errorf("mysql: could not get a connection: %v", err)
 	}
 	err = database.Ping()
-	// _, err = database.Exec(UseDB)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("mysql: could not choose db: %v", err)
-	// }
+
+	if err != nil {
+		return nil, fmt.Errorf("mysql: could not choose db: %v", err)
+	}
 
 	db.Conn = database
 	return db, nil

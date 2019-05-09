@@ -1,0 +1,67 @@
+version: "3.1"
+
+networks:
+  uniting_net:
+
+services:
+  prometheus:
+    image: quay.io/prometheus/prometheus:latest
+    ports:
+     - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - uniting_net
+
+
+  # db:
+  #   build:
+  #     context: .
+  #     dockerfile: ./db.Dockerfile
+  #   ports:
+  #     - 3306:3306
+  #   networks:
+  #     - uniting_net
+
+
+  auth:
+    build:
+      context: .
+      dockerfile: ./auth.Dockerfile
+    ports:
+      - 8092:8092
+    networks:
+      - uniting_net
+
+  api:
+    build:
+      context: .
+      dockerfile: ./api.Dockerfile
+    ports:
+      - 8090:8090
+    depends_on:
+      - auth
+    networks:
+      - uniting_net
+
+  game:
+    build:
+      context: .
+      dockerfile: ./game.Dockerfile
+    ports:
+      - 8093:8093
+    depends_on:
+      - auth
+    networks:
+      - uniting_net
+
+  chat:
+    build:
+      context: .
+      dockerfile: ./chat.Dockerfile
+    ports:
+      - 8091:8091
+    depends_on:
+      - auth
+    networks:
+      - uniting_net
