@@ -27,7 +27,7 @@ func NewDataBase(username string, pass string) (*Database, error) {
 	logger.SetOutput(os.Stderr)
 	db.Logger = logger
 
-	dsn := username + ":" + pass + "@tcp(localhost:3306)/"
+	dsn := username + ":" + pass + "@tcp(db:3306)/"
 	database, err := sql.Open("mysql", dsn)
 
 	if err != nil {

@@ -8,3 +8,4 @@ cover.html
 go.sum
 .vscode
 *.proto
+*.pem

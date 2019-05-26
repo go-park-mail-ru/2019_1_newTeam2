@@ -3,25 +3,34 @@ version: "3.1"
 networks:
   uniting_net:
 
+
 services:
-  prometheus:
-    image: quay.io/prometheus/prometheus:latest
+#  prometheus:
+#    image: quay.io/prometheus/prometheus:latest
+#    ports:
+#     - 9090:9090
+#    volumes:
+#      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+#    networks:
+#      - uniting_net
+
+
+  db:
+    build:
+      context: .
+      dockerfile: ./db.Dockerfile
     ports:
-     - 9090:9090
+      - 3306:3306
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./db:/var/lib/mysql
+    links:
+      - api
+      - game
+      - chat
+    expose:
+      - 3306
     networks:
       - uniting_net
-
-
-  # db:
-  #   build:
-  #     context: .
-  #     dockerfile: ./db.Dockerfile
-  #   ports:
-  #     - 3306:3306
-  #   networks:
-  #     - uniting_net
 
 
   auth:
@@ -30,8 +39,14 @@ services:
       dockerfile: ./auth.Dockerfile
     ports:
       - 8092:8092
+    links:
+      - api
+      - chat
+      - game
     networks:
       - uniting_net
+    command:
+      bash -c "/home/app/auth /home/app/config_auth.json"
 
   api:
     build:
@@ -39,10 +54,13 @@ services:
       dockerfile: ./api.Dockerfile
     ports:
       - 8090:8090
-    depends_on:
-      - auth
+#    depends_on:
+#      - auth
+#      - db
     networks:
       - uniting_net
+    command:
+      /bin/bash -c "/home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/2019_1_newTeam2 /home/app/config_api.json"
 
   game:
     build:
@@ -50,10 +68,13 @@ services:
       dockerfile: ./game.Dockerfile
     ports:
       - 8093:8093
-    depends_on:
-      - auth
+#    depends_on:
+#      - auth
+#      - db
     networks:
       - uniting_net
+    command:
+      /bin/bash -c "/home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/game /home/app/config_game.json"
 
   chat:
     build:
@@ -61,7 +82,10 @@ services:
       dockerfile: ./chat.Dockerfile
     ports:
       - 8091:8091
-    depends_on:
-      - auth
+#    depends_on:
+#      - auth
+#      - db
     networks:
       - uniting_net
+    command:
+      /bin/bash -c "/home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/chat /home/app/config_chat.json"

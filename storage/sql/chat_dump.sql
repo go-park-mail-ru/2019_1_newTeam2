@@ -1,4 +1,10 @@
-set global innodb_large_prefix = 'OFF';
+-- set global innodb_large_prefix = 'OFF';
+
+DROP DATABASE IF EXISTS chat_wordtrainer;
+CREATE DATABASE chat_wordtrainer;
+
+GRANT ALL PRIVILEGES ON chat_wordtrainer.* TO 'root_use'@'%';
+FLUSH PRIVILEGES;
 
 USE chat_wordtrainer;
 

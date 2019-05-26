@@ -1,4 +1,10 @@
-set global innodb_large_prefix = 'OFF';
+-- set global innodb_large_prefix = 'OFF';
+
+DROP DATABASE IF EXISTS game_wordtrainer;
+CREATE DATABASE game_wordtrainer;
+
+GRANT ALL PRIVILEGES ON game_wordtrainer.* TO 'root_use'@'%';
+FLUSH PRIVILEGES;
 
 USE game_wordtrainer;
 
