@@ -63,7 +63,7 @@ services:
       /bin/bash -c "/home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/2019_1_newTeam2 /home/app/config_api.json"
 
   common_db:
-    image: serega753/commaon_db_go_proj
+      image: serega753/commaon_db_go_proj
       ports:
         - 8094:8094
       links:
