@@ -29,6 +29,7 @@ script:
 branches:
   only:
   - master
+  - dev
 before_install:
 - openssl aes-256-cbc -K $encrypted_03d1345edcba_key -iv $encrypted_03d1345edcba_iv
   -in archive.tar.gz.enc -out ./archive.tar.gz -d
