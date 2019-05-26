@@ -43,9 +43,9 @@ func (com *WSCommunicator) DeleteClient(ID int) {
 	com.hub.unregister <- ID
 }
 
-func NewWSCommunicator(username string, pass string) *WSCommunicator {
+func NewWSCommunicator(host string, username string, pass string) *WSCommunicator {
 	com := new(WSCommunicator)
-	com.hub = NewWSHub(username, pass)
+	com.hub = NewWSHub(host, username, pass)
 	go com.hub.Run()
 	return com
 }

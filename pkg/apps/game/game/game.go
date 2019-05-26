@@ -20,6 +20,7 @@ type Game struct {
 	Rooms       map[string]*room.Room
 	MaxRooms    int
 	Register    chan *GameRegister
+	DBHost string
 	DBUser      string
 	DBPassUser  string
 	ScoreClient mgr.UserScoreUpdaterClient
@@ -38,11 +39,12 @@ func (game *Game) DeleteEmptyRoom(ERoom *room.Room) {
 	mutex.Unlock()
 }
 
-func NewGame(DBUser string, DBPassUser string, scoreClient mgr.UserScoreUpdaterClient) *Game {
+func NewGame(host string, DBUser string, DBPassUser string, scoreClient mgr.UserScoreUpdaterClient) *Game {
 	return &Game{
 		Rooms:       make(map[string]*room.Room),
 		MaxRooms:    2,
 		Register:    make(chan *GameRegister),
+		DBHost: host,
 		DBUser:      DBUser,
 		DBPassUser:  DBPassUser,
 		ScoreClient: scoreClient,
@@ -92,7 +94,7 @@ func (game *Game) FindRoom(player *room.Player) *room.Room {
 	if len(game.Rooms) >= game.MaxRooms {
 		return nil
 	}
-	room := room.New(game.DBUser, game.DBPassUser, game.ScoreClient)
+	room := room.New(game.DBHost, game.DBUser, game.DBPassUser, game.ScoreClient)
 	room.Players[player.ID] = player
 	player.Room = room
 	game.Rooms[room.ID] = room

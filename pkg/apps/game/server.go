@@ -83,7 +83,8 @@ func (server *GameServer) Run() {
 
 	server.AuthClient = authorization.NewAuthCheckerClient(grcpAuthConn)
 	server.ScoreClient = mgr.NewUserScoreUpdaterClient(grcpScoreConn)
-	server.Game = game.NewGame(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, server.ScoreClient)
+	server.Game = game.NewGame(server.ServerConfig.DBHost,
+		server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, server.ScoreClient)
 	go server.Game.Run()
 	server.Logger.Logf("Running app on port %s", server.ServerConfig.Port)
 	server.Logger.Log(http.ListenAndServe(":"+server.ServerConfig.Port, server.Router))

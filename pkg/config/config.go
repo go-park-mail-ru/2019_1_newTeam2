@@ -17,6 +17,7 @@ type Config struct {
 	DBName       string   `json:"dbName,omitempty"`
 	DBUser       string   `json:"dbUser,omitempty"`
 	DBPassUser   string   `json:"dbPassUser,omitempty"`
+	DBHost string `json:"dbHost,omitempty"`
 	RoomSize     int      `json:"roomSize,omitempty"`
 }
 

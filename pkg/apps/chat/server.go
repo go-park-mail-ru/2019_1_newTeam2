@@ -38,13 +38,13 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 		return nil, err
 	}
 	server.ServerConfig = newConfig
-	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
+	newDB, err := storage.NewDataBase(server.ServerConfig.DBHost, server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
 	if err != nil {
 		return nil, err
 	}
 	server.DB = newDB
 	server.CookieField = "session_id"
-	server.Hub = wshub.NewWSCommunicator(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
+	server.Hub = wshub.NewWSCommunicator(server.ServerConfig.DBHost, server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
 
 	router := mux.NewRouter()
 	router = router.PathPrefix("/world_chat/").Subrouter()
@@ -53,7 +53,7 @@ func NewChatServer(pathToConfig string) (*ChatServer, error) {
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
 
 	chatRouter := router.PathPrefix("/chat/").Subrouter()
-	chatRouter.HandleFunc("/enter/{id:[0-9]+}", server.CreateChat)
+	chatRouter.HandleFunc("/enter/", server.CreateChat)
 	chatRouter.HandleFunc("/history", server.GetHistory).Queries("rows", "{rows}", "page", "{page}").Methods(http.MethodGet, http.MethodOptions)
 	server.Router = router
 	return server, nil

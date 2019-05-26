@@ -64,14 +64,14 @@ func (h *WSHub) Run() {
 	}
 }
 
-func NewWSHub(username string, pass string) *WSHub {
+func NewWSHub(host string, username string, pass string) *WSHub {
 	hub := new(WSHub)
 	hub.unregister = make(chan int)
 	hub.register = make(chan *Client)
 	hub.sendTo = make(chan *models.Message)
 	hub.clients = make(map[int]*Client)
 	hub.broadcast = make(chan *models.Message)
-	newDB, err := storage.NewDataBase(username, pass)
+	newDB, err := storage.NewDataBase(host, username, pass)
 	if err != nil {
 		return nil
 	}

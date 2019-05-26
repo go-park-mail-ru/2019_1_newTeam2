@@ -26,14 +26,14 @@ type Room struct {
 	ScoreClient mgr.UserScoreUpdaterClient
 }
 
-func New(DBUser string, DBPassUser string, scoreClient mgr.UserScoreUpdaterClient) *Room {
+func New(host string, DBUser string, DBPassUser string, scoreClient mgr.UserScoreUpdaterClient) *Room {
 	id := uuid.NewV4().String()
 
 	logger := new(logger.GoLogger)
 	logger.SetOutput(os.Stderr)
 	logger.SetPrefix("ROOM (" + id + ") LOG: ")
 
-	newDB, err := storage.NewDataBase(DBUser, DBPassUser)
+	newDB, err := storage.NewDataBase(host, DBUser, DBPassUser)
 	if err != nil {
 		logger.Log("new room: ", err)
 		return nil

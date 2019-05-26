@@ -33,7 +33,8 @@ func NewServer(pathToConfig string) (*ScoreServer, error) {
 	server.ServerConfig = newConfig
 
 	server.rpcServer = grpc.NewServer()
-	RegisterUserScoreUpdaterServer(server.rpcServer, NewUserScoreUpdaterManager(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser))
+	RegisterUserScoreUpdaterServer(server.rpcServer, NewUserScoreUpdaterManager(server.ServerConfig.DBHost,
+		server.ServerConfig.DBUser, server.ServerConfig.DBPassUser))
 	return server, nil
 }
 

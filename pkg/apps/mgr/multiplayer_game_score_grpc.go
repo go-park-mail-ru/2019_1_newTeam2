@@ -11,9 +11,9 @@ type UserScoreUpdaterManager struct {
 	DB interfaces.DBMGRInterface
 }
 
-func NewUserScoreUpdaterManager(DBUser string, DBPassUser string) *UserScoreUpdaterManager {
+func NewUserScoreUpdaterManager(host string, DBUser string, DBPassUser string) *UserScoreUpdaterManager {
 	server := UserScoreUpdaterManager{}
-	newDB, err := storage.NewDataBase(DBUser, DBPassUser)
+	newDB, err := storage.NewDataBase(host, DBUser, DBPassUser)
 	if err != nil {
 		return nil
 	}
