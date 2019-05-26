@@ -6,4 +6,4 @@ WORKDIR /home/app/
 
 RUN go build --mod=vendor -o chat ./cmd/chat/main.go
 
-#RUN cp ./config/config_chat.json /home/app/
+RUN cp ./config/config_chat.json /home/app/

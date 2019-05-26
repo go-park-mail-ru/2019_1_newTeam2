@@ -1,38 +1,39 @@
 language: go
-go:
-- 1.12
 env:
   matrix:
   - DOCKER_COMPOSE_VERSION=1.17.1
   global:
+  - GO111MODULE=on
   - secure: DyJP9vETa45pwIWkQ/Fe1H6CWaxt2o294vLHNues4fL+mSEvBknF9GmwNB4K+o4nIfjl6aWiilv0Gx6gE0/XNYEyu1AyvKfR9HDGdArHTele0wl9KS0V6v765/PZgE8E2IMj32qUo5enH9gacorHKu4NVz/PO/+Z0c4y3SBfFYIF+WL7OWvU92EcJ6Zyybdtx8E26WvkfLpsNK9Ah6WCsM+P/CiinLxdidLDjumPRkOT3ZmSduuxzdiiiK6d6quZpKaNpoN/5b8je6tJD+jjuLZUBqNCQG+0c1mqObZKRS6vGKhOEt7+NfNFRgxQtUuyeoVFd/lx9ljDjJjNNHD1rg1rsmqvvDoiyyCGanSjSdYe8fqA/+rUEfdx9Rm1IAh2O/N4j5MngvluBqZC/wMg1YXBAy2LciwgccZ4jHjFdMkOaDlrutxSMrANRCwOi+XndiImIHCM1IXFA4e2vpP/73sMAUoAJpiCTYfJXfb6VQeC8YtTNhk7Y1ISlyJCECV6LJpk+Un5wDQIWt79DmbbfBwhm46uJ6gkD32HVqu5ne5h1qt7CHUExQso04DDCOzVW1D2YPJtEMEkLPzv5y1vAn343Vcl/2fa9n56ntY9SjWl0HDaWGUXic0luajGxcyI4QFbLaVcppzIncLXv/7DjquU6ZvmMNtHr5ydHYwwzH8=
   - secure: WJ7RBdbN2Eu8EHjEQUPrMBF097OoA2cSQprbYjxy11huHD94hqYZK2tBZ80MLOYyv5xCxoTPedgZtp1cm4sVxnNp6sMecanzahJ0HHdPSjCXj09g4FyO00CUggxdMk9yyjQbDoo9LnbXV8T00vrO8AyVtVMuvs3TkHThhRcGOxfluKCWTcsCfgLOm/932BODVWnN9SbWAkM1Yt16mH8dIwNGWTxIED4FhDPzqOjy97a6NXroWUTkRckYoFD8QeHEGvKuFIc8gx0yvNwZNCJ/ATt0teX0U1oMOTZlpwzONDjcTx1VVzCNAeozj1htAwR9hZMHzEK3VX3RrlcOuKGnAQSwI2fvF4yDRbKaPn94+1iZBFIB8dfIu2VrmaW5fkLu9mcFOPQQApkIqGgVLs+rq+yuENegeh4az+QUHxt6XAO/Vsp0A6SmLanxnxJDmuWqKF1qjwi897uA+dJgTnyPXi1gKO1W8XuKw5BGeUGsyWRLJoPHOLzqWXyEcqED9DyrODmJCnatFxzu8+HdR/Oaf/s5xRswqrfj2H9DgR3vrQW9fSb7z3d2rHm//QupjMHYRUrn5EBxvc0nt0/G7IwQDeBCn0s+EVG6OruPayebxNezK9/9tE40BgXo4YLR8HL8JPIByJIF7o7PyuzA43Z5l8vMJJ5HZmpQ4WIxiev7vr4=
-
+go:
+- 1.12.x
+install: true
 addons:
   apt:
     packages:
-      - docker-ce
-
+    - docker-ce
 services:
-  - docker
-
+- docker
 script:
-- docker-compose -f docker-compose-build.yml build
-- docker-compose -f docker-compose-build.yml push
+- tar -xvf ./archive.tar.gz
+- go test --mod=vendor -v ./...
+- mv ./archive/config . && mv ./archive/2019_1_newTeam2_id_rsa.pem .
+- docker-compose -f docker-compose_build.yml build
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+- docker-compose -f docker-compose_build.yml push
 - chmod 600 ./2019_1_newTeam2_id_rsa.pem
 - ssh-keyscan -H 89.208.199.170 >> ~/.ssh/known_hosts
-- scp -i ./2019_1_newTeam2_id_rsa.pem ./docker-compose.yml ubuntu@89.208.199.170:/home/ubuntu/2019_newTeam2/
-- ssh -i ./2019_1_newTeam2_id_rsa.pem sudo docker-compose up -d
+- scp -i ./2019_1_newTeam2_id_rsa.pem ./docker-compose.yml ubuntu@89.208.199.170:/home/ubuntu/2019_1_newTeam2/docker-compose.yml
+- ssh -i ./2019_1_newTeam2_id_rsa.pem ubuntu@89.208.199.170 'cd 2019_1_newTeam2 && sudo docker-compose down && sudo docker-compose up -d'
 branches:
   only:
-  - dev
   - master
 before_install:
+- openssl aes-256-cbc -K $encrypted_03d1345edcba_key -iv $encrypted_03d1345edcba_iv
+  -in archive.tar.gz.enc -out ./archive.tar.gz -d
 - sudo rm /usr/local/bin/docker-compose
 - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname
   -s`-`uname -m` > docker-compose
 - chmod +x docker-compose
 - sudo mv docker-compose /usr/local/bin
-
-- openssl aes-256-cbc -K $encrypted_03d1345edcba_key -iv $encrypted_03d1345edcba_iv
-  -in 2019_1_newTeam2_id_rsa.pem.enc -out 2019_1_newTeam2_id_rsa.pem -d

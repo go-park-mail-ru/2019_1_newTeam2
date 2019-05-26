@@ -10,3 +10,5 @@ go.sum
 *.proto
 *.pem
 *old.yml
+archive/*
+archive.tar.gz

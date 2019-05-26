@@ -35,9 +35,6 @@ services:
 
 
   auth:
-#    build:
-#      context: .
-#      dockerfile: ./auth.Dockerfile
     image: serega753/auth_go_proj
     ports:
       - 8092:8092
@@ -87,9 +84,6 @@ services:
     image: serega753/chat_go_proj
     ports:
       - 8091:8091
-#    depends_on:
-#      - auth
-#      - db
     networks:
       - uniting_net
     command:
