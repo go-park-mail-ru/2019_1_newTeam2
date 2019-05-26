@@ -4,6 +4,7 @@ import (
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/storage"
 	"github.com/user/2019_1_newTeam2/storage/interfaces"
+	"log"
 )
 
 type WSHub struct {
@@ -25,6 +26,7 @@ func (h *WSHub) SendToCl(mes *models.Message) {
 func (h *WSHub) SendAll(mes *models.Message) {
 	for clientID := range h.clients {
 		if clientID == mes.ID {
+			log.Printf("ClientID=%v\nmes.ID=%v\n", clientID, mes.ID)
 			continue
 		}
 		client := h.clients[clientID]
