@@ -1,4 +1,4 @@
-version: "3.1"
+version: "3.2"
 
 networks:
   uniting_net:
@@ -16,9 +16,10 @@ services:
 
 
   db:
-    build:
-      context: .
-      dockerfile: ./db.Dockerfile
+#    build:
+#      context: .
+#      dockerfile: ./db.Dockerfile
+    image: serega753/db_go_proj
     ports:
       - 3306:3306
     volumes:
@@ -34,9 +35,10 @@ services:
 
 
   auth:
-    build:
-      context: .
-      dockerfile: ./auth.Dockerfile
+#    build:
+#      context: .
+#      dockerfile: ./auth.Dockerfile
+    image: serega753/auth_go_proj
     ports:
       - 8092:8092
     links:
@@ -49,9 +51,10 @@ services:
       bash -c "/home/app/auth /home/app/config_auth.json"
 
   api:
-    build:
-      context: .
-      dockerfile: ./api.Dockerfile
+#    build:
+#      context: .
+#      dockerfile: ./api.Dockerfile
+    image: serega753/api_go_proj
     ports:
       - 8090:8090
 #    depends_on:
@@ -63,9 +66,10 @@ services:
       /bin/bash -c "/home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/2019_1_newTeam2 /home/app/config_api.json"
 
   game:
-    build:
-      context: .
-      dockerfile: ./game.Dockerfile
+#    build:
+#      context: .
+#      dockerfile: ./game.Dockerfile
+    image: serega753/game_go_proj
     ports:
       - 8093:8093
 #    depends_on:
@@ -77,9 +81,10 @@ services:
       /bin/bash -c "/home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/game /home/app/config_game.json"
 
   chat:
-    build:
-      context: .
-      dockerfile: ./chat.Dockerfile
+#    build:
+#      context: .
+#      dockerfile: ./chat.Dockerfile
+    image: serega753/chat_go_proj
     ports:
       - 8091:8091
 #    depends_on:

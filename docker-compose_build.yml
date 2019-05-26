@@ -1,0 +1,49 @@
+version: "3.2"
+services:
+
+  db:
+    image: serega753/db_go_proj
+    build:
+      context: .
+      cache_from:
+        - serega753/db_go_proj
+      dockerfile: ./db.Dockerfile
+
+  auth:
+    image: serega753/auth_go_proj
+    build:
+      context: .
+      dockerfile: ./auth.Dockerfile
+
+  api:
+    image: serega753/api_go_proj
+    build:
+      context: .
+      cache_from:
+        - serega753/api_go_proj
+      dockerfile: ./api.Dockerfile
+
+  game:
+    image: serega753/game_go_proj
+    build:
+      context: .
+      cache_from:
+        - serega753/game_go_proj
+      dockerfile: ./game.Dockerfile
+
+
+  chat:
+    image: serega753/chat_go_proj
+    build:
+      context: .
+      cache_from:
+        - serega753/chat_go_proj
+      dockerfile: ./chat.Dockerfile
+
+  common_db:
+    image: serega753/common_db_go_proj
+    build:
+      context: .
+      cache_from:
+        - serega753/common_db_go_proj
+      dockerfile: ./common_db.Dockerfile
