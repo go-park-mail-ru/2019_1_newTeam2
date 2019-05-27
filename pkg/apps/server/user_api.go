@@ -3,15 +3,14 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"mime/multipart"
-	"net/http"
-	"regexp"
-
 	"github.com/user/2019_1_newTeam2/filesystem"
 	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/responses"
 	"github.com/user/2019_1_newTeam2/pkg/utils"
+	"io/ioutil"
+	"mime/multipart"
+	"net/http"
+	"regexp"
 )
 
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +54,7 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	//pathToAvatar = strings.TrimPrefix(pathToAvatar, "files/")
 	err = server.DB.AddImage(pathToAvatar, userId)
 	if err != nil {
 		server.Logger.Log(err.Error())

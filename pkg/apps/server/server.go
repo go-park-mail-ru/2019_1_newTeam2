@@ -104,7 +104,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	r.Handle("/metrics", promhttp.Handler())
 
-	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
+	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/api/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
 	server.Router = router
 	server.Router = r

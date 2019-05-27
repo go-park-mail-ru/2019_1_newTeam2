@@ -12,6 +12,7 @@ func saveFile(file multipart.File, handle *multipart.FileHeader, path string) (s
 	if err != nil {
 		return "", err
 	}
+
 	err = ioutil.WriteFile(filepath.Join(path, handle.Filename), data, 0644)
 	if err != nil {
 		return "", err
