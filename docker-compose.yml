@@ -72,7 +72,7 @@ services:
       networks:
         - uniting_net
       command:
-        /bin/bash -c "/home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/game /home/app/config_score.json"
+        /bin/bash -c "/home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/mgr /home/app/config_score.json"
 
   game:
 #    build:
