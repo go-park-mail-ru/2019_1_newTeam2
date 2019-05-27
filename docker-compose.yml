@@ -87,7 +87,7 @@ services:
     networks:
       - uniting_net
     command:
-      /bin/bash -c "/home/app/wait_for_it.sh common_db:8094 && /home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/game /home/app/config_game.json"
+      /bin/bash -c "/home/app/wait_for_it.sh common_db:8094 -t 600 && /home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/game /home/app/config_game.json"
 
   chat:
 #    build:
