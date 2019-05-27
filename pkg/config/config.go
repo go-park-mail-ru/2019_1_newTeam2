@@ -10,7 +10,7 @@ type Config struct {
 	Port         string   `json:"port"`
 	AuthHost     string   `json:"authHost"`
 	AuthPort     string   `json:"authPort"`
-	ScorePort    string   `json:"scorePort,omitempty"`
+	ScorePort    string   `json:"commonDbServPort,omitempty"`
 	UploadPath   string   `json:"uploadPath,omitempty"`
 	AvatarsPath  string   `json:"avatarsPath,omitempty"`
 	AllowedHosts []string `json:"AllowedHosts,omitempty"`

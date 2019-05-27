@@ -22,8 +22,8 @@ services:
     image: serega753/db_go_proj
     ports:
       - 3306:3306
-#    volumes:
-#      - ./db:/var/lib/mysql
+    volumes:
+      - ./db:/var/lib/mysql
     links:
       - api
       - game
