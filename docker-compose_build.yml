@@ -6,30 +6,34 @@ services:
     build:
       context: .
       cache_from:
-        - serega753/db_go_proj
+        - serega753/db_go_proj:latest
       dockerfile: ./db.Dockerfile
+      container: db
 
   auth:
     image: serega753/auth_go_proj
     build:
       context: .
       dockerfile: ./auth.Dockerfile
+      container: auth
 
   api:
     image: serega753/api_go_proj
     build:
       context: .
       cache_from:
-        - serega753/api_go_proj
+        - serega753/api_go_proj:latest
       dockerfile: ./api.Dockerfile
+      container: api
 
   game:
     image: serega753/game_go_proj
     build:
       context: .
       cache_from:
-        - serega753/game_go_proj
+        - serega753/game_go_proj:latest
       dockerfile: ./game.Dockerfile
+      container: game
 
 
   chat:
@@ -37,13 +41,15 @@ services:
     build:
       context: .
       cache_from:
-        - serega753/chat_go_proj
+        - serega753/chat_go_proj:latest
       dockerfile: ./chat.Dockerfile
+      container: chat
 
   common_db:
     image: serega753/common_db_go_proj
     build:
       context: .
       cache_from:
-        - serega753/common_db_go_proj
+        - serega753/common_db_go_proj:latest
       dockerfile: ./common_db.Dockerfile
+      container: common_db
