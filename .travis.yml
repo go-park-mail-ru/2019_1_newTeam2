@@ -15,6 +15,10 @@ addons:
     - docker-ce
 services:
 - docker
+
+before_script:
+  - docker-compose --f docker-compose_build.yml pull
+
 script:
 - tar -xvf ./archive.tar.gz
 - go test --mod=vendor -v ./...
