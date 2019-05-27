@@ -1,9 +1,7 @@
 -- set global innodb_large_prefix = 'OFF';
 
 DROP DATABASE IF EXISTS game_wordtrainer;
-CREATE DATABASE game_wordtrainer;
-
-ALTER DATABASE game_wordtrainer CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE game_wordtrainer CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 GRANT ALL PRIVILEGES ON game_wordtrainer.* TO 'root_use'@'%';
 FLUSH PRIVILEGES;

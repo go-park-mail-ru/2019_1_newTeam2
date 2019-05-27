@@ -1,9 +1,7 @@
 -- set global innodb_large_prefix = 'OFF';
 
 DROP DATABASE IF EXISTS chat_wordtrainer;
-CREATE DATABASE chat_wordtrainer;
-
-ALTER DATABASE chat_wordtrainer CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE chat_wordtrainer CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 GRANT ALL PRIVILEGES ON chat_wordtrainer.* TO 'root_use'@'%';
 FLUSH PRIVILEGES;
