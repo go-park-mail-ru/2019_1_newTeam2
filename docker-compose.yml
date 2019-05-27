@@ -60,7 +60,7 @@ services:
     networks:
       - uniting_net
     command:
-      /bin/bash -c "/home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/2019_1_newTeam2 /home/app/config_api.json"
+      /bin/bash -c "/home/app/wait_for_it.sh auth:8092 -t 600 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/2019_1_newTeam2 /home/app/config_api.json"
 
   common_db:
       image: serega753/common_db_go_proj
@@ -72,7 +72,7 @@ services:
       networks:
         - uniting_net
       command:
-        /bin/bash -c "/home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/mgr /home/app/config_score.json"
+        /bin/bash -c "/home/app/wait_for_it.sh auth:8092 -t 600 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/mgr /home/app/config_score.json"
 
   game:
 #    build:
@@ -99,4 +99,4 @@ services:
     networks:
       - uniting_net
     command:
-      /bin/bash -c "/home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/chat /home/app/config_chat.json"
+      /bin/bash -c "/home/app/wait_for_it.sh auth:8092 -t 600 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/chat /home/app/config_chat.json"

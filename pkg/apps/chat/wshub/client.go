@@ -35,6 +35,7 @@ func (cl *Client) ReadFromInet() {
 	for {
 		mes := models.Message{}
 		err := cl.Conn.ReadJSON(&mes)
+		mes.ID = cl.ID
 		if err != nil {
 			break
 		}
