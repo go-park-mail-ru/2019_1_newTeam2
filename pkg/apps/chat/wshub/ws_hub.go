@@ -25,8 +25,8 @@ func (h *WSHub) SendToCl(mes *models.Message) {
 
 func (h *WSHub) SendAll(mes *models.Message) {
 	for clientID := range h.clients {
+		log.Printf("ClientID=%v\nmes.ID=%v\n", clientID, mes.ID)
 		if clientID == mes.ID {
-			log.Printf("ClientID=%v\nmes.ID=%v\n", clientID, mes.ID)
 			continue
 		}
 		client := h.clients[clientID]
