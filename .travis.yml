@@ -28,7 +28,7 @@ script:
 - ssh-keyscan -H 89.208.199.170 >> ~/.ssh/known_hosts
 - scp -i ./2019_1_newTeam2_id_rsa.pem ./docker-compose.yml ubuntu@89.208.199.170:/home/ubuntu/2019_1_newTeam2/docker-compose.yml
 - ssh -i ./2019_1_newTeam2_id_rsa.pem ubuntu@89.208.199.170 'cd 2019_1_newTeam2 &&
-  sudo docker-compose down && sudo docker-compose pull && sudo docker-compose up --force-recreate
+  sudo docker-compose down && sudo docker-compose pull && sudo docker-compose up
   -d'
 branches:
   only:
