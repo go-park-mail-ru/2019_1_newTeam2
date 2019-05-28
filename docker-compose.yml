@@ -24,6 +24,7 @@ services:
       - 3306:3306
     volumes:
       - ./db:/var/lib/mysql
+    restart: always
     links:
       - api
       - game
@@ -44,6 +45,7 @@ services:
       - game
     networks:
       - uniting_net
+    restart: always
     command:
       bash -c "/home/app/auth /home/app/config_auth.json"
 
@@ -53,12 +55,13 @@ services:
 #      dockerfile: ./api.Dockerfile
     image: serega753/api_go_proj
     volumes:
-      - ./upload/:./uploads/
+      - ./upload/:/home/app/upload/
     ports:
       - 8090:8090
 #    depends_on:
 #      - auth
 #      - db
+    restart: always
     networks:
       - uniting_net
     command:
@@ -71,6 +74,7 @@ services:
       links:
         - api
         - game
+      restart: always
       networks:
         - uniting_net
       command:
@@ -86,6 +90,7 @@ services:
 #    depends_on:
 #      - auth
 #      - db
+    restart: always
     networks:
       - uniting_net
     command:
@@ -98,6 +103,7 @@ services:
     image: serega753/chat_go_proj
     ports:
       - 8091:8091
+    restart: always
     networks:
       - uniting_net
     command:
