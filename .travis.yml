@@ -15,10 +15,8 @@ addons:
     - docker-ce
 services:
 - docker
-
 before_script:
-  - docker-compose --f docker-compose_build.yml pull
-
+- docker-compose --f docker-compose_build.yml pull
 script:
 - tar -xvf ./archive.tar.gz
 - go test --mod=vendor -v ./...
@@ -29,14 +27,16 @@ script:
 - chmod 600 ./2019_1_newTeam2_id_rsa.pem
 - ssh-keyscan -H 89.208.199.170 >> ~/.ssh/known_hosts
 - scp -i ./2019_1_newTeam2_id_rsa.pem ./docker-compose.yml ubuntu@89.208.199.170:/home/ubuntu/2019_1_newTeam2/docker-compose.yml
-- ssh -i ./2019_1_newTeam2_id_rsa.pem ubuntu@89.208.199.170 'cd 2019_1_newTeam2 && sudo docker-compose down && sudo docker-compose pull && sudo docker-compose up --force-recreate -d'
+- ssh -i ./2019_1_newTeam2_id_rsa.pem ubuntu@89.208.199.170 'cd 2019_1_newTeam2 &&
+  sudo docker-compose down && sudo docker-compose pull && sudo docker-compose up --force-recreate
+  -d'
 branches:
   only:
   - master
   - dev
 before_install:
 - openssl aes-256-cbc -K $encrypted_03d1345edcba_key -iv $encrypted_03d1345edcba_iv
-  -in archive.tar.gz.enc -out ./archive.tar.gz -d
+  -in archive.tar.gz.enc -out archive.tar.gz -d
 - sudo rm /usr/local/bin/docker-compose
 - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname
   -s`-`uname -m` > docker-compose

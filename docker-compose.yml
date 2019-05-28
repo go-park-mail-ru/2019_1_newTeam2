@@ -52,6 +52,8 @@ services:
 #      context: .
 #      dockerfile: ./api.Dockerfile
     image: serega753/api_go_proj
+    volumes:
+      - ./upload/:./uploads/
     ports:
       - 8090:8090
 #    depends_on:

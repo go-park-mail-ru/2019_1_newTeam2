@@ -6,12 +6,17 @@ import (
 	"github.com/user/2019_1_newTeam2/models"
 )
 
-func (db *Database) DeleteCardInDictionary(dictionaryID int, cardID int) error {
-	if err := db.DecrementCount(cardID); err != nil {
+func (db *Database) DeleteCardInDictionary(userId, dictionaryID int, cardID int) error {
+	ifOwner := false
+	err := db.Conn.QueryRow(CheckOwner, userId, dictionaryID).Scan(&ifOwner)
+	if !ifOwner {
+		return fmt.Errorf("u cheater")
+	}
+	if err = db.DecrementCount(cardID); err != nil {
 		db.Logger.Log(err)
 		return err
 	}
-	if err := db.DeleteDictionaryToLibraryByID(dictionaryID, cardID); err != nil {
+	if err = db.DeleteDictionaryToLibraryByID(dictionaryID, cardID); err != nil {
 		db.Logger.Log(err)
 		return err
 	}
@@ -77,9 +82,14 @@ func (db *Database) DecrementCount(CardID int) error {
 	return nil
 }
 
-func (db *Database) SetCardToDictionary(dictID int, card models.Card) error {
+func (db *Database) SetCardToDictionary(userId int, dictID int, card models.Card) error {
+	ifOwner := false
+	err := db.Conn.QueryRow(CheckOwner, userId, dictID).Scan(&ifOwner)
+	if !ifOwner {
+		return fmt.Errorf("u cheater")
+	}
 	var WordID, TranslationID, CardID, CardsLibraryID int
-	var err error
+	//var err error
 	WordID, err = CreateWord(db, card.Word)
 	if err != nil {
 		db.Logger.Log(err)

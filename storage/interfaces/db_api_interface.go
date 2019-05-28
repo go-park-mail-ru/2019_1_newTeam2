@@ -13,8 +13,8 @@ type DBInterface interface {
 type CardManager interface {
 	GetCards(dictId int, page int, rowsNum int) ([]models.Card, bool, error)
 	GetCard(cardId int) (models.Card, bool, error)
-	SetCardToDictionary(dictID int, card models.Card) error
-	DeleteCardInDictionary(cardID int, dictionaryID int) error
+	SetCardToDictionary(userId int, dictID int, card models.Card) error
+	DeleteCardInDictionary(userId int, cardID int, dictionaryID int) error
 	GetCardsForGame(dictId int, cardsNum int) ([]models.GameWord, bool, error)
 }
 
@@ -25,7 +25,7 @@ type DictionaryManager interface {
 	GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error)
 	GetDict(dictId int) (models.DictionaryInfoPrivilege, bool, error)
 	BorrowDictById(dictId int, thiefId int) (int, models.DictionaryInfo, error)
-	FillDictionaryFromXLSX(dictId int, pathToFile string) error
+	FillDictionaryFromXLSX(userId int, dictId int, pathToFile string) error
 }
 
 type LanguageManager interface {

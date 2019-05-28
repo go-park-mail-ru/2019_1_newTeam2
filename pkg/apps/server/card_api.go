@@ -55,7 +55,7 @@ func (server *Server) UploadWordsFileAPI(w http.ResponseWriter, r *http.Request)
 
 	_, pathToFile = utils.TypeRequest(pathToFile)
 	pathToFile = server.ServerConfig.UploadPath[:len(server.ServerConfig.UploadPath)-1] + pathToFile
-	err = server.DB.FillDictionaryFromXLSX(dictionaryId, pathToFile)
+	err = server.DB.FillDictionaryFromXLSX(userId, dictionaryId, pathToFile)
 	os.RemoveAll(server.ServerConfig.UploadPath + "temp_docs/" + strconv.Itoa(userId))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -118,7 +118,11 @@ func (server *Server) GetCardById(w http.ResponseWriter, r *http.Request) {
 func (server *Server) DeleteCardInDictionary(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("DeleteCardInDictionaryAPI")
 	fmt.Println(r.URL.Query())
-
+	userId, err := server.GetUserIdFromCookie(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	var card models.CardDelete
 
 	jsonStr, err := ioutil.ReadAll(r.Body)
@@ -135,7 +139,7 @@ func (server *Server) DeleteCardInDictionary(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	if err = server.DB.DeleteCardInDictionary(card.DictionaryId, card.CardId); err != nil {
+	if err = server.DB.DeleteCardInDictionary(userId, card.DictionaryId, card.CardId); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -143,6 +147,11 @@ func (server *Server) DeleteCardInDictionary(w http.ResponseWriter, r *http.Requ
 }
 
 func (server *Server) CreateCardInDictionary(w http.ResponseWriter, r *http.Request) {
+	userId, err := server.GetUserIdFromCookie(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	server.Logger.Log("CreateCardInDictionaryAPI")
 	dictionaryIdString, parseErr := r.URL.Query()["dictionaryId"]
 	if !parseErr {
@@ -167,7 +176,7 @@ func (server *Server) CreateCardInDictionary(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	if err = server.DB.SetCardToDictionary(dictionaryId, card); err != nil {
+	if err = server.DB.SetCardToDictionary(userId, dictionaryId, card); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

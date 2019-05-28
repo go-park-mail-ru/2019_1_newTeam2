@@ -16,9 +16,9 @@ const (
 	DeleteUserQuery          = "DELETE FROM wordtrainer.user WHERE ID = ?"
 	UpdateImagePathUserQuery = "UPDATE wordtrainer.user SET AvatarPath = ? WHERE ID = ?"
 	UsersPaginate            = "SELECT u.Username, u.Score " +
-		"FROM wordtrainer.user u JOIN ( SELECT id FROM wordtrainer.user ORDER BY score " +
+		"FROM wordtrainer.user u JOIN ( SELECT id FROM wordtrainer.user ORDER BY score desc " +
 		"LIMIT ? OFFSET ?) l ON (u.id = l.id) " +
-		"ORDER BY score;"
+		"ORDER BY score DESC"
 
 	GetUserScore    = "SELECT Score FROM wordtrainer.user WHERE Username = ?"
 	UpdateUserScore = "UPDATE wordtrainer.user SET Score = ? WHERE Username = ?"
@@ -29,6 +29,7 @@ const (
 	DeleteDictionary      = "DELETE FROM wordtrainer.dictionary WHERE ID = ?"
 	GetDictById           = "SELECT id, name, description, UserId FROM wordtrainer.dictionary " +
 		"WHERE id = ?"
+	CheckOwner = "SELECT true FROM wordtrainer.dictionary WHERE ID = ? AND userId = ?"
 	DictsPaginate = "SELECT d.ID, d.name, d.description, d.UserId " +
 		"FROM wordtrainer.dictionary d JOIN ( SELECT id FROM wordtrainer.dictionary WHERE UserId = ? ORDER BY id " +
 		"LIMIT ? OFFSET ?) l ON (d.id = l.id) " +

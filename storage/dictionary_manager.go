@@ -78,7 +78,7 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 		return models.DictionaryInfoPrivilege{}, fmt.Errorf("GetIDErr: can`t get last dict id")
 	}
 	for _, it := range Cards {
-		err := db.SetCardToDictionary(int(lastID), it)
+		err := db.SetCardToDictionary(UserID, int(lastID), it)
 		if err != nil {
 			return models.DictionaryInfoPrivilege{}, err
 		}
@@ -148,7 +148,7 @@ func (db *Database) BorrowDictById(dictId int, thiefId int) (int, models.Diction
 	return ownerId, dict, nil
 }
 
-func (db *Database) FillDictionaryFromXLSX(dictId int, pathToFile string) error {
+func (db *Database) FillDictionaryFromXLSX(userId int, dictId int, pathToFile string) error {
 	xlsDict, err := xlsx.OpenFile(pathToFile)
 	if err != nil {
 		db.Logger.Log("file not found: ", err)
@@ -186,7 +186,7 @@ func (db *Database) FillDictionaryFromXLSX(dictId int, pathToFile string) error 
 		word1 := models.Word{data[0], lang1.ID}
 		word2 := models.Word{data[1], lang2.ID}
 		card := models.Card{0, &word1, &word2, 0}
-		err = db.SetCardToDictionary(int(dictId), card)
+		err = db.SetCardToDictionary(userId, int(dictId), card)
 		if err != nil {
 			return err
 		}
