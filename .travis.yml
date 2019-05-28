@@ -23,7 +23,6 @@ script:
 - tar -xvf ./archive.tar.gz
 - go test --mod=vendor -v ./...
 - mv ./archive/config . && mv ./archive/2019_1_newTeam2_id_rsa.pem .
-- docker images
 - docker-compose -f docker-compose_build.yml build
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 - docker-compose -f docker-compose_build.yml push
