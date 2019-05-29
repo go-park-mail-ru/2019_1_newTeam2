@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/user/2019_1_newTeam2/storage"
 	"github.com/user/2019_1_newTeam2/storage/interfaces"
+	"log"
 	"strconv"
 )
 
@@ -26,6 +27,7 @@ func (usum *UserScoreUpdaterManager) UpdateUserScore(ctx context.Context, in *Us
 	if err != nil {
 		return &NewScore{}, err
 	}
+	log.Println("I am here, updating, %v", in.AddScore)
 	score := strconv.Itoa(user.Score)
 	return &NewScore{Score: score}, nil
 }
