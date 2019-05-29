@@ -7,6 +7,7 @@ ADD ./pkg/apps/server /home/app/pkg/apps/server
 ADD ./shared /home/app/shared
 ADD ./vendor /home/app/vendor
 ADD ./go.mod /home/app
+ADD ./pkg/apps/authorization /home/app/pkg/apps/authorization
 
 
 #RUN chmod +x /home/app/wait_for_it.sh
