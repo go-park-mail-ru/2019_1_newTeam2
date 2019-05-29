@@ -54,7 +54,7 @@ func NewGame(host string, DBUser string, DBPassUser string, scoreClient mgr.User
 func (game *Game) Run() {
 	for {
 		conn := <-game.Register
-		game.ProcessConn(conn)
+		_ = game.ProcessConn(conn)
 	}
 }
 

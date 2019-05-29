@@ -43,7 +43,7 @@ func (server *Server) UploadWordsFileAPI(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	os.Mkdir(server.ServerConfig.UploadPath+"temp_docs/"+strconv.Itoa(userId), 0777)
+	_ = os.Mkdir(server.ServerConfig.UploadPath+"temp_docs/"+strconv.Itoa(userId), 0777)
 	pathToFile, err := filesystem.UploadFile(w, r, function,
 		server.ServerConfig.UploadPath, "temp_docs/"+strconv.Itoa(userId))
 

@@ -21,6 +21,6 @@ func (server *GameServer) OpenConnection(w http.ResponseWriter, r *http.Request)
 		server.Logger.Log("cannot upgrade connection: %s", err)
 	}
 
-	conn.WriteJSON(models.PlayerData{Username, 0})
+	_ = conn.WriteJSON(models.PlayerData{Username, 0})
 	server.Game.Register <- &game.GameRegister{conn, Username}
 }
