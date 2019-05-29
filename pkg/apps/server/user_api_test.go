@@ -16,8 +16,8 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/user/2019_1_newTeam2/mocks/mock_interfaces"
-	"github.com/user/2019_1_newTeam2/shared/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/server"
+	"github.com/user/2019_1_newTeam2/shared/models"
 	"github.com/user/2019_1_newTeam2/shared/pkg/config"
 	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
 )
@@ -145,7 +145,7 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 		if item.exists && item.err == nil {
 			defer response.Body.Close()
 			result := new(models.User)
-			_= json.NewDecoder(response.Body).Decode(result)
+			_ = json.NewDecoder(response.Body).Decode(result)
 			suite.Equal(item.t, *result)
 		}
 	}
@@ -327,7 +327,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			defer response.Body.Close()
 			result := []models.UserTableElem{}
 
-			json.NewDecoder(response.Body).Decode(&result)
+			_ = json.NewDecoder(response.Body).Decode(&result)
 			suite.Equal(item.t, result)
 		}
 	}

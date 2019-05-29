@@ -70,7 +70,7 @@ func TestCreatePanicRecoveryMiddleware(t *testing.T) {
 	caught := true
 	defer func() {
 		caught = false
-		recover()
+		_ = recover()
 	}()
 	function(h).ServeHTTP(w, r)
 	if !caught {
@@ -155,7 +155,7 @@ func TestCreateLoggingMiddleware(t *testing.T) {
 	r := httptest.NewRequest(http.MethodGet, "http://localhost/", nil)
 	w := httptest.NewRecorder()
 	function.Middleware(h).ServeHTTP(w, r)
-	str := string(buf.Bytes())
+	str := buf.String()
 	log.SetOutput(os.Stderr)
 	log.Println(str)
 	if !strings.Contains(str, "[LOG_TEST] GET") ||

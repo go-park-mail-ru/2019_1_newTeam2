@@ -22,7 +22,7 @@ func (db *Database) DictionaryDelete(DictID int) error {
 			db.Logger.Log(err)
 			return err
 		}
-		db.DecrementCount(card_id)
+		_ = db.DecrementCount(card_id)
 	}
 
 	_, DeleteErr := db.Conn.Exec(
@@ -50,16 +50,18 @@ func (db *Database) DictionaryUpdate(DictID int, Name string, Description string
 	)
 	if UpdateErr != nil {
 		db.Logger.Log(UpdateErr)
-		tx.Rollback()
+		_ = tx.Rollback()
 		return fmt.Errorf("DictionaryUpdate: user not update")
 	}
-	tx.Commit()
+	_ = tx.Commit()
 	return nil
 }
 
 func (db *Database) DictionaryCreate(UserID int, Name string, Description string, Cards []models.Card) (models.DictionaryInfoPrivilege, error) {
 	tx, err := db.Conn.Begin()
-
+	if err != nil {
+		return models.DictionaryInfoPrivilege{}, err
+	}
 	result, CreateErr := tx.Exec(
 		CreateEmptyDictionary,
 		Name,
@@ -68,10 +70,10 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	)
 	if CreateErr != nil {
 		db.Logger.Log(CreateErr)
-		tx.Rollback()
+		_ = tx.Rollback()
 		return models.DictionaryInfoPrivilege{}, fmt.Errorf("CreateErr: user not create")
 	}
-	tx.Commit()
+	_ = tx.Commit()
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
 		db.Logger.Log(GetIDErr)
@@ -183,9 +185,9 @@ func (db *Database) FillDictionaryFromXLSX(userId int, dictId int, pathToFile st
 		if len(data) != 2 {
 			return fmt.Errorf("bad file")
 		}
-		word1 := models.Word{data[0], lang1.ID}
-		word2 := models.Word{data[1], lang2.ID}
-		card := models.Card{0, &word1, &word2, 0}
+		word1 := models.Word{Name: data[0], LanguageId: lang1.ID}
+		word2 := models.Word{Name: data[1], LanguageId: lang2.ID}
+		card := models.Card{ID: 0, Word: &word1, Translation: &word2, Frequency: 0}
 		err = db.SetCardToDictionary(userId, int(dictId), card)
 		if err != nil {
 			return err

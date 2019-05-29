@@ -8,9 +8,13 @@ func (db *Database) UpdateFrequencies(results models.GameResults) (error, bool) 
 	if err != nil {
 		return err, false
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 	stmt, err := db.Conn.Prepare(UpdateFrequency)
-	defer stmt.Close()
+	defer func() {
+		_ = stmt.Close()
+	}()
 	if err != nil {
 		return err, false
 	}
@@ -24,6 +28,9 @@ func (db *Database) UpdateFrequencies(results models.GameResults) (error, bool) 
 			return err, false
 		}
 		num, err := res.RowsAffected()
+		if err != nil {
+			return err, false
+		}
 		if num == 0 {
 			allFound = false
 		}

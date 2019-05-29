@@ -5,13 +5,13 @@ type User struct {
 	Username    string `json:"username"`
 	Email       string `json:"email"`
 	Password    string `json:"password,omitempty"`
-	LangID      int    `json:"langID, int"`
-	PronounceON int    `json:"pronounceOn, int"`
-	Score       int    `json:"score, int"`
+	LangID      int    `json:"langID,int"`
+	PronounceON int    `json:"pronounceOn,int"`
+	Score       int    `json:"score,int"`
 	AvatarPath  string `json:"path"`
 }
 
 type UserTableElem struct {
 	Username string `json:"username"`
-	Score    int    `json:"score, int"`
+	Score    int    `json:"score,int"`
 }

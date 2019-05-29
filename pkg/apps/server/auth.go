@@ -32,13 +32,13 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte 
 	}
 	err = json.Unmarshal(jsonStr, &user)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
 	}
-	if br, err_r := server.DB.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON); br != true {
+	if br, err_r := server.DB.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON); !br {
 		server.Logger.Log(err_r.Error())
-		textError := models.Error{err_r.Error()}
+		textError := models.Error{Message: err_r.Error()}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
 	}

@@ -29,7 +29,7 @@ const (
 	DeleteDictionary      = "DELETE FROM wordtrainer.dictionary WHERE ID = ?"
 	GetDictById           = "SELECT id, name, description, UserId FROM wordtrainer.dictionary " +
 		"WHERE id = ?"
-	CheckOwner = "SELECT true FROM wordtrainer.dictionary WHERE ID = ? AND userId = ?"
+	CheckOwner    = "SELECT true FROM wordtrainer.dictionary WHERE ID = ? AND userId = ?"
 	DictsPaginate = "SELECT d.ID, d.name, d.description, d.UserId " +
 		"FROM wordtrainer.dictionary d JOIN ( SELECT id FROM wordtrainer.dictionary WHERE UserId = ? ORDER BY id " +
 		"LIMIT ? OFFSET ?) l ON (d.id = l.id) " +

@@ -48,7 +48,7 @@ func (h *WSHub) Run() {
 				h.clients[client.ID] = client	// possible bugs
 			}*/
 			h.clients[client.ID] = client
-			h.SendToCl(&models.Message{client.ID, "Welcome to Word chat!)"})
+			h.SendToCl(&models.Message{ID: client.ID, Data: "Welcome to Word chat!)"})
 
 		case clID := <-h.unregister:
 			_, ok := h.clients[clID]

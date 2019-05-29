@@ -14,10 +14,10 @@ func (db *Database) AddToDictionaryToLibrary(lastID int, CardsLibraryID int) err
 	)
 
 	if CreateErr != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		return fmt.Errorf("AddToDictionaryToLibrary: word not create")
 	}
-	tx.Commit()
+	_ = tx.Commit()
 	return nil
 }
 

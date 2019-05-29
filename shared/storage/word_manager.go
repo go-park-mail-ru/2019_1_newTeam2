@@ -22,31 +22,35 @@ func CreateWord(db *Database, word *models.Word) (int, error) {
 		word.LanguageId,
 	)
 	if CreateErr != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		fmt.Println("Error: ", err)
 		return 0, fmt.Errorf("Err: word not create and not found")
 	}
 
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		return 0, fmt.Errorf("GetIDErr: can`t get last word id")
 	}
 
-	tx.Commit()
+	_ = tx.Commit()
 	if lastID != 0 {
 		return int(lastID), nil
 	}
 
 	tx, err = db.Conn.Begin()
+	if err != nil {
+		_ = tx.Rollback()
+		return 0, err
+	}
 	var ID int64
 	row := tx.QueryRow(GetWord, word.Name, word.LanguageId)
 	err = row.Scan(&ID)
 	if err != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		fmt.Println("Error: ", err)
 		return 0, fmt.Errorf("Err: word not create and not found")
 	}
-	tx.Commit()
+	_ = tx.Commit()
 	return int(ID), nil
 }

@@ -9,5 +9,5 @@ func WriteToResponse(w http.ResponseWriter, status int, v interface{}) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(status)
 	response, _ := json.Marshal(v)
-	w.Write(response)
+	_, _ = w.Write(response)
 }

@@ -9,6 +9,9 @@ import (
 func (db *Database) DeleteCardInDictionary(userId, dictionaryID int, cardID int) error {
 	ifOwner := false
 	err := db.Conn.QueryRow(CheckOwner, userId, dictionaryID).Scan(&ifOwner)
+	if err != nil {
+		return err
+	}
 	if !ifOwner {
 		return fmt.Errorf("u cheater")
 	}
@@ -36,15 +39,15 @@ func (db *Database) CreateCardsLibrary(CardID int) (int, error) {
 		1,
 	)
 	if CreateErr != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		return 0, fmt.Errorf("CreateErr: word not create")
 	}
 	lastID, GetIDErr := result.LastInsertId()
 	if GetIDErr != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		return 0, fmt.Errorf("GetIDErr: can`t get last dict id")
 	}
-	tx.Commit()
+	_ = tx.Commit()
 	return int(lastID), nil
 }
 
@@ -85,6 +88,9 @@ func (db *Database) DecrementCount(CardID int) error {
 func (db *Database) SetCardToDictionary(userId int, dictID int, card models.Card) error {
 	ifOwner := false
 	err := db.Conn.QueryRow(CheckOwner, userId, dictID).Scan(&ifOwner)
+	if err != nil {
+		return err
+	}
 	if !ifOwner {
 		return fmt.Errorf("u cheater")
 	}

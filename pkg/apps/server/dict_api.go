@@ -23,13 +23,13 @@ func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request
 	var dictionary models.CreateDictionary
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 	err = json.Unmarshal(jsonStr, &dictionary)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
@@ -48,13 +48,13 @@ func (server *Server) UpdateDictionaryAPI(w http.ResponseWriter, r *http.Request
 	var dictionary models.CreateDictionary
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 	err = json.Unmarshal(jsonStr, &dictionary)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}

@@ -10,7 +10,7 @@ func (server *Server) GetLangs(w http.ResponseWriter, r *http.Request) {
 	langs, found, err := server.DB.GetLangs()
 	if err != nil {
 		server.Logger.Log(err.Error())
-		textError := models.Error{err.Error()}
+		textError := models.Error{Message: err.Error()}
 		responses.WriteToResponse(w, http.StatusInternalServerError, textError)
 		return
 	}

@@ -2,8 +2,8 @@ package room
 
 import (
 	uuid "github.com/satori/go.uuid"
-	"github.com/user/2019_1_newTeam2/shared/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
+	"github.com/user/2019_1_newTeam2/shared/models"
 	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
 	"github.com/user/2019_1_newTeam2/shared/storage"
 	"github.com/user/2019_1_newTeam2/shared/storage/interfaces"

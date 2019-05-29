@@ -127,14 +127,14 @@ func (server *Server) DeleteCardInDictionary(w http.ResponseWriter, r *http.Requ
 
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 
 	err = json.Unmarshal(jsonStr, &card)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
@@ -165,13 +165,13 @@ func (server *Server) CreateCardInDictionary(w http.ResponseWriter, r *http.Requ
 	var card models.Card
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 	err = json.Unmarshal(jsonStr, &card)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}

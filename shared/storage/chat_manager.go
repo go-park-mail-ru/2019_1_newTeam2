@@ -14,7 +14,9 @@ func (db *Database) GetMessagesBroadcast(page int, rowsNum int) ([]models.Messag
 		db.Logger.Log(err)
 		return messages, err
 	}
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 	i := 0
 	for rows.Next() {
 		i++
@@ -34,29 +36,32 @@ func (db *Database) GetMessagesBroadcast(page int, rowsNum int) ([]models.Messag
 
 func (db *Database) AddMessage(UserID int, message string) error {
 	tx, err := db.Conn.Begin()
+	if err != nil {
+		return err
+	}
 	result, err := tx.Exec(
 		AddMessage,
 		message,
 		UserID,
 	)
 	if err != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		return err
 	}
 	lastID, err := result.LastInsertId()
 	if err != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		return err
 	}
-	result, err = tx.Exec(
+	_, err = tx.Exec(
 		AddMessageToBroadcastDialog,
 		lastID,
 		UserID,
 	)
 	if err != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		return err
 	}
-	tx.Commit()
+	_ = tx.Commit()
 	return nil
 }

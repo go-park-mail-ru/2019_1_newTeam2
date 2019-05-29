@@ -46,14 +46,14 @@ func (server *Server) SetGameResults(w http.ResponseWriter, r *http.Request) {
 
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 
 	err = json.Unmarshal(jsonStr, &results)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}

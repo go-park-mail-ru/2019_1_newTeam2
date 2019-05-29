@@ -20,6 +20,7 @@ services:
 script:
 - tar -xvf ./archive.tar.gz
 - go test --mod=vendor -v ./...
+- golangci-lint run
 - mv ./archive/config . && mv ./archive/2019_1_newTeam2_id_rsa.pem .
 #- docker-compose -f docker-compose_build.yml build
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin

@@ -22,7 +22,7 @@ func NewSuccessRequest(text string, filename string) *http.Request {
 	return req
 }
 
-func NewFailRequest(text string, filename string) *http.Request {
+/*func NewFailRequest(text string, filename string) *http.Request {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 	_ = writer.SetBoundary("boundary")
@@ -32,7 +32,7 @@ func NewFailRequest(text string, filename string) *http.Request {
 	req, _ := http.NewRequest("POST", "localhost:8090", body)
 	req.Header.Add("Content-Type", "multipart/form-data; charset=utf-8; boundary=\"boundary\"")
 	return req
-}
+}*/
 
 var (
 	SuccessCallback = func(header multipart.FileHeader) error {

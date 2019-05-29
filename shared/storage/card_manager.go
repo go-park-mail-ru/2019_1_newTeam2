@@ -21,7 +21,7 @@ func (db *Database) CreateCard(WordID int, TranslationID int) (int, error) {
 		"(SELECT word, translation FROM wordtrainer.card WHERE word = ? AND translation = ?) LIMIT 1"
 
 	tx, err := db.Conn.Begin()
-	if err != nil{
+	if err != nil {
 		return 0, err
 	}
 	result, CreateErr := tx.Exec(
@@ -31,7 +31,7 @@ func (db *Database) CreateCard(WordID int, TranslationID int) (int, error) {
 	)
 
 	if CreateErr != nil {
-		_  = tx.Rollback()
+		_ = tx.Rollback()
 		return 0, fmt.Errorf("Err: card not create and not found")
 	}
 
@@ -48,10 +48,13 @@ func (db *Database) CreateCard(WordID int, TranslationID int) (int, error) {
 
 	var ID int64
 	tx, err = db.Conn.Begin()
+	if err != nil {
+		return 0, err
+	}
 	row := tx.QueryRow(GetCard, WordID, TranslationID)
 	err = row.Scan(&ID)
 	if err != nil {
-		_=  tx.Rollback()
+		_ = tx.Rollback()
 		return 0, fmt.Errorf("Err: card not create and not found")
 	}
 	_ = tx.Commit()

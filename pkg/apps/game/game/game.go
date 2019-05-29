@@ -2,13 +2,14 @@ package game
 
 import (
 	"fmt"
+	"log"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/user/2019_1_newTeam2/shared/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/room"
 	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
+	"github.com/user/2019_1_newTeam2/shared/models"
 )
 
 type GameRegister struct {
@@ -20,7 +21,7 @@ type Game struct {
 	Rooms       map[string]*room.Room
 	MaxRooms    int
 	Register    chan *GameRegister
-	DBHost string
+	DBHost      string
 	DBUser      string
 	DBPassUser  string
 	ScoreClient mgr.UserScoreUpdaterClient
@@ -44,7 +45,7 @@ func NewGame(host string, DBUser string, DBPassUser string, scoreClient mgr.User
 		Rooms:       make(map[string]*room.Room),
 		MaxRooms:    2,
 		Register:    make(chan *GameRegister),
-		DBHost: host,
+		DBHost:      host,
 		DBUser:      DBUser,
 		DBPassUser:  DBPassUser,
 		ScoreClient: scoreClient,
@@ -63,7 +64,7 @@ func (game *Game) ProcessConn(conn *GameRegister) error {
 	player := &room.Player{
 		Conn: conn.Conn,
 		ID:   conn.Username,
-		Data: models.PlayerData{conn.Username, 0},
+		Data: models.PlayerData{Username: conn.Username, Score: 0},
 	}
 	r := game.FindRoom(player)
 	if r == nil {
@@ -83,7 +84,7 @@ func (game *Game) ProcessConn(conn *GameRegister) error {
 func (game *Game) FindRoom(player *room.Player) *room.Room {
 	for _, room := range game.Rooms {
 		if len(room.Players) < room.MaxPlayers {
-			if room.FindPlayer(player) == true {
+			if room.FindPlayer(player) {
 				return nil
 			}
 			room.Players[player.ID] = player
@@ -107,10 +108,11 @@ func (game *Game) FindRoom(player *room.Player) *room.Room {
 func (game *Game) RoomRun(r *room.Room) {
 	r.Ticker = time.NewTicker(time.Second)
 	go r.RunBroadcast()
-	players := []models.PlayerData{}
+	players := make([]models.PlayerData, 0)
 	for _, p := range r.Players {
 		players = append(players, p.Data)
 	}
+	log.Println(players)
 	NewTask := r.CreateTask()
 	r.Answer = NewTask
 	r.Broadcast <- &models.GameMessage{Type: "Task", Payload: NewTask}
@@ -120,7 +122,7 @@ func (game *Game) RoomRun(r *room.Room) {
 			game.DeleteEmptyRoom(r)
 			return
 		}
-		players := []models.PlayerData{}
+		players = []models.PlayerData{}
 		for _, p := range r.Players {
 			players = append(players, p.Data)
 		}

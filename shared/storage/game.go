@@ -18,7 +18,7 @@ func RandNum(max int, count int) []int {
 	arr := make([]int, count)
 	for i := range arr {
 		res := rand.Int()%max + 1
-		for Find(arr, res) == true {
+		for Find(arr, res) {
 			res = rand.Int()%max + 1
 		}
 		arr[i] = res
