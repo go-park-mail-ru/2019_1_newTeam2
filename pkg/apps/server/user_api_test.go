@@ -160,8 +160,6 @@ type TestUsersPaginateCase struct {
 	page         int
 	strRow       string
 	strPage      string
-	rowsURL      map[string]string
-	pageURL      map[string]string
 	queryCorrect bool
 	method       string
 }

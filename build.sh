@@ -40,7 +40,7 @@ docker build \
   --target builder \
   --cache-from serega753/chat_go_proj:builder \
   -t serega753/chat_go_proj:builder \
-  -f "./deploychat.Dockerfile" \
+  -f "./deploy/chat.Dockerfile" \
   "."
 
 

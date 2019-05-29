@@ -9,7 +9,7 @@ MYSQL_USER=root_use
 
 #WORKDIR /home/app
 
-COPY ../shared/storage/sql/ /docker-entrypoint-initdb.d/
+COPY ./shared/storage/sql/ /docker-entrypoint-initdb.d/
 
 EXPOSE 3306
 

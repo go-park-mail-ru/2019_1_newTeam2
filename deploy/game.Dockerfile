@@ -8,6 +8,7 @@ ADD ./pkg/apps/game /home/app/pkg/apps/game
 ADD ./shared /home/app/shared
 ADD ./vendor /home/app/vendor
 ADD ./go.mod /home/app
+ADD ./pkg/apps/authorization /home/app/pkg/apps/authorization
 
 RUN go build --mod=vendor -o game /home/app/cmd/game/main.go
 
