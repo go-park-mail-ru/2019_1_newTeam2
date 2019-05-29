@@ -14,6 +14,7 @@ type Config struct {
 	UploadPath   string   `json:"uploadPath,omitempty"`
 	AvatarsPath  string   `json:"avatarsPath,omitempty"`
 	AllowedHosts []string `json:"AllowedHosts,omitempty"`
+	ScoreHost string `json:"scoreHost"`
 	DBName       string   `json:"dbName,omitempty"`
 	DBUser       string   `json:"dbUser,omitempty"`
 	DBPassUser   string   `json:"dbPassUser,omitempty"`

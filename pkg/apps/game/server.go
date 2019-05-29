@@ -71,7 +71,7 @@ func (server *GameServer) Run() {
 	defer grcpAuthConn.Close()
 
 	grcpScoreConn, err := grpc.Dial(
-		server.ServerConfig.AuthHost+":"+server.ServerConfig.ScorePort,
+		server.ServerConfig.ScoreHost+":"+server.ServerConfig.ScorePort,
 		grpc.WithInsecure(),
 	)
 	if err != nil {
