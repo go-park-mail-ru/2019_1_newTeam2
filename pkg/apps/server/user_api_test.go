@@ -3,6 +3,7 @@ package server_test
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/mailru/easyjson"
 	"github.com/user/2019_1_newTeam2/mocks/mock_auth"
 	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
 	"log"
@@ -388,7 +389,7 @@ func (suite *UserHandlerTestSuite) TestUpdateUser() {
 				item.t.LangID, item.t.PronounceON)
 		}
 		suite.authClient.EXPECT().GetIdFromCookie(gomock.Any(), gomock.Any()).Return(&authorization.Id{UserId: int64(item.id)}, nil)
-		body, _ := json.Marshal(item.t)
+		body, _ := easyjson.Marshal(item.t)
 		r, _ := http.NewRequest(item.method, "/users/", bytes.NewBuffer(body))
 		token := correctToken
 		PlaceTokenToRequest(token, r)
@@ -456,7 +457,7 @@ func (suite *UserHandlerTestSuite) TestDeleteUser() {
 		suite.dataBase.EXPECT().GetUserByID(item.id).Return(item.t, item.exists, item.err)
 		suite.dataBase.EXPECT().UpdateUserById(item.t.ID, item.t.Username, item.t.Email,
 			item.t.LangID, item.t.PronounceON)
-		body, _ := json.Marshal(item.t)
+		body, _ := easyjson.Marshal(item.t)
 		r, _ := http.NewRequest(item.method, "/users/", bytes.NewBuffer(body))
 		token := correctToken
 		PlaceTokenToRequest(token, r)

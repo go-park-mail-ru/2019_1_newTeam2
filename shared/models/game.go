@@ -1,11 +1,17 @@
 package models
 
+//easyjson:json
 type GameResult struct {
 	ID      int  `json:"id"`
 	Correct bool `json:"correct"`
 }
 
+//easyjson:json
 type GameResults []GameResult
+
+//easyjson:json
+type GameWords []GameWord
+
 
 type GameWord struct {
 	CardId   int      `json:"id"`

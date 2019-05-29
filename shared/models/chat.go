@@ -1,5 +1,9 @@
 package models
 
+//easyjson:json
+type Messages []Message
+
+//easyjson:json
 type Message struct {
 	ID   int    `json:"id,omitempty"`
 	Data string `json:"message"`

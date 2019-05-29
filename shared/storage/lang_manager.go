@@ -2,7 +2,7 @@ package storage
 
 import "github.com/user/2019_1_newTeam2/shared/models"
 
-func (db *Database) GetLangs() ([]models.Language, bool, error) {
+func (db *Database) GetLangs() (models.Langs, bool, error) {
 	results, err := db.Conn.Query(GetLangs)
 	if err != nil {
 		return []models.Language{}, false, err

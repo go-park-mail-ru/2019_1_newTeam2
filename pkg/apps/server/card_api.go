@@ -1,9 +1,9 @@
 package server
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/mailru/easyjson"
 	"github.com/user/2019_1_newTeam2/shared/filesystem"
 	"github.com/user/2019_1_newTeam2/shared/models"
 	"github.com/user/2019_1_newTeam2/shared/pkg/responses"
@@ -56,7 +56,7 @@ func (server *Server) UploadWordsFileAPI(w http.ResponseWriter, r *http.Request)
 	_, pathToFile = utils.TypeRequest(pathToFile)
 	pathToFile = server.ServerConfig.UploadPath[:len(server.ServerConfig.UploadPath)-1] + pathToFile
 	err = server.DB.FillDictionaryFromXLSX(userId, dictionaryId, pathToFile)
-	os.RemoveAll(server.ServerConfig.UploadPath + "temp_docs/" + strconv.Itoa(userId))
+	_ = os.RemoveAll(server.ServerConfig.UploadPath + "temp_docs/" + strconv.Itoa(userId))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -69,11 +69,11 @@ func (server *Server) CardsPaginate(w http.ResponseWriter, r *http.Request) {
 	rowsNum := 0
 	dictId, ok := r.URL.Query()["dict"]
 	if !ok {
-		responses.WriteToResponse(w, http.StatusBadRequest, fmt.Errorf("no dict id"))
+		responses.WriteToResponse(w, http.StatusBadRequest, models.Error{Message: "no dict"})
 	}
 	dict, err := strconv.Atoi(dictId[0])
 	if err != nil {
-		responses.WriteToResponse(w, http.StatusBadRequest, fmt.Errorf("dict idincorrect"))
+		responses.WriteToResponse(w, http.StatusBadRequest, models.Error{Message: "incorrect dict"})
 	}
 	err = utils.ParseParams(w, r, &page, &rowsNum)
 	if err != nil {
@@ -132,7 +132,7 @@ func (server *Server) DeleteCardInDictionary(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	err = json.Unmarshal(jsonStr, &card)
+	err = easyjson.Unmarshal(jsonStr, &card)
 	if err != nil {
 		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
@@ -169,7 +169,7 @@ func (server *Server) CreateCardInDictionary(w http.ResponseWriter, r *http.Requ
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
-	err = json.Unmarshal(jsonStr, &card)
+	err = easyjson.Unmarshal(jsonStr, &card)
 	if err != nil {
 		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)

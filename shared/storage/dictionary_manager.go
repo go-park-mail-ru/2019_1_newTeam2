@@ -93,7 +93,7 @@ func (db *Database) DictionaryCreate(UserID int, Name string, Description string
 	return dict, nil
 }
 
-func (db *Database) GetDicts(userId int, page int, rowsNum int) ([]models.DictionaryInfo, bool, error) {
+func (db *Database) GetDicts(userId int, page int, rowsNum int) (models.DictInfos, bool, error) {
 	dicts := make([]models.DictionaryInfo, 0)
 	db.Logger.Log(page, rowsNum)
 	offset := (page - 1) * rowsNum

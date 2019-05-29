@@ -7,6 +7,10 @@ type CreateDictionary struct {
 	Cards       []Card `json:"cards,omitempty"`
 }
 
+//easyjson:json
+type DictInfos []DictionaryInfo
+
+//easyjson:json
 type DictionaryInfo struct {
 	ID          int    `json:"id,omitempty"`
 	Name        string `json:"name"`

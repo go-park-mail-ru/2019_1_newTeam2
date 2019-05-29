@@ -6,6 +6,10 @@ type CardFull struct {
 	Translation *WordFull `json:"translation"`
 }
 
+//easyjson:json
+type Cards []Card
+
+//easyjson:json
 type Card struct {
 	ID          int     `json:"id,omitempty"`
 	Word        *Word   `json:"word"`

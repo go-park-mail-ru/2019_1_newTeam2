@@ -61,7 +61,7 @@ func (db *Database) CreateCard(WordID int, TranslationID int) (int, error) {
 	return int(ID), nil
 }
 
-func (db *Database) GetCards(dictId int, page int, rowsNum int) ([]models.Card, bool, error) {
+func (db *Database) GetCards(dictId int, page int, rowsNum int) (models.Cards, bool, error) {
 	cards := make([]models.Card, 0)
 	db.Logger.Log(page, rowsNum)
 	offset := (page - 1) * rowsNum
@@ -154,7 +154,7 @@ func (db *Database) getExtraParts(dictId int, wordsNum int) ([]string, bool, err
 	return words, true, nil
 }
 
-func (db *Database) GetCardsForGame(dictId int, cardsNum int) ([]models.GameWord, bool, error) {
+func (db *Database) GetCardsForGame(dictId int, cardsNum int) (models.GameWords, bool, error) {
 
 	cards, found, err := db.getCorrectParts(dictId, cardsNum)
 	if err != nil || !found {
