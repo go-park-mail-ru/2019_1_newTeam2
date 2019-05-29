@@ -73,7 +73,7 @@ func (db *Database) UpdateUserById(userID int, username string, email string,
 	return true, nil
 }
 
-func (db *Database) GetUsers(page int, rowsNum int) ([]models.UserTableElem, bool, error) {
+func (db *Database) GetUsers(page int, rowsNum int) (models.TableUsers, bool, error) {
 	usersPage := make([]models.UserTableElem, 0)
 	db.Logger.Log(page, rowsNum)
 	offset := (page - 1) * rowsNum

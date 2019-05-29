@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/mailru/easyjson"
 	"github.com/user/2019_1_newTeam2/shared/filesystem"
 	"github.com/user/2019_1_newTeam2/shared/models"
 	"github.com/user/2019_1_newTeam2/shared/pkg/responses"
@@ -180,7 +181,7 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 	server.Logger.Log("SignUpAPI")
 	jsonStr := server.CreateUser(w, r)
 	var user models.User
-	err := json.Unmarshal(jsonStr, &user)
+	err := easyjson.Unmarshal(jsonStr, &user)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

@@ -29,8 +29,10 @@ func NewConfig(pathToConfig string) (*Config, error) {
 		return nil, err
 	}
 
-	defer configFile.Close()
-
+	defer func() {
+		_ = configFile.Close()
+	}()
+	//err = easyjson.UnmarshalFromReader(configFile, conf)
 	jsonParser := json.NewDecoder(configFile)
 	err = jsonParser.Decode(&conf)
 	if err != nil {

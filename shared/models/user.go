@@ -11,6 +11,11 @@ type User struct {
 	AvatarPath  string `json:"path"`
 }
 
+
+//easyjson:json
+type TableUsers []UserTableElem
+
+//easyjson:json
 type UserTableElem struct {
 	Username string `json:"username"`
 	Score    int    `json:"score,int"`

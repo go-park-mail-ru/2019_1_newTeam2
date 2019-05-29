@@ -1,7 +1,7 @@
 package server
 
 import (
-	"encoding/json"
+	"github.com/mailru/easyjson"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -27,10 +27,10 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte 
 	var user models.User
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		responses.WriteToResponse(w, http.StatusBadRequest, "")
+		responses.WriteToResponse(w, http.StatusBadRequest, models.Error{Message: ""})
 		return jsonStr
 	}
-	err = json.Unmarshal(jsonStr, &user)
+	err = easyjson.Unmarshal(jsonStr, &user)
 	if err != nil {
 		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)

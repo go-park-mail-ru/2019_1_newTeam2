@@ -1,7 +1,7 @@
 package server
 
 import (
-	"encoding/json"
+	"github.com/mailru/easyjson"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -27,7 +27,7 @@ func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
-	err = json.Unmarshal(jsonStr, &dictionary)
+	err = easyjson.Unmarshal(jsonStr, &dictionary)
 	if err != nil {
 		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
@@ -52,7 +52,7 @@ func (server *Server) UpdateDictionaryAPI(w http.ResponseWriter, r *http.Request
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
-	err = json.Unmarshal(jsonStr, &dictionary)
+	err = easyjson.Unmarshal(jsonStr, &dictionary)
 	if err != nil {
 		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)

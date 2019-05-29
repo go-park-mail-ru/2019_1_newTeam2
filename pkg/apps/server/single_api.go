@@ -1,8 +1,7 @@
 package server
 
 import (
-	"encoding/json"
-	"fmt"
+	"github.com/mailru/easyjson"
 	"github.com/user/2019_1_newTeam2/shared/models"
 	"github.com/user/2019_1_newTeam2/shared/pkg/responses"
 	"io/ioutil"
@@ -13,24 +12,24 @@ import (
 func (server *Server) GetSingleGame(w http.ResponseWriter, r *http.Request) {
 	dictId, ok := r.URL.Query()["dict"]
 	if !ok {
-		responses.WriteToResponse(w, http.StatusBadRequest, fmt.Errorf("no dict id"))
+		responses.WriteToResponse(w, http.StatusBadRequest, models.Error{Message: "no dict id"})
 	}
 	dict, err := strconv.Atoi(dictId[0])
 	if err != nil {
-		responses.WriteToResponse(w, http.StatusBadRequest, fmt.Errorf("dict id incorrect"))
+		responses.WriteToResponse(w, http.StatusBadRequest, models.Error{Message: "dict id incorrect"})
 	}
 
 	wordsNum, ok := r.URL.Query()["words"]
 	if !ok {
-		responses.WriteToResponse(w, http.StatusBadRequest, fmt.Errorf("no words num"))
+		responses.WriteToResponse(w, http.StatusBadRequest, models.Error{Message: "no words num"})
 	}
 	num, err := strconv.Atoi(wordsNum[0])
 	if err != nil {
-		responses.WriteToResponse(w, http.StatusBadRequest, fmt.Errorf("words num incorrect"))
+		responses.WriteToResponse(w, http.StatusBadRequest, models.Error{Message: "words num incorrect"})
 	}
 	cards, found, err := server.DB.GetCardsForGame(dict, num)
 	if err != nil {
-		responses.WriteToResponse(w, http.StatusInternalServerError, fmt.Errorf("db error"))
+		responses.WriteToResponse(w, http.StatusInternalServerError, models.Error{Message: "db error"})
 	}
 
 	if !found {
@@ -42,8 +41,7 @@ func (server *Server) GetSingleGame(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) SetGameResults(w http.ResponseWriter, r *http.Request) {
-	results := models.GameResults{}
-
+	results := new(models.GameResults)
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		textError := models.Error{Message: ""}
@@ -51,14 +49,14 @@ func (server *Server) SetGameResults(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = json.Unmarshal(jsonStr, &results)
+	err = easyjson.Unmarshal(jsonStr, results)
 	if err != nil {
 		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 
-	err, found := server.DB.UpdateFrequencies(results)
+	err, found := server.DB.UpdateFrequencies(*results)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

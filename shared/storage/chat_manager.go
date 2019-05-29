@@ -4,7 +4,7 @@ import (
 	"github.com/user/2019_1_newTeam2/shared/models"
 )
 
-func (db *Database) GetMessagesBroadcast(page int, rowsNum int) ([]models.Message, error) {
+func (db *Database) GetMessagesBroadcast(page int, rowsNum int) (models.Messages, error) {
 	messages := make([]models.Message, 0)
 	db.Logger.Log(page, rowsNum)
 	offset := (page - 1) * rowsNum
