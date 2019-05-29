@@ -5,6 +5,7 @@ WORKDIR /home/app/
 ADD ./cmd/mgr /home/app/cmd/mgr
 ADD ./pkg/apps/mgr /home/app/pkg/apps/mgr
 ADD ./shared /home/app/shared
+ADD ./go.mod /home/app
 
 RUN go build --mod=vendor -o mgr ./cmd/mgr/main.go
 

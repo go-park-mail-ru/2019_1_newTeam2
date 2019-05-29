@@ -5,6 +5,7 @@ WORKDIR /home/app/
 ADD ./cmd/authorization /home/app/cmd/authorization
 ADD ./pkg/apps/authorization /home/app/pkg/apps/authorization
 ADD ./shared /home/app/shared
+ADD ./go.mod /home/app
 
 
 

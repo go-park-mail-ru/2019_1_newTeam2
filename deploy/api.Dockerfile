@@ -1,10 +1,11 @@
-FROM golang:latest AS builder
+FROM golang:alpine AS builder
 
 WORKDIR /home/app/
 
 ADD ./cmd/api /home/app/cmd/api
 ADD ./pkg/apps/server /home/app/pkg/apps/server
 ADD ./shared /home/app/shared
+ADD ./go.mod /home/app
 
 
 #RUN chmod +x /home/app/wait_for_it.sh

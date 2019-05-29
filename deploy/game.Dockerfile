@@ -4,6 +4,7 @@ ADD ./cmd/game /home/app/cmd/game
 ADD ./pkg/apps/game /home/app/pkg/apps/game
 
 ADD ./shared /home/app/shared
+ADD ./go.mod /home/app
 
 RUN go build --mod=vendor -o game ./cmd/game/main.go
 
