@@ -19,7 +19,7 @@ services:
 #    build:
 #      context: .
 #      dockerfile: ./db.Dockerfile
-    image: serega753/db_go_proj
+    image: serega753/db_go_proj:latest
     ports:
       - 3306:3306
     volumes:
@@ -36,7 +36,7 @@ services:
 
 
   auth:
-    image: serega753/auth_go_proj
+    image: serega753/auth_go_proj:latest
     ports:
       - 8092:8092
     links:
@@ -53,7 +53,7 @@ services:
 #    build:
 #      context: .
 #      dockerfile: ./api.Dockerfile
-    image: serega753/api_go_proj
+    image: serega753/api_go_proj:latest
     volumes:
       - ./upload/:/home/app/upload/
     ports:
@@ -68,7 +68,7 @@ services:
       /bin/bash -c "/home/app/wait_for_it.sh auth:8092 -t 600 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/2019_1_newTeam2 /home/app/config/config_api.json"
 
   common_db:
-      image: serega753/common_db_go_proj
+      image: serega753/common_db_go_proj:latest
       ports:
         - 8094:8094
       links:
@@ -84,7 +84,7 @@ services:
 #    build:
 #      context: .
 #      dockerfile: ./game.Dockerfile
-    image: serega753/game_go_proj
+    image: serega753/game_go_proj:latest
     ports:
       - 8093:8093
 #    depends_on:
@@ -100,7 +100,7 @@ services:
 #    build:
 #      context: .
 #      dockerfile: ./chat.Dockerfile
-    image: serega753/chat_go_proj
+    image: serega753/chat_go_proj:latest
     ports:
       - 8091:8091
     restart: always
