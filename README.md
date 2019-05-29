@@ -9,7 +9,8 @@
  - [Чуриков Сергей](https://github.com/sergeychur)
  - [Смехунов Алексей](https://github.com/Sighr)
 
-## https://new-words.ru
+## Деплой
+  - https://new-words.ru
 
 ## Frontend
 [Репозиторий фронта](https://github.com/frontend-park-mail-ru/2019_1_newTeam2)
