@@ -27,7 +27,7 @@ func (usum *UserScoreUpdaterManager) UpdateUserScore(ctx context.Context, in *Us
 	if err != nil {
 		return &NewScore{}, err
 	}
-	log.Println("I am here, updating, %v", in.AddScore)
+	log.Printf("I am here, updating, %v", in.AddScore)
 	score := strconv.Itoa(user.Score)
 	return &NewScore{Score: score}, nil
 }
