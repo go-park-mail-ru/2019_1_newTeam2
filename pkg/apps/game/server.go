@@ -13,9 +13,9 @@ import (
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/game"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/room"
 	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
-	"github.com/user/2019_1_newTeam2/pkg/config"
-	"github.com/user/2019_1_newTeam2/pkg/logger"
-	"github.com/user/2019_1_newTeam2/pkg/middlewares"
+	"github.com/user/2019_1_newTeam2/shared/pkg/config"
+	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
+	"github.com/user/2019_1_newTeam2/shared/pkg/middlewares"
 )
 
 type GameServer struct {

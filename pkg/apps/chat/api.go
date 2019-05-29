@@ -2,8 +2,8 @@ package chat
 
 import (
 	"github.com/user/2019_1_newTeam2/shared/models"
-	"github.com/user/2019_1_newTeam2/pkg/responses"
-	"github.com/user/2019_1_newTeam2/pkg/utils"
+	"github.com/user/2019_1_newTeam2/shared/pkg/responses"
+	"github.com/user/2019_1_newTeam2/shared/pkg/utils"
 	"net/http"
 )
 

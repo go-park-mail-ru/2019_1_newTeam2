@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/user/2019_1_newTeam2/pkg/middlewares"
+	"github.com/user/2019_1_newTeam2/shared/pkg/middlewares"
 	"log"
 	"net/http"
 	"net/http/httptest"

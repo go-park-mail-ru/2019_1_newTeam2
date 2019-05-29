@@ -1,5 +1,7 @@
 FROM golang:alpine AS builder
 
+WORKDIR /home/app/
+
 ADD ./cmd/game /home/app/cmd/game
 ADD ./pkg/apps/game /home/app/pkg/apps/game
 

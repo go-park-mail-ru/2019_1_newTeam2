@@ -18,8 +18,8 @@ import (
 	"github.com/user/2019_1_newTeam2/mocks/mock_interfaces"
 	"github.com/user/2019_1_newTeam2/shared/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/server"
-	"github.com/user/2019_1_newTeam2/pkg/config"
-	"github.com/user/2019_1_newTeam2/pkg/logger"
+	"github.com/user/2019_1_newTeam2/shared/pkg/config"
+	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
 )
 
 const correctToken string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"

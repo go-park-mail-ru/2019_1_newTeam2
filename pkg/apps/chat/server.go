@@ -2,7 +2,7 @@ package chat
 
 import (
 	"github.com/user/2019_1_newTeam2/pkg/apps/chat/wshub"
-	"github.com/user/2019_1_newTeam2/pkg/middlewares"
+	"github.com/user/2019_1_newTeam2/shared/pkg/middlewares"
 	"log"
 	"net/http"
 	"os"
@@ -11,8 +11,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
-	"github.com/user/2019_1_newTeam2/pkg/config"
-	"github.com/user/2019_1_newTeam2/pkg/logger"
+	"github.com/user/2019_1_newTeam2/shared/pkg/config"
+	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
 	"github.com/user/2019_1_newTeam2/shared/storage"
 	"github.com/user/2019_1_newTeam2/shared/storage/interfaces"
 )

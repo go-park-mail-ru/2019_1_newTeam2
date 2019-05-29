@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/user/2019_1_newTeam2/shared/models"
-	"github.com/user/2019_1_newTeam2/pkg/responses"
+	"github.com/user/2019_1_newTeam2/shared/pkg/responses"
 	"io/ioutil"
 	"net/http"
 	"strconv"

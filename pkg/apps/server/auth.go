@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/user/2019_1_newTeam2/shared/models"
-	"github.com/user/2019_1_newTeam2/pkg/responses"
+	"github.com/user/2019_1_newTeam2/shared/pkg/responses"
 )
 
 func (server *Server) CreateCookie(token string, minutes int, w http.ResponseWriter, r *http.Request) {

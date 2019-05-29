@@ -2,7 +2,7 @@ package config_test
 
 import (
 	"encoding/json"
-	"github.com/user/2019_1_newTeam2/pkg/config"
+	"github.com/user/2019_1_newTeam2/shared/pkg/config"
 	"log"
 	"os"
 	"reflect"

@@ -2,7 +2,7 @@ package middlewares_test
 
 import (
 	"bufio"
-	"github.com/user/2019_1_newTeam2/pkg/middlewares"
+	"github.com/user/2019_1_newTeam2/shared/pkg/middlewares"
 	"net"
 	"net/http"
 	"net/http/httptest"

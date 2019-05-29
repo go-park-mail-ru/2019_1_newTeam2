@@ -5,8 +5,8 @@ import (
 	"net"
 	"os"
 
-	"github.com/user/2019_1_newTeam2/pkg/config"
-	"github.com/user/2019_1_newTeam2/pkg/logger"
+	"github.com/user/2019_1_newTeam2/shared/pkg/config"
+	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
 	"google.golang.org/grpc"
 )
 

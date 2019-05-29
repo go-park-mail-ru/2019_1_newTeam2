@@ -10,15 +10,15 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
-	"github.com/user/2019_1_newTeam2/pkg/middlewares"
+	"github.com/user/2019_1_newTeam2/shared/pkg/middlewares"
 
 	"github.com/gorilla/mux"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/user/2019_1_newTeam2/shared/filesystem"
-	"github.com/user/2019_1_newTeam2/pkg/config"
-	"github.com/user/2019_1_newTeam2/pkg/logger"
+	"github.com/user/2019_1_newTeam2/shared/pkg/config"
+	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
 	"github.com/user/2019_1_newTeam2/shared/storage"
 	"github.com/user/2019_1_newTeam2/shared/storage/interfaces"
 )

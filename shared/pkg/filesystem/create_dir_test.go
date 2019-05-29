@@ -1,7 +1,7 @@
 package filesystem_test
 
 import (
-	"github.com/user/2019_1_newTeam2/pkg/filesystem"
+	"github.com/user/2019_1_newTeam2/shared/pkg/filesystem"
 	"os"
 	"testing"
 )
