@@ -5,6 +5,7 @@ WORKDIR /home/app/
 ADD ./cmd/api /home/app/cmd/api
 ADD ./pkg/apps/server /home/app/pkg/apps/server
 ADD ./shared /home/app/shared
+ADD ./vendor /home/app/vendor
 ADD ./go.mod /home/app
 
 

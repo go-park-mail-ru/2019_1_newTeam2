@@ -5,6 +5,7 @@ WORKDIR /home/app/
 ADD ./cmd/chat /home/app/cmd/chat
 ADD ./pkg/apps/chat /home/app/pkg/apps/chat
 ADD ./shared /home/app/shared
+ADD ./vendor /home/app/vendor
 ADD ./go.mod /home/app
 
 RUN go build --mod=vendor -o chat ./cmd/chat/main.go
