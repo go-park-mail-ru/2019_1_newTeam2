@@ -102,8 +102,6 @@ docker build \
   -f "chat.Dockerfile" \
   "."
 
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
 docker push serega753/db_go_proj:latest
 docker push serega753/common_db_go_proj:latest
 docker push serega753/api_go_proj:latest

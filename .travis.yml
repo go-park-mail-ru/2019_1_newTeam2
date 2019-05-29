@@ -22,7 +22,7 @@ script:
 - go test --mod=vendor -v ./...
 - mv ./archive/config . && mv ./archive/2019_1_newTeam2_id_rsa.pem .
 #- docker-compose -f docker-compose_build.yml build
-#- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 #- docker-compose -f docker-compose_build.yml push
 - chmod +x build.sh
 - ./build.sh $DOCKER_PASSWORD $DOCKER_USERNAME
