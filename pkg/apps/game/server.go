@@ -13,9 +13,9 @@ import (
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/game"
 	"github.com/user/2019_1_newTeam2/pkg/apps/game/room"
 	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
-	"github.com/user/2019_1_newTeam2/pkg/config"
-	"github.com/user/2019_1_newTeam2/pkg/logger"
-	"github.com/user/2019_1_newTeam2/pkg/middlewares"
+	"github.com/user/2019_1_newTeam2/shared/pkg/config"
+	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
+	"github.com/user/2019_1_newTeam2/shared/pkg/middlewares"
 )
 
 type GameServer struct {
@@ -71,7 +71,7 @@ func (server *GameServer) Run() {
 	defer grcpAuthConn.Close()
 
 	grcpScoreConn, err := grpc.Dial(
-		server.ServerConfig.AuthHost+":"+server.ServerConfig.ScorePort,
+		server.ServerConfig.ScoreHost+":"+server.ServerConfig.ScorePort,
 		grpc.WithInsecure(),
 	)
 	if err != nil {
@@ -83,7 +83,8 @@ func (server *GameServer) Run() {
 
 	server.AuthClient = authorization.NewAuthCheckerClient(grcpAuthConn)
 	server.ScoreClient = mgr.NewUserScoreUpdaterClient(grcpScoreConn)
-	server.Game = game.NewGame(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, server.ScoreClient)
+	server.Game = game.NewGame(server.ServerConfig.DBHost,
+		server.ServerConfig.DBUser, server.ServerConfig.DBPassUser, server.ScoreClient)
 	go server.Game.Run()
 	server.Logger.Logf("Running app on port %s", server.ServerConfig.Port)
 	server.Logger.Log(http.ListenAndServe(":"+server.ServerConfig.Port, server.Router))

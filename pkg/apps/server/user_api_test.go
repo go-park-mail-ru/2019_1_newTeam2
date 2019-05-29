@@ -16,10 +16,10 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/user/2019_1_newTeam2/mocks/mock_interfaces"
-	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/server"
-	"github.com/user/2019_1_newTeam2/pkg/config"
-	"github.com/user/2019_1_newTeam2/pkg/logger"
+	"github.com/user/2019_1_newTeam2/shared/models"
+	"github.com/user/2019_1_newTeam2/shared/pkg/config"
+	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
 )
 
 const correctToken string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZhc3lhIiwicGFzc3dvcmQiOiIxMjM0NSIsImlkIjoxfQ.CShosAAiK5Dea_7UJ_M2omHyyOtPcmVJkzbiOFWgtn4"
@@ -145,7 +145,7 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 		if item.exists && item.err == nil {
 			defer response.Body.Close()
 			result := new(models.User)
-			json.NewDecoder(response.Body).Decode(result)
+			_ = json.NewDecoder(response.Body).Decode(result)
 			suite.Equal(item.t, *result)
 		}
 	}
@@ -160,8 +160,6 @@ type TestUsersPaginateCase struct {
 	page         int
 	strRow       string
 	strPage      string
-	rowsURL      map[string]string
-	pageURL      map[string]string
 	queryCorrect bool
 	method       string
 }
@@ -329,7 +327,7 @@ func (suite *UserHandlerTestSuite) TestUsersPaginate() {
 			defer response.Body.Close()
 			result := []models.UserTableElem{}
 
-			json.NewDecoder(response.Body).Decode(&result)
+			_ = json.NewDecoder(response.Body).Decode(&result)
 			suite.Equal(item.t, result)
 		}
 	}

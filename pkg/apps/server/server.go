@@ -10,17 +10,17 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/user/2019_1_newTeam2/pkg/apps/authorization"
-	"github.com/user/2019_1_newTeam2/pkg/middlewares"
+	"github.com/user/2019_1_newTeam2/shared/pkg/middlewares"
 
 	"github.com/gorilla/mux"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/user/2019_1_newTeam2/filesystem"
-	"github.com/user/2019_1_newTeam2/pkg/config"
-	"github.com/user/2019_1_newTeam2/pkg/logger"
-	"github.com/user/2019_1_newTeam2/storage"
-	"github.com/user/2019_1_newTeam2/storage/interfaces"
+	"github.com/user/2019_1_newTeam2/shared/filesystem"
+	"github.com/user/2019_1_newTeam2/shared/pkg/config"
+	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
+	"github.com/user/2019_1_newTeam2/shared/storage"
+	"github.com/user/2019_1_newTeam2/shared/storage/interfaces"
 )
 
 type Server struct {
@@ -49,7 +49,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 	server.CookieField = "session_id"
 
 	server.ServerConfig = newConfig
-	newDB, err := storage.NewDataBase(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
+	newDB, err := storage.NewDataBase(server.ServerConfig.DBHost, server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func NewServer(pathToConfig string) (*Server, error) {
 
 	r.Handle("/metrics", promhttp.Handler())
 
-	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
+	router.PathPrefix("/files/{.+\\..+$}").Handler(http.StripPrefix("/api/files/", http.FileServer(http.Dir(server.ServerConfig.UploadPath)))).Methods(http.MethodOptions, http.MethodGet)
 
 	server.Router = router
 	server.Router = r

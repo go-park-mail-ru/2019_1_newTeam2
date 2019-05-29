@@ -2,8 +2,9 @@ package mgr
 
 import (
 	"context"
-	"github.com/user/2019_1_newTeam2/storage"
-	"github.com/user/2019_1_newTeam2/storage/interfaces"
+	"github.com/user/2019_1_newTeam2/shared/storage"
+	"github.com/user/2019_1_newTeam2/shared/storage/interfaces"
+	"log"
 	"strconv"
 )
 
@@ -11,9 +12,9 @@ type UserScoreUpdaterManager struct {
 	DB interfaces.DBMGRInterface
 }
 
-func NewUserScoreUpdaterManager(DBUser string, DBPassUser string) *UserScoreUpdaterManager {
+func NewUserScoreUpdaterManager(host string, DBUser string, DBPassUser string) *UserScoreUpdaterManager {
 	server := UserScoreUpdaterManager{}
-	newDB, err := storage.NewDataBase(DBUser, DBPassUser)
+	newDB, err := storage.NewDataBase(host, DBUser, DBPassUser)
 	if err != nil {
 		return nil
 	}
@@ -26,6 +27,7 @@ func (usum *UserScoreUpdaterManager) UpdateUserScore(ctx context.Context, in *Us
 	if err != nil {
 		return &NewScore{}, err
 	}
+	log.Printf("I am here, updating, %v", in.AddScore)
 	score := strconv.Itoa(user.Score)
 	return &NewScore{Score: score}, nil
 }

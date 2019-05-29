@@ -1,0 +1,110 @@
+version: "3.2"
+
+networks:
+  uniting_net:
+
+
+services:
+#  prometheus:
+#    image: quay.io/prometheus/prometheus:latest
+#    ports:
+#     - 9090:9090
+#    volumes:
+#      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+#    networks:
+#      - uniting_net
+
+
+  db:
+#    build:
+#      context: .
+#      dockerfile: ./db.Dockerfile
+    image: serega753/db_go_proj:latest
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db:/var/lib/mysql
+    restart: always
+    links:
+      - api
+      - game
+      - chat
+    expose:
+      - 3306
+    networks:
+      - uniting_net
+
+
+  auth:
+    image: serega753/auth_go_proj:latest
+    ports:
+      - 8092:8092
+    links:
+      - api
+      - chat
+      - game
+    networks:
+      - uniting_net
+    restart: always
+    command:
+      bash -c "/home/app/auth /home/app/config/config_auth.json"
+
+  api:
+#    build:
+#      context: .
+#      dockerfile: ./api.Dockerfile
+    image: serega753/api_go_proj:latest
+    volumes:
+      - ./upload/:/home/app/upload/
+    ports:
+      - 8090:8090
+#    depends_on:
+#      - auth
+#      - db
+    restart: always
+    networks:
+      - uniting_net
+    command:
+      /bin/bash -c "/home/app/wait_for_it.sh auth:8092 -t 600 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/2019_1_newTeam2 /home/app/config/config_api.json"
+
+  common_db:
+      image: serega753/common_db_go_proj:latest
+      ports:
+        - 8094:8094
+      links:
+        - api
+        - game
+      restart: always
+      networks:
+        - uniting_net
+      command:
+        /bin/bash -c "/home/app/wait_for_it.sh auth:8092 -t 600 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/mgr /home/app/config/config_score.json"
+
+  game:
+#    build:
+#      context: .
+#      dockerfile: ./game.Dockerfile
+    image: serega753/game_go_proj:latest
+    ports:
+      - 8093:8093
+#    depends_on:
+#      - auth
+#      - db
+    restart: always
+    networks:
+      - uniting_net
+    command:
+      /bin/bash -c "/home/app/wait_for_it.sh common_db:8094 -t 600 && /home/app/wait_for_it.sh auth:8092 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/game /home/app/config/config_game.json"
+
+  chat:
+#    build:
+#      context: .
+#      dockerfile: ./chat.Dockerfile
+    image: serega753/chat_go_proj:latest
+    ports:
+      - 8091:8091
+    restart: always
+    networks:
+      - uniting_net
+    command:
+      /bin/bash -c "/home/app/wait_for_it.sh auth:8092 -t 600 && /home/app/wait_for_it.sh -t 600 db:3306 && /home/app/chat /home/app/config/config_chat.json"

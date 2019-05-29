@@ -8,9 +8,9 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/user/2019_1_newTeam2/models"
-	"github.com/user/2019_1_newTeam2/pkg/responses"
-	"github.com/user/2019_1_newTeam2/pkg/utils"
+	"github.com/user/2019_1_newTeam2/shared/models"
+	"github.com/user/2019_1_newTeam2/shared/pkg/responses"
+	"github.com/user/2019_1_newTeam2/shared/pkg/utils"
 )
 
 func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request) {
@@ -23,13 +23,13 @@ func (server *Server) CreateDictionaryAPI(w http.ResponseWriter, r *http.Request
 	var dictionary models.CreateDictionary
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 	err = json.Unmarshal(jsonStr, &dictionary)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
@@ -48,13 +48,13 @@ func (server *Server) UpdateDictionaryAPI(w http.ResponseWriter, r *http.Request
 	var dictionary models.CreateDictionary
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 	err = json.Unmarshal(jsonStr, &dictionary)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}

@@ -8,3 +8,7 @@ cover.html
 go.sum
 .vscode
 *.proto
+*.pem
+*old.yml
+archive/*
+archive.tar.gz

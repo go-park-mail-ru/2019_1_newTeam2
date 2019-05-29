@@ -1,9 +1,10 @@
 package wshub
 
 import (
-	"github.com/user/2019_1_newTeam2/models"
-	"github.com/user/2019_1_newTeam2/storage"
-	"github.com/user/2019_1_newTeam2/storage/interfaces"
+	"github.com/user/2019_1_newTeam2/shared/models"
+	"github.com/user/2019_1_newTeam2/shared/storage"
+	"github.com/user/2019_1_newTeam2/shared/storage/interfaces"
+	"log"
 )
 
 type WSHub struct {
@@ -24,6 +25,7 @@ func (h *WSHub) SendToCl(mes *models.Message) {
 
 func (h *WSHub) SendAll(mes *models.Message) {
 	for clientID := range h.clients {
+		log.Printf("ClientID=%v\nmes.ID=%v\n", clientID, mes.ID)
 		if clientID == mes.ID {
 			continue
 		}
@@ -46,7 +48,7 @@ func (h *WSHub) Run() {
 				h.clients[client.ID] = client	// possible bugs
 			}*/
 			h.clients[client.ID] = client
-			h.SendToCl(&models.Message{client.ID, "Welcome to Word chat!)"})
+			h.SendToCl(&models.Message{ID: client.ID, Data: "Welcome to Word chat!)"})
 
 		case clID := <-h.unregister:
 			_, ok := h.clients[clID]
@@ -58,20 +60,24 @@ func (h *WSHub) Run() {
 			h.SendToCl(mes)
 
 		case mes := <-h.broadcast:
-			h.DB.AddMessage(mes.ID, mes.Data)
+			err := h.DB.AddMessage(mes.ID, mes.Data)
+			if err != nil {
+				log.Println(err)
+			}
+			log.Println(mes.Data)
 			h.SendAll(mes)
 		}
 	}
 }
 
-func NewWSHub(username string, pass string) *WSHub {
+func NewWSHub(host string, username string, pass string) *WSHub {
 	hub := new(WSHub)
 	hub.unregister = make(chan int)
 	hub.register = make(chan *Client)
 	hub.sendTo = make(chan *models.Message)
 	hub.clients = make(map[int]*Client)
 	hub.broadcast = make(chan *models.Message)
-	newDB, err := storage.NewDataBase(username, pass)
+	newDB, err := storage.NewDataBase(host, username, pass)
 	if err != nil {
 		return nil
 	}

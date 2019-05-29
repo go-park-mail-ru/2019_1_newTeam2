@@ -2,7 +2,7 @@ package wshub
 
 import (
 	"github.com/gorilla/websocket"
-	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/shared/models"
 	"net/http"
 )
 
@@ -43,9 +43,9 @@ func (com *WSCommunicator) DeleteClient(ID int) {
 	com.hub.unregister <- ID
 }
 
-func NewWSCommunicator(username string, pass string) *WSCommunicator {
+func NewWSCommunicator(host string, username string, pass string) *WSCommunicator {
 	com := new(WSCommunicator)
-	com.hub = NewWSHub(username, pass)
+	com.hub = NewWSHub(host, username, pass)
 	go com.hub.Run()
 	return com
 }

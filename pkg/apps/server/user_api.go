@@ -3,15 +3,14 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/user/2019_1_newTeam2/shared/filesystem"
+	"github.com/user/2019_1_newTeam2/shared/models"
+	"github.com/user/2019_1_newTeam2/shared/pkg/responses"
+	"github.com/user/2019_1_newTeam2/shared/pkg/utils"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"regexp"
-
-	"github.com/user/2019_1_newTeam2/filesystem"
-	"github.com/user/2019_1_newTeam2/models"
-	"github.com/user/2019_1_newTeam2/pkg/responses"
-	"github.com/user/2019_1_newTeam2/pkg/utils"
 )
 
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +54,7 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	//pathToAvatar = strings.TrimPrefix(pathToAvatar, "files/")
 	err = server.DB.AddImage(pathToAvatar, userId)
 	if err != nil {
 		server.Logger.Log(err.Error())
@@ -111,7 +111,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	server.DB.UpdateUserById(userId, user.Username, user.Email /*user.Password, */, user.LangID, user.PronounceON)
+	_, _ = server.DB.UpdateUserById(userId, user.Username, user.Email /*user.Password, */, user.LangID, user.PronounceON)
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -155,23 +155,23 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 	var user models.UserAuth
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 	err = json.Unmarshal(jsonStr, &user)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 	if token, _, err := server.DB.Login(user.Username, user.Password, []byte(server.ServerConfig.Secret)); err != nil {
-		textError := models.Error{err.Error()}
+		textError := models.Error{Message: err.Error()}
 		responses.WriteToResponse(w, http.StatusUnauthorized, textError)
 		return
 	} else {
 		server.CreateCookie(token, 60, w, r)
-		w.Write([]byte(token))
+		_, _ = w.Write([]byte(token))
 		w.WriteHeader(http.StatusOK)
 	}
 }
@@ -189,7 +189,7 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 		server.Logger.Log(err.Error())
 	} else {
 		server.CreateCookie(token, 60, w, r)
-		w.Write([]byte(token))
+		_, _ = w.Write([]byte(token))
 	}
 	w.WriteHeader(http.StatusOK)
 }

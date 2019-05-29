@@ -8,4 +8,4 @@ go build -o mgr.out ./cmd/mgr/main.go;
 ./api.out ./config/config_api.json &
 ./chat.out ./config/config_chat.json &
 ./game.out ./config/config_game.json &
-echo "Launched" &
+echo "Launched";

@@ -3,8 +3,8 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/user/2019_1_newTeam2/models"
-	"github.com/user/2019_1_newTeam2/pkg/responses"
+	"github.com/user/2019_1_newTeam2/shared/models"
+	"github.com/user/2019_1_newTeam2/shared/pkg/responses"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -46,14 +46,14 @@ func (server *Server) SetGameResults(w http.ResponseWriter, r *http.Request) {
 
 	jsonStr, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}
 
 	err = json.Unmarshal(jsonStr, &results)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return
 	}

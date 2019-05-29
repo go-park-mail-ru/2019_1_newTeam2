@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 
 	"github.com/gorilla/websocket"
-	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
+	"github.com/user/2019_1_newTeam2/shared/models"
 )
 
 type Player struct {

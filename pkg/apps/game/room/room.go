@@ -2,11 +2,11 @@ package room
 
 import (
 	uuid "github.com/satori/go.uuid"
-	"github.com/user/2019_1_newTeam2/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/mgr"
-	"github.com/user/2019_1_newTeam2/pkg/logger"
-	"github.com/user/2019_1_newTeam2/storage"
-	"github.com/user/2019_1_newTeam2/storage/interfaces"
+	"github.com/user/2019_1_newTeam2/shared/models"
+	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
+	"github.com/user/2019_1_newTeam2/shared/storage"
+	"github.com/user/2019_1_newTeam2/shared/storage/interfaces"
 	"os"
 	"time"
 )
@@ -26,14 +26,14 @@ type Room struct {
 	ScoreClient mgr.UserScoreUpdaterClient
 }
 
-func New(DBUser string, DBPassUser string, scoreClient mgr.UserScoreUpdaterClient) *Room {
+func New(host string, DBUser string, DBPassUser string, scoreClient mgr.UserScoreUpdaterClient) *Room {
 	id := uuid.NewV4().String()
 
 	logger := new(logger.GoLogger)
 	logger.SetOutput(os.Stderr)
 	logger.SetPrefix("ROOM (" + id + ") LOG: ")
 
-	newDB, err := storage.NewDataBase(DBUser, DBPassUser)
+	newDB, err := storage.NewDataBase(host, DBUser, DBPassUser)
 	if err != nil {
 		logger.Log("new room: ", err)
 		return nil

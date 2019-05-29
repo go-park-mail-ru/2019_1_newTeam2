@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/user/2019_1_newTeam2/models"
-	"github.com/user/2019_1_newTeam2/pkg/responses"
+	"github.com/user/2019_1_newTeam2/shared/models"
+	"github.com/user/2019_1_newTeam2/shared/pkg/responses"
 )
 
 func (server *Server) CreateCookie(token string, minutes int, w http.ResponseWriter, r *http.Request) {
@@ -32,13 +32,13 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) []byte 
 	}
 	err = json.Unmarshal(jsonStr, &user)
 	if err != nil {
-		textError := models.Error{""}
+		textError := models.Error{Message: ""}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
 	}
-	if br, err_r := server.DB.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON); br != true {
+	if br, err_r := server.DB.UserRegistration(user.Username, user.Email, user.Password, user.LangID, user.PronounceON); !br {
 		server.Logger.Log(err_r.Error())
-		textError := models.Error{err_r.Error()}
+		textError := models.Error{Message: err_r.Error()}
 		responses.WriteToResponse(w, http.StatusBadRequest, textError)
 		return jsonStr
 	}

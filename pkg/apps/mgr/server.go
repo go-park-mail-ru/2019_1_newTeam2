@@ -5,8 +5,8 @@ import (
 	"net"
 	"os"
 
-	"github.com/user/2019_1_newTeam2/pkg/config"
-	"github.com/user/2019_1_newTeam2/pkg/logger"
+	"github.com/user/2019_1_newTeam2/shared/pkg/config"
+	"github.com/user/2019_1_newTeam2/shared/pkg/logger"
 	"google.golang.org/grpc"
 )
 
@@ -33,7 +33,8 @@ func NewServer(pathToConfig string) (*ScoreServer, error) {
 	server.ServerConfig = newConfig
 
 	server.rpcServer = grpc.NewServer()
-	RegisterUserScoreUpdaterServer(server.rpcServer, NewUserScoreUpdaterManager(server.ServerConfig.DBUser, server.ServerConfig.DBPassUser))
+	RegisterUserScoreUpdaterServer(server.rpcServer, NewUserScoreUpdaterManager(server.ServerConfig.DBHost,
+		server.ServerConfig.DBUser, server.ServerConfig.DBPassUser))
 	return server, nil
 }
 
