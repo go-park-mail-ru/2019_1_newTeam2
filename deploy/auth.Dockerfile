@@ -20,5 +20,5 @@ WORKDIR /home/app/
 
 #COPY ./wait_for_it.sh /home/app
 #RUN chmod +x /home/app/wait_for_it.sh
-COPY ./config/config_auth.json /home/app/config
-COPY --from=builder /home/app/auth /home/app
+COPY ./config/config_auth.json /home/app/config/
+COPY --from=builder /home/app/auth /home/app/

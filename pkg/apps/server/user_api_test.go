@@ -145,7 +145,7 @@ func (suite *UserHandlerTestSuite) TestGetUser() {
 		if item.exists && item.err == nil {
 			defer response.Body.Close()
 			result := new(models.User)
-			json.NewDecoder(response.Body).Decode(result)
+			_= json.NewDecoder(response.Body).Decode(result)
 			suite.Equal(item.t, *result)
 		}
 	}

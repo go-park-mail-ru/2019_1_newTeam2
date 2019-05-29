@@ -111,7 +111,7 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	server.DB.UpdateUserById(userId, user.Username, user.Email /*user.Password, */, user.LangID, user.PronounceON)
+	_, _= server.DB.UpdateUserById(userId, user.Username, user.Email /*user.Password, */, user.LangID, user.PronounceON)
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -171,7 +171,7 @@ func (server *Server) LoginAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		server.CreateCookie(token, 60, w, r)
-		w.Write([]byte(token))
+		_,_ = w.Write([]byte(token))
 		w.WriteHeader(http.StatusOK)
 	}
 }
@@ -189,7 +189,7 @@ func (server *Server) SignUpAPI(w http.ResponseWriter, r *http.Request) {
 		server.Logger.Log(err.Error())
 	} else {
 		server.CreateCookie(token, 60, w, r)
-		w.Write([]byte(token))
+		_,_ = w.Write([]byte(token))
 	}
 	w.WriteHeader(http.StatusOK)
 }
