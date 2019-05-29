@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/user/2019_1_newTeam2/mocks/mock_interfaces"
-	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/shared/models"
 	"github.com/user/2019_1_newTeam2/pkg/apps/server"
 	"github.com/user/2019_1_newTeam2/pkg/config"
 	"github.com/user/2019_1_newTeam2/pkg/logger"

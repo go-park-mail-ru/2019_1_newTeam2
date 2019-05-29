@@ -7,7 +7,7 @@ package mock_wshub
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	models "github.com/user/2019_1_newTeam2/models"
+	models "github.com/user/2019_1_newTeam2/shared/models"
 	http "net/http"
 	reflect "reflect"
 )

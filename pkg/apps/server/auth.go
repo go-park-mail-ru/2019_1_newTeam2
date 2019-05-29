@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/shared/models"
 	"github.com/user/2019_1_newTeam2/pkg/responses"
 )
 

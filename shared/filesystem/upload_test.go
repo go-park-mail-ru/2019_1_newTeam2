@@ -3,7 +3,7 @@ package filesystem_test
 import (
 	"bytes"
 	"fmt"
-	"github.com/user/2019_1_newTeam2/filesystem"
+	"github.com/user/2019_1_newTeam2/shared/filesystemesystem"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"

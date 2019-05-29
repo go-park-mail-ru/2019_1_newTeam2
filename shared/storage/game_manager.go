@@ -1,6 +1,6 @@
 package storage
 
-import "github.com/user/2019_1_newTeam2/models"
+import "github.com/user/2019_1_newTeam2/shared/models"
 
 func (db *Database) UpdateFrequencies(results models.GameResults) (error, bool) {
 	allFound := true

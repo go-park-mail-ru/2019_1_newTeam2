@@ -1,9 +1,9 @@
 package wshub
 
 import (
-	"github.com/user/2019_1_newTeam2/models"
-	"github.com/user/2019_1_newTeam2/storage"
-	"github.com/user/2019_1_newTeam2/storage/interfaces"
+	"github.com/user/2019_1_newTeam2/shared/models"
+	"github.com/user/2019_1_newTeam2/shared/storage"
+	"github.com/user/2019_1_newTeam2/shared/storage/interfaces"
 	"log"
 )
 

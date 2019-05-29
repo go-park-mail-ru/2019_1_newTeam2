@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/tealeg/xlsx"
-	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/shared/models"
 )
 
 func (db *Database) DictionaryDelete(DictID int) error {

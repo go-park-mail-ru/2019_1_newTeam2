@@ -1,6 +1,6 @@
 package interfaces
 
-import "github.com/user/2019_1_newTeam2/models"
+import "github.com/user/2019_1_newTeam2/shared/models"
 
 type DBMGRInterface interface {
 	MGRManager

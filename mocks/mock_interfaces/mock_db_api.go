@@ -6,7 +6,7 @@ package mock_interfaces
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	models "github.com/user/2019_1_newTeam2/models"
+	models "github.com/user/2019_1_newTeam2/shared/models"
 	reflect "reflect"
 )
 

@@ -3,7 +3,7 @@ package storage
 import (
 	"fmt"
 
-	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/shared/models"
 )
 
 func (db *Database) DeleteCardInDictionary(userId, dictionaryID int, cardID int) error {

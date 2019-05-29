@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/user/2019_1_newTeam2/storage"
+	"github.com/user/2019_1_newTeam2/shared/storagestorage"
 )
 
 func TestSuccessCheckUserByUsername(t *testing.T) {

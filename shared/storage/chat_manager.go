@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"github.com/user/2019_1_newTeam2/models"
+	"github.com/user/2019_1_newTeam2/shared/models"
 )
 
 func (db *Database) GetMessagesBroadcast(page int, rowsNum int) ([]models.Message, error) {
