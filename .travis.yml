@@ -21,7 +21,7 @@ script:
 - tar -xvf ./archive.tar.gz
 - go test --mod=vendor -v ./...
 - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $GOPATH/bin v1.16.0
-- golangci-lint run --fast --fix
+- golangci-lint run --fast --fix --deadline=30m
 - mv ./archive/config . && mv ./archive/2019_1_newTeam2_id_rsa.pem .
 #- docker-compose -f docker-compose_build.yml build
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
