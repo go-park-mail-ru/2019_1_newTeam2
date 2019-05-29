@@ -10,7 +10,7 @@ ADD ./go.mod /home/app
 
 
 
-RUN go build --mod=vendor -o ./auth ./cmd/authorization/main.go
+RUN go build --mod=vendor -o ./auth home/app/cmd/authorization/main.go
 
 #RUN cp ./config/config_auth.json /home/app/
 

@@ -8,7 +8,7 @@ ADD ./shared /home/app/shared
 ADD ./vendor /home/app/vendor
 ADD ./go.mod /home/app
 
-RUN go build --mod=vendor -o chat ./cmd/chat/main.go
+RUN go build --mod=vendor -o chat home/app/cmd/chat/main.go
 
 #RUN cp ./config/config_chat.json /home/app/
 

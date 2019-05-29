@@ -7,7 +7,7 @@ ADD ./shared /home/app/shared
 ADD ./vendor /home/app/vendor
 ADD ./go.mod /home/app
 
-RUN go build --mod=vendor -o game ./cmd/game/main.go
+RUN go build --mod=vendor -o game /home/app/cmd/game/main.go
 
 FROM bashell/alpine-bash
 

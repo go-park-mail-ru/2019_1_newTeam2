@@ -8,11 +8,7 @@ ADD ./shared /home/app/shared
 ADD ./go.mod /home/app
 ADD ./vendor /home/app/vendor
 
-RUN go build --mod=vendor -o mgr ./cmd/mgr/main.go
-
-#RUN cp ./config/config_score.json /home/app/
-
-#RUN chmod +x /home/app/wait_for_it.sh
+RUN go build --mod=vendor -o mgr /home/app/cmd/mgr/main.go
 
 FROM bashell/alpine-bash
 
