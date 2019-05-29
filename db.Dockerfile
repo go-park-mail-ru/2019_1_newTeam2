@@ -5,7 +5,7 @@ MYSQL_PASSWORD=Abc123456* \
 MYSQL_USER=root_use
 
 
-ADD . /home/app/
+ADD ./storage/sql /home/app/storage/sql
 
 WORKDIR /home/app
 
