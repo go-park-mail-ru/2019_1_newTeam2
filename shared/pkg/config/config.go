@@ -20,6 +20,8 @@ type Config struct {
 	DBPassUser   string   `json:"dbPassUser,omitempty"`
 	DBHost       string   `json:"dbHost,omitempty"`
 	RoomSize     int      `json:"roomSize,omitempty"`
+	Akid         string   `json:"akid,omitempty"`
+	CloudSecret  string   `json:"cloudSecret,omitempty"`
 }
 
 func NewConfig(pathToConfig string) (*Config, error) {
