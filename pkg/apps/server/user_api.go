@@ -48,15 +48,17 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	pathToAvatar, err := filesystem.UploadFile(w, r, function,
-		server.ServerConfig.UploadPath, server.ServerConfig.AvatarsPath)
+	//pathToAvatar, err := filesystem.UploadFile(w, r, function,
+	//	server.ServerConfig.UploadPath, server.ServerConfig.AvatarsPath)
+	pathToAvatar, err := filesystem.UploadFileToCloud(w, r, function, server.svc)
+
 	if err != nil {
 		server.Logger.Log(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	//pathToAvatar = strings.TrimPrefix(pathToAvatar, "files/")
-	err = server.DB.AddImage(pathToAvatar, userId)
+	err = server.DB.AddImage("https://hb.bizmrg.com/newteam2backs3backet/" + pathToAvatar, userId)
 	if err != nil {
 		server.Logger.Log(err.Error())
 		w.WriteHeader(http.StatusBadRequest)

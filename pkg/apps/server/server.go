@@ -1,6 +1,11 @@
 package server
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
+
 	// "github.com/user/2019_1_newTeam2/pkg/wshub"
 	"log"
 	"net/http"
@@ -31,6 +36,7 @@ type Server struct {
 	CookieField  string
 	// Hub          wshub.IWSCommunicator
 	AuthClient authorization.AuthCheckerClient
+	svc        *s3.S3
 }
 
 func NewServer(pathToConfig string) (*Server, error) {
@@ -45,6 +51,13 @@ func NewServer(pathToConfig string) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	sess := session.Must(session.NewSession(&aws.Config{
+		Region:      aws.String("ru-msk"),
+		Credentials: credentials.NewStaticCredentials(newConfig.Akid, newConfig.CloudSecret, ""),
+		Endpoint:    aws.String("http://hb.bizmrg.com"),
+	}))
+	server.svc = s3.New(sess)
 
 	server.CookieField = "session_id"
 
