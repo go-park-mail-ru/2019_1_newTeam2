@@ -60,8 +60,9 @@ func UploadFileToCloud(w http.ResponseWriter, r *http.Request, callback func(hea
 	defer func() {
 		_ = file.Close()
 	}()
-
+	grantRead := `public-read`
 	_, err = svc.PutObject(&s3.PutObjectInput{
+		ACL:    &grantRead,
 		Bucket: aws.String("newteam2backs3backet"),
 		Key:    aws.String(handle.Filename),
 		Body:   file,
