@@ -8,4 +8,5 @@ type DBGameInterface interface {
 
 type MultiPlayerGameManager interface {
 	CreateTask() (models.GameQuestion, error)
+	GetWordsForDemo(wordsNum int) (models.GameQuestions, error)
 }

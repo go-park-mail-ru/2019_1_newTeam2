@@ -369,7 +369,73 @@ func (v *GameResult) UnmarshalJSON(data []byte) error {
 func (v *GameResult) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels3(l, v)
 }
-func easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels4(in *jlexer.Lexer, out *GameQuestion) {
+func easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels4(in *jlexer.Lexer, out *GameQuestions) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		in.Skip()
+		*out = nil
+	} else {
+		in.Delim('[')
+		if *out == nil {
+			if !in.IsDelim(']') {
+				*out = make(GameQuestions, 0, 1)
+			} else {
+				*out = GameQuestions{}
+			}
+		} else {
+			*out = (*out)[:0]
+		}
+		for !in.IsDelim(']') {
+			var v10 GameQuestion
+			(v10).UnmarshalEasyJSON(in)
+			*out = append(*out, v10)
+			in.WantComma()
+		}
+		in.Delim(']')
+	}
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson85f0d656EncodeGithubComUser20191NewTeam2SharedModels4(out *jwriter.Writer, in GameQuestions) {
+	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v11, v12 := range in {
+			if v11 > 0 {
+				out.RawByte(',')
+			}
+			(v12).MarshalEasyJSON(out)
+		}
+		out.RawByte(']')
+	}
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v GameQuestions) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson85f0d656EncodeGithubComUser20191NewTeam2SharedModels4(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v GameQuestions) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson85f0d656EncodeGithubComUser20191NewTeam2SharedModels4(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *GameQuestions) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels4(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *GameQuestions) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels4(l, v)
+}
+func easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels5(in *jlexer.Lexer, out *GameQuestion) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -393,11 +459,11 @@ func easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels4(in *jlexer.Le
 				in.Skip()
 			} else {
 				in.Delim('[')
-				v10 := 0
+				v13 := 0
 				for !in.IsDelim(']') {
-					if v10 < 4 {
-						(out.Words)[v10] = string(in.String())
-						v10++
+					if v13 < 4 {
+						(out.Words)[v13] = string(in.String())
+						v13++
 					} else {
 						in.SkipRecursive()
 					}
@@ -419,7 +485,7 @@ func easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels4(in *jlexer.Le
 		in.Consumed()
 	}
 }
-func easyjson85f0d656EncodeGithubComUser20191NewTeam2SharedModels4(out *jwriter.Writer, in GameQuestion) {
+func easyjson85f0d656EncodeGithubComUser20191NewTeam2SharedModels5(out *jwriter.Writer, in GameQuestion) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -432,11 +498,11 @@ func easyjson85f0d656EncodeGithubComUser20191NewTeam2SharedModels4(out *jwriter.
 			out.RawString(prefix)
 		}
 		out.RawByte('[')
-		for v11 := range in.Words {
-			if v11 > 0 {
+		for v14 := range in.Words {
+			if v14 > 0 {
 				out.RawByte(',')
 			}
-			out.String(string((in.Words)[v11]))
+			out.String(string((in.Words)[v14]))
 		}
 		out.RawByte(']')
 	}
@@ -466,23 +532,23 @@ func easyjson85f0d656EncodeGithubComUser20191NewTeam2SharedModels4(out *jwriter.
 // MarshalJSON supports json.Marshaler interface
 func (v GameQuestion) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson85f0d656EncodeGithubComUser20191NewTeam2SharedModels4(&w, v)
+	easyjson85f0d656EncodeGithubComUser20191NewTeam2SharedModels5(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v GameQuestion) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson85f0d656EncodeGithubComUser20191NewTeam2SharedModels4(w, v)
+	easyjson85f0d656EncodeGithubComUser20191NewTeam2SharedModels5(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *GameQuestion) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels4(&r, v)
+	easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels5(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *GameQuestion) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels4(l, v)
+	easyjson85f0d656DecodeGithubComUser20191NewTeam2SharedModels5(l, v)
 }
