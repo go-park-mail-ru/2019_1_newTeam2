@@ -1,6 +1,8 @@
 package game
 
 import (
+	"github.com/user/2019_1_newTeam2/shared/storage"
+	"github.com/user/2019_1_newTeam2/shared/storage/interfaces"
 	"net/http"
 	"os"
 
@@ -26,6 +28,7 @@ type GameServer struct {
 	ScoreClient  mgr.UserScoreUpdaterClient
 	CookieField  string
 	Game         *game.Game
+	DB interfaces.DBGameInterface		// remove in future
 }
 
 func NewGameServer(pathToConfig string) (*GameServer, error) {
@@ -48,15 +51,27 @@ func NewGameServer(pathToConfig string) (*GameServer, error) {
 	router.Use(middlewares.CreateCorsMiddleware(server.ServerConfig.AllowedHosts))
 	router.Use(middlewares.CreateLoggingMiddleware(os.Stdout, "Word Trainer"))
 	router.Use(middlewares.CreatePanicRecoveryMiddleware())
-	router.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, server.IsLogined))
+	loginned := router.PathPrefix("/").Subrouter()
+	loginned.Use(middlewares.CreateCheckAuthMiddleware([]byte(server.ServerConfig.Secret), server.CookieField, server.IsLogined))
 
-	router.HandleFunc("/game", promhttp.InstrumentHandlerCounter(
+	loginned.HandleFunc("/game", promhttp.InstrumentHandlerCounter(
 		MultiplayerHitsMetric,
 		http.HandlerFunc(server.OpenConnection),
 	))
 
 	r.Handle("/metrics", promhttp.Handler())
+	router.HandleFunc("/demo/", http.HandlerFunc(server.GetDemo))
 	server.Router = r
+
+
+	// remove part start
+	db, err := storage.NewDataBase(server.ServerConfig.DBHost, server.ServerConfig.DBUser, server.ServerConfig.DBPassUser)
+	if err != nil {
+		return nil, err
+	}
+	server.DB = db
+	// remove part end
+
 	return server, nil
 }
 

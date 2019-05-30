@@ -1,6 +1,7 @@
 package game
 
 import (
+	"github.com/user/2019_1_newTeam2/shared/pkg/responses"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -26,4 +27,15 @@ func (server *GameServer) OpenConnection(w http.ResponseWriter, r *http.Request)
 
 	_ = conn.WriteJSON(models.PlayerData{Username: Username, Score: 0})
 	server.Game.Register <- &game.GameRegister{Conn: conn, Username: Username}
+}
+
+func (server *GameServer) GetDemo(w http.ResponseWriter, r *http.Request) {
+	const wordsNum = 20
+	cards, err := server.DB.GetWordsForDemo(wordsNum)
+	if err != nil {
+		server.Logger.Log(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	responses.WriteToResponse(w, http.StatusOK, cards)
 }

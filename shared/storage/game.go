@@ -55,3 +55,16 @@ func (db *Database) CreateTask() (models.GameQuestion, error) {
 	task.Answer = task.Words[AnswerId]
 	return task, nil
 }
+
+
+func (db *Database) GetWordsForDemo(wordsNum int) (models.GameQuestions, error) {
+	results := make(models.GameQuestions, wordsNum)
+	for i := 0; i < wordsNum; i++ {
+		card, err := db.CreateTask()
+		if err != nil {
+			return models.GameQuestions{}, err
+		}
+		results[i] = card
+	}
+	return results, nil
+}
