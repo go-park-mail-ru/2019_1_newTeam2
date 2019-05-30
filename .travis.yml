@@ -15,19 +15,16 @@ addons:
     - docker-ce
 services:
 - docker
-#before_script:
-#- docker-compose --f docker-compose_build.yml pull || true
 script:
 - tar -xvf ./archive.tar.gz
 - go test --mod=vendor -v ./...
-- curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $GOPATH/bin v1.16.0
+- curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh |
+  sh -s -- -b $GOPATH/bin v1.16.0
 - golangci-lint run --fast --fix --deadline=30m
 - mv ./archive/config . && mv ./archive/2019_1_newTeam2_id_rsa.pem .
-#- docker-compose -f docker-compose_build.yml build
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-#- docker-compose -f docker-compose_build.yml push
 - chmod +x build.sh
-- ./build.sh
+- "./build.sh"
 - chmod 600 ./2019_1_newTeam2_id_rsa.pem
 - ssh-keyscan -H 89.208.199.170 >> ~/.ssh/known_hosts
 - scp -i ./2019_1_newTeam2_id_rsa.pem ./deploy/docker-compose.yml ubuntu@89.208.199.170:/home/ubuntu/2019_1_newTeam2/docker-compose.yml

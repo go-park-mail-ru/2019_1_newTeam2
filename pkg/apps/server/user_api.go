@@ -58,7 +58,7 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//pathToAvatar = strings.TrimPrefix(pathToAvatar, "files/")
-	err = server.DB.AddImage(pathToAvatar, userId)
+	err = server.DB.AddImage("https://hb.bizmrg.com/newteam2backs3backet/" + pathToAvatar, userId)
 	if err != nil {
 		server.Logger.Log(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
