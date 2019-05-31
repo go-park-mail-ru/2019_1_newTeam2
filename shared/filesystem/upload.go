@@ -1,8 +1,11 @@
 package filesystem
 
 import (
+	"crypto/sha256"
+	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -45,7 +48,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request, callback func(header mul
 	return filepath.Join("files/", path, retPath), nil
 }
 
-func UploadFileToCloud(w http.ResponseWriter, r *http.Request, callback func(header multipart.FileHeader) error, svc *s3.S3, path string, bucket string) (string, error) {
+func UploadFileToCloud(w http.ResponseWriter, r *http.Request, callback func(header multipart.FileHeader) error, svc *s3.S3, path string, bucket string, prevKey string) (string, error) {
 	file, handle, err := r.FormFile("file")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -60,8 +63,23 @@ func UploadFileToCloud(w http.ResponseWriter, r *http.Request, callback func(hea
 	defer func() {
 		_ = file.Close()
 	}()
+
+	h := sha256.New()
+
+	_, err = io.Copy(h, file)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	_, err = file.Seek(0, io.SeekStart)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	ext := filepath.Ext(handle.Filename)
+	key := fmt.Sprintf("%s%x%s", path, h.Sum(nil), ext)
 	grantRead := `public-read`
-	key := path + "/" + handle.Filename
+
 	_, err = svc.PutObject(&s3.PutObjectInput{
 		ACL:    &grantRead,
 		Bucket: aws.String(bucket),
@@ -72,5 +90,13 @@ func UploadFileToCloud(w http.ResponseWriter, r *http.Request, callback func(hea
 		w.WriteHeader(http.StatusFailedDependency)
 		return "", err
 	}
+
+	if prevKey != key {
+		_, _ = svc.DeleteObject(&s3.DeleteObjectInput{
+			Bucket: aws.String(bucket),
+			Key:    aws.String(prevKey),
+		})
+	}
+
 	return key, nil
 }
