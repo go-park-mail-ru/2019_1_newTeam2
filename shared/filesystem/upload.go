@@ -45,7 +45,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request, callback func(header mul
 	return filepath.Join("files/", path, retPath), nil
 }
 
-func UploadFileToCloud(w http.ResponseWriter, r *http.Request, callback func(header multipart.FileHeader) error, svc *s3.S3) (string, error) {
+func UploadFileToCloud(w http.ResponseWriter, r *http.Request, callback func(header multipart.FileHeader) error, svc *s3.S3, path string, bucket string) (string, error) {
 	file, handle, err := r.FormFile("file")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -61,15 +61,16 @@ func UploadFileToCloud(w http.ResponseWriter, r *http.Request, callback func(hea
 		_ = file.Close()
 	}()
 	grantRead := `public-read`
+	key := path + "/" + handle.Filename
 	_, err = svc.PutObject(&s3.PutObjectInput{
 		ACL:    &grantRead,
-		Bucket: aws.String("newteam2backs3backet"),
-		Key:    aws.String(handle.Filename),
+		Bucket: aws.String(bucket),
+		Key:    aws.String(key),
 		Body:   file,
 	})
 	if err != nil {
 		w.WriteHeader(http.StatusFailedDependency)
 		return "", err
 	}
-	return handle.Filename, nil
+	return key, nil
 }
