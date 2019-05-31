@@ -12,6 +12,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"regexp"
+	"strings"
 )
 
 func (server *Server) GetUser(w http.ResponseWriter, r *http.Request) {
@@ -57,8 +58,8 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
-	pathToAvatar, err := filesystem.UploadFileToCloud(w, r, function, server.svc, result.Username, server.ServerConfig.Bucket)
+	avatarName := strings.TrimPrefix(result.AvatarPath, "https://hb.bizmrg.com/newteam2backs3backet/")
+	pathToAvatar, err := filesystem.UploadFileToCloud(w, r, function, server.svc, result.Username, server.ServerConfig.Bucket, avatarName)
 
 	if err != nil {
 		server.Logger.Log(err.Error())
@@ -66,7 +67,8 @@ func (server *Server) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//pathToAvatar = strings.TrimPrefix(pathToAvatar, "files/")
-	err = server.DB.AddImage("https://hb.bizmrg.com/newteam2backs3backet/"+pathToAvatar, userId)
+	resultPath := "https://hb.bizmrg.com/newteam2backs3backet/" + pathToAvatar
+	err = server.DB.AddImage(resultPath, userId)
 	if err != nil {
 		server.Logger.Log(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
