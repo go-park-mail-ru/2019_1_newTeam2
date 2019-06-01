@@ -26,7 +26,7 @@ func easyjson9b8f5552DecodeGithubComUser20191NewTeam2SharedModels(in *jlexer.Lex
 		in.Delim('[')
 		if *out == nil {
 			if !in.IsDelim(']') {
-				*out = make(Messages, 0, 2)
+				*out = make(Messages, 0, 1)
 			} else {
 				*out = Messages{}
 			}
@@ -106,6 +106,8 @@ func easyjson9b8f5552DecodeGithubComUser20191NewTeam2SharedModels1(in *jlexer.Le
 			out.ID = int(in.Int())
 		case "message":
 			out.Data = string(in.String())
+		case "username":
+			out.UserName = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -139,6 +141,16 @@ func easyjson9b8f5552EncodeGithubComUser20191NewTeam2SharedModels1(out *jwriter.
 			out.RawString(prefix)
 		}
 		out.String(string(in.Data))
+	}
+	if in.UserName != "" {
+		const prefix string = ",\"username\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.UserName))
 	}
 	out.RawByte('}')
 }
@@ -199,7 +211,7 @@ func easyjson9b8f5552DecodeGithubComUser20191NewTeam2SharedModels2(in *jlexer.Le
 				in.Delim('[')
 				if out.Messages == nil {
 					if !in.IsDelim(']') {
-						out.Messages = make([]Message, 0, 2)
+						out.Messages = make([]Message, 0, 1)
 					} else {
 						out.Messages = []Message{}
 					}
