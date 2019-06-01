@@ -9,7 +9,7 @@ import (
 
 func (db *Database) DeleteCardInDictionary(userId, dictionaryID int, cardID int) error {
 	ifOwner := false
-	err := db.Conn.QueryRow(CheckOwner, userId, dictionaryID).Scan(&ifOwner)
+	err := db.Conn.QueryRow(CheckOwner, dictionaryID, userId).Scan(&ifOwner)
 	if err != nil {
 		return err
 	}
