@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/user/2019_1_newTeam2/shared/models"
@@ -87,7 +88,10 @@ func (db *Database) DecrementCount(CardID int) error {
 
 func (db *Database) SetCardToDictionary(userId int, dictID int, card models.Card) error {
 	ifOwner := false
-	err := db.Conn.QueryRow(CheckOwner, userId, dictID).Scan(&ifOwner)
+	err := db.Conn.QueryRow(CheckOwner, dictID, userId).Scan(&ifOwner)
+	if err == sql.ErrNoRows {
+		return fmt.Errorf("u cheater")
+	}
 	if err != nil {
 		return err
 	}
