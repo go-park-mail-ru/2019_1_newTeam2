@@ -7,6 +7,7 @@ type Messages []Message
 type Message struct {
 	ID   int    `json:"id,omitempty"`
 	Data string `json:"message"`
+	UserName string `json:"username,omitempty"`
 }
 
 type Dialog struct {

@@ -112,7 +112,7 @@ func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels1(in *jlexer.Le
 				if out.Word == nil {
 					out.Word = new(WordFull)
 				}
-				(*out.Word).UnmarshalEasyJSON(in)
+				easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels2(in, out.Word)
 			}
 		case "translation":
 			if in.IsNull() {
@@ -122,7 +122,7 @@ func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels1(in *jlexer.Le
 				if out.Translation == nil {
 					out.Translation = new(WordFull)
 				}
-				(*out.Translation).UnmarshalEasyJSON(in)
+				easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels2(in, out.Translation)
 			}
 		default:
 			in.SkipRecursive()
@@ -159,7 +159,7 @@ func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels1(out *jwriter.
 		if in.Word == nil {
 			out.RawString("null")
 		} else {
-			(*in.Word).MarshalEasyJSON(out)
+			easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels2(out, *in.Word)
 		}
 	}
 	{
@@ -173,7 +173,7 @@ func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels1(out *jwriter.
 		if in.Translation == nil {
 			out.RawString("null")
 		} else {
-			(*in.Translation).MarshalEasyJSON(out)
+			easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels2(out, *in.Translation)
 		}
 	}
 	out.RawByte('}')
@@ -202,7 +202,133 @@ func (v *CardFull) UnmarshalJSON(data []byte) error {
 func (v *CardFull) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels1(l, v)
 }
-func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels2(in *jlexer.Lexer, out *CardDelete) {
+func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels2(in *jlexer.Lexer, out *WordFull) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "name":
+			out.Name = string(in.String())
+		case "language":
+			if in.IsNull() {
+				in.Skip()
+				out.Language = nil
+			} else {
+				if out.Language == nil {
+					out.Language = new(Language)
+				}
+				easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels3(in, out.Language)
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels2(out *jwriter.Writer, in WordFull) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.Name != "" {
+		const prefix string = ",\"name\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.Name))
+	}
+	if in.Language != nil {
+		const prefix string = ",\"language\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels3(out, *in.Language)
+	}
+	out.RawByte('}')
+}
+func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels3(in *jlexer.Lexer, out *Language) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "id":
+			out.ID = int(in.Int())
+		case "username":
+			out.Name = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels3(out *jwriter.Writer, in Language) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.ID != 0 {
+		const prefix string = ",\"id\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int(int(in.ID))
+	}
+	{
+		const prefix string = ",\"username\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.Name))
+	}
+	out.RawByte('}')
+}
+func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels4(in *jlexer.Lexer, out *CardDelete) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -235,7 +361,7 @@ func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels2(in *jlexer.Le
 		in.Consumed()
 	}
 }
-func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels2(out *jwriter.Writer, in CardDelete) {
+func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels4(out *jwriter.Writer, in CardDelete) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -265,27 +391,27 @@ func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels2(out *jwriter.
 // MarshalJSON supports json.Marshaler interface
 func (v CardDelete) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels2(&w, v)
+	easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels4(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v CardDelete) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels2(w, v)
+	easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels4(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *CardDelete) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels2(&r, v)
+	easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels4(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *CardDelete) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels2(l, v)
+	easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels4(l, v)
 }
-func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels3(in *jlexer.Lexer, out *Card) {
+func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels5(in *jlexer.Lexer, out *Card) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -314,7 +440,7 @@ func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels3(in *jlexer.Le
 				if out.Word == nil {
 					out.Word = new(Word)
 				}
-				(*out.Word).UnmarshalEasyJSON(in)
+				easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels6(in, out.Word)
 			}
 		case "translation":
 			if in.IsNull() {
@@ -324,7 +450,7 @@ func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels3(in *jlexer.Le
 				if out.Translation == nil {
 					out.Translation = new(Word)
 				}
-				(*out.Translation).UnmarshalEasyJSON(in)
+				easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels6(in, out.Translation)
 			}
 		case "frequency":
 			out.Frequency = float64(in.Float64())
@@ -338,7 +464,7 @@ func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels3(in *jlexer.Le
 		in.Consumed()
 	}
 }
-func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels3(out *jwriter.Writer, in Card) {
+func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels5(out *jwriter.Writer, in Card) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -363,7 +489,7 @@ func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels3(out *jwriter.
 		if in.Word == nil {
 			out.RawString("null")
 		} else {
-			(*in.Word).MarshalEasyJSON(out)
+			easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels6(out, *in.Word)
 		}
 	}
 	{
@@ -377,7 +503,7 @@ func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels3(out *jwriter.
 		if in.Translation == nil {
 			out.RawString("null")
 		} else {
-			(*in.Translation).MarshalEasyJSON(out)
+			easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels6(out, *in.Translation)
 		}
 	}
 	{
@@ -396,23 +522,82 @@ func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels3(out *jwriter.
 // MarshalJSON supports json.Marshaler interface
 func (v Card) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels3(&w, v)
+	easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels5(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Card) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels3(w, v)
+	easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels5(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Card) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels3(&r, v)
+	easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels5(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Card) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels3(l, v)
+	easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels5(l, v)
+}
+func easyjsonFfcccb8aDecodeGithubComUser20191NewTeam2SharedModels6(in *jlexer.Lexer, out *Word) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "name":
+			out.Name = string(in.String())
+		case "langID":
+			out.LanguageId = int(in.Int())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonFfcccb8aEncodeGithubComUser20191NewTeam2SharedModels6(out *jwriter.Writer, in Word) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.Name != "" {
+		const prefix string = ",\"name\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.Name))
+	}
+	if in.LanguageId != 0 {
+		const prefix string = ",\"langID\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int(int(in.LanguageId))
+	}
+	out.RawByte('}')
 }
