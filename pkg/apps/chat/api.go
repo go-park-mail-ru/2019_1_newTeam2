@@ -15,6 +15,9 @@ func (server *ChatServer) CreateChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	username, err := server.GetUserNameFromCookie(r)
+	if err != nil {
+		responses.WriteToResponse(w, http.StatusBadRequest, models.Error{Message: "cannot subscribe"})
+	}
 	err = server.Hub.AddClient(w, r, id, username)
 	if err != nil {
 		responses.WriteToResponse(w, http.StatusBadRequest, models.Error{Message: "cannot subscribe"})
