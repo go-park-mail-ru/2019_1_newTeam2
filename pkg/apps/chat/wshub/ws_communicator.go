@@ -22,14 +22,14 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func (com *WSCommunicator) AddClient(w http.ResponseWriter, r *http.Request, id int) error {
+func (com *WSCommunicator) AddClient(w http.ResponseWriter, r *http.Request, id int, username string) error {
 	ws, err := upgrader.Upgrade(w.(http.ResponseWriter), r, nil)
 
 	if err != nil {
 		return err
 	}
 	//cl := &Client{ID: id, Conn: ws, sendChan: make(chan interface{}), hub: com.hub}
-	cl := NewClient(id, ws, com.hub)
+	cl := NewClient(id, username, ws, com.hub)
 	com.hub.register <- cl
 	go cl.ReadFromInet()
 	go cl.WriteToInet()

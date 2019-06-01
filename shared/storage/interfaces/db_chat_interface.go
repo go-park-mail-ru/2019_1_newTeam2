@@ -8,5 +8,5 @@ type DBChatInterface interface {
 
 type ChatManager interface {
 	GetMessagesBroadcast(page int, rowsNum int) (models.Messages, error)
-	AddMessage(UserID int, message string) error
+	AddMessage(UserName string, UserID int, message string) error
 }

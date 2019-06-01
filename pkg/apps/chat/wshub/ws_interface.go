@@ -6,7 +6,7 @@ import (
 )
 
 type IWSCommunicator interface {
-	AddClient(w http.ResponseWriter, r *http.Request, id int) error
+	AddClient(w http.ResponseWriter, r *http.Request, id int, username string) error
 	SendToClient(mes *models.Message)
 	DeleteClient(ID int)
 }

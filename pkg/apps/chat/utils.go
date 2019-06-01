@@ -23,3 +23,21 @@ func (server *ChatServer) GetUserIdFromCookie(r *http.Request) (int, error) {
 	}
 	return int(StrUserId.UserId), nil
 }
+
+func (server *ChatServer) GetUserNameFromCookie(r *http.Request) (string, error) {
+	cookie, err := r.Cookie(server.CookieField)
+	if err != nil {
+		return "", err
+	}
+	ctx := context.Background()
+	StrUsername, err := server.AuthClient.GetUsernameFromCookie(ctx,
+		&authorization.AuthCookie{
+			Data:   cookie.Value,
+			Secret: server.ServerConfig.Secret,
+		})
+	if err != nil {
+		server.Logger.Log("GetUserIdFromCookie ", err)
+		return "", err
+	}
+	return string(StrUsername.Data), nil
+}

@@ -60,7 +60,7 @@ func (h *WSHub) Run() {
 			h.SendToCl(mes)
 
 		case mes := <-h.broadcast:
-			err := h.DB.AddMessage(mes.ID, mes.Data)
+			err := h.DB.AddMessage(mes.UserName, mes.ID, mes.Data)
 			if err != nil {
 				log.Println(err)
 			}

@@ -99,8 +99,8 @@ const (
 
 	//  chat
 
-	GetMessages                 = "SELECT m.UserId, m.data FROM chat_wordtrainer.broadcast_dialog bd JOIN chat_wordtrainer.message m ON (MessageId = m.ID) ORDER BY bd.ID DESC LIMIT ? OFFSET ?"
-	AddMessage                  = "INSERT INTO chat_wordtrainer.message (data, UserId) VALUES (?, ?)"
+	GetMessages                 = "SELECT m.UserId, m.UserName, m.data FROM chat_wordtrainer.broadcast_dialog bd JOIN chat_wordtrainer.message m ON (MessageId = m.ID) ORDER BY bd.ID DESC LIMIT ? OFFSET ?"
+	AddMessage                  = "INSERT INTO chat_wordtrainer.message (data, UserId, UserName) VALUES (?, ?, ?)"
 	AddMessageToBroadcastDialog = "INSERT INTO chat_wordtrainer.broadcast_dialog (MessageId, UserId) VALUES(?, ?)"
 
 	//  game
