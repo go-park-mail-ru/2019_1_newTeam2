@@ -16,6 +16,7 @@ const (
 type Client struct {
 	Conn     *websocket.Conn
 	ID       int
+	UserName string
 	hub      *WSHub
 	sendChan chan interface{}
 }
@@ -36,6 +37,7 @@ func (cl *Client) ReadFromInet() {
 		mes := models.Message{}
 		err := cl.Conn.ReadJSON(&mes)
 		mes.ID = cl.ID
+		mes.UserName = cl.UserName
 		if err != nil {
 			break
 		}
@@ -71,10 +73,11 @@ func (cl *Client) WriteToInet() {
 	}
 }
 
-func NewClient(id int, ws *websocket.Conn, hub *WSHub) *Client {
+func NewClient(id int, userName string, ws *websocket.Conn, hub *WSHub) *Client {
 	cl := new(Client)
 	cl.ID = id
 	cl.hub = hub
+	cl.UserName = userName
 	cl.sendChan = make(chan interface{})
 	cl.Conn = ws
 	return cl

@@ -21,7 +21,7 @@ func (db *Database) GetMessagesBroadcast(page int, rowsNum int) (models.Messages
 	for rows.Next() {
 		i++
 		message := models.Message{}
-		err := rows.Scan(&message.ID, &message.Data)
+		err := rows.Scan(&message.ID, &message.UserName, &message.Data)
 		if err != nil {
 			db.Logger.Log(err)
 			return messages, err
@@ -34,7 +34,7 @@ func (db *Database) GetMessagesBroadcast(page int, rowsNum int) (models.Messages
 	return messages, nil
 }
 
-func (db *Database) AddMessage(UserID int, message string) error {
+func (db *Database) AddMessage(UserName string, UserID int, message string) error {
 	tx, err := db.Conn.Begin()
 	if err != nil {
 		return err
@@ -43,6 +43,7 @@ func (db *Database) AddMessage(UserID int, message string) error {
 		AddMessage,
 		message,
 		UserID,
+		UserName,
 	)
 	if err != nil {
 		_ = tx.Rollback()

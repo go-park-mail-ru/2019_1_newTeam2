@@ -22,7 +22,8 @@ CREATE TABLE russian_english_words (
 CREATE TABLE message (
     ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     data TEXT,
-    UserId INT UNSIGNED NOT NULL
+    UserId INT UNSIGNED NOT NULL,
+    UserName VARCHAR(127) NOT NULL
 );
 
 CREATE TABLE dialog (
